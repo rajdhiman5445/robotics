@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LauncherScreen from '../components/LauncherScreen.astro';
+import { mainSections } from '../lib/wiki';
+---
+
+<BaseLayout
+  title="Robotics Handbook"
+  description="Robotics"
+  pathname="/"
+  pageMeta={{ href: '/', title: 'Robotics Handbook', path: '', kind: 'utility' }}
+>
+  <LauncherScreen
+    title="Robotics Handbook"
+    items={[
+      { label: 'Search', href: '/search/' },
+      ...mainSections.map((section) => ({
+        label: section.label,
+        href: `/${section.key}/`,
+      })),
+    ]}
+  />
+</BaseLayout>

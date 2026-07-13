@@ -1,0 +1,36 @@
+---
+type CalloutType =
+  | 'note'
+  | 'info'
+  | 'warning'
+  | 'danger'
+  | 'definition'
+  | 'example'
+  | 'question'
+  | 'exercise';
+
+const { type = 'note', title } = Astro.props as {
+  type?: CalloutType;
+  title?: string;
+};
+
+const styles: Record<CalloutType, { border: string; title: string }> = {
+  note: { border: 'border-[color:var(--line)]', title: 'text-[color:var(--text)]' },
+  info: { border: 'border-[color:var(--accent)]', title: 'text-[color:var(--text)]' },
+  warning: { border: 'border-[#c6a46b]', title: 'text-[#e3c58f]' },
+  danger: { border: 'border-[#b56d62]', title: 'text-[#d8a095]' },
+  definition: { border: 'border-[color:var(--accent)]', title: 'text-[color:var(--text)]' },
+  example: { border: 'border-[color:var(--line)]', title: 'text-[color:var(--text)]' },
+  question: { border: 'border-[color:var(--line)]', title: 'text-[color:var(--text)]' },
+  exercise: { border: 'border-[color:var(--accent)]', title: 'text-[color:var(--text)]' },
+};
+
+const style = styles[type];
+---
+
+<aside class={`my-8 border-l-2 pl-5 ${style.border}`}>
+  {title && <p class={`mb-2 text-[0.95rem] font-medium tracking-[-0.01em] ${style.title}`}>{title}</p>}
+  <div class="space-y-3 text-[1rem] leading-8 text-[color:var(--muted)]">
+    <slot />
+  </div>
+</aside>

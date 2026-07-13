@@ -1,0 +1,165 @@
+---
+type LauncherItem = {
+  label: string;
+  href?: string;
+  tone?: 'normal' | 'back';
+};
+
+const {
+  title,
+  items,
+  backLabel,
+  backHref = '/',
+  initialActiveIndex = 0,
+  mode = 'center',
+} = Astro.props as {
+  title: string;
+  items: LauncherItem[];
+  backLabel?: string;
+  backHref?: string;
+  initialActiveIndex?: number;
+  mode?: 'center' | 'top';
+};
+---
+
+<main
+  class:list={[
+    'flex min-h-[calc(100vh-3.5rem)] justify-center px-5 sm:px-6 lg:px-8',
+    mode === 'center' ? 'items-center py-12' : 'items-start py-12 pt-32',
+  ]}
+>
+  <div class="relative w-full max-w-[520px] font-sans text-[color:var(--text)]">
+    {backLabel && (
+      <button
+        type="button"
+        class:list={[
+          'absolute left-0 text-left text-[0.95rem] font-medium tracking-[-0.02em] text-[color:var(--faint)] outline-none transition hover:text-[color:var(--text)]',
+          mode === 'center' ? '-top-8' : 'top-0',
+        ]}
+      data-launcher-item
+      data-launcher-back="true"
+      data-launcher-href={backHref}
+    >
+        <span>{`← ${backLabel}`}</span>
+      </button>
+    )}
+
+    <h1
+      class:list={[
+        'text-[1.45rem] font-medium tracking-[-0.02em]',
+        backLabel && mode === 'top' ? 'mt-8' : '',
+      ]}
+    >
+      {title}
+    </h1>
+
+    <nav class:list={[mode === 'center' ? 'mt-12' : 'mt-10']}>
+      <ul class="grid gap-3 text-[1.18rem] leading-[1.65]">
+        {items.map((item, index) => (
+          <li>
+            <button
+              type="button"
+              class="flex items-center gap-3 text-left text-[color:var(--text)] outline-none"
+              data-launcher-item
+              data-launcher-index={index}
+              data-launcher-href={item.href}
+              data-launcher-tone={item.tone ?? 'normal'}
+            >
+              <span class="home-arrow" aria-hidden="true"></span>
+              <span>{item.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</main>
+
+<script is:inline define:vars={{ initialActiveIndex }}>
+  const items = Array.from(document.querySelectorAll('[data-launcher-item]'));
+  const hasBack = Boolean(document.querySelector('[data-launcher-back="true"]'));
+  let activeIndex = initialActiveIndex;
+
+  const render = () => {
+    items.forEach((item, index) => {
+      const active = index === activeIndex;
+      item.classList.toggle('home-item-active', active);
+      item.setAttribute('aria-selected', String(active));
+      item.classList.toggle('home-item-back', item.getAttribute('data-launcher-back') === 'true');
+
+      const arrow = item.querySelector('.home-arrow');
+      if (arrow) {
+        arrow.textContent = active ? '>' : '';
+      }
+    });
+  };
+
+  const setActive = (nextIndex) => {
+    const length = items.length;
+    if (!length) return;
+    activeIndex = (nextIndex + length) % length;
+    render();
+  };
+
+  items.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      activeIndex = index;
+      render();
+
+      const href = item.getAttribute('data-launcher-href');
+
+      if (href) {
+        if (item.getAttribute('data-launcher-back') === 'true') {
+          if (!window.__wikiGoBack?.()) {
+            window.location.assign(href);
+          }
+        } else {
+          window.__wikiNavigate?.(href) ?? window.location.assign(href);
+        }
+      }
+    });
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented) return;
+    if (document.body.dataset.readingSettingsOpen === 'true') return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setActive(activeIndex + 1);
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActive(activeIndex - 1);
+    }
+
+    if (event.key === 'Enter') {
+      const current = items[activeIndex];
+      if (!current) return;
+
+      const href = current.getAttribute('data-launcher-href');
+
+      if (href) {
+        if (current.getAttribute('data-launcher-back') === 'true') {
+          if (!window.__wikiGoBack?.()) {
+            window.location.assign(href);
+          }
+        } else {
+          window.__wikiNavigate?.(href) ?? window.location.assign(href);
+        }
+      }
+    }
+
+    if ((event.key === 'Backspace' || event.key === 'Escape') && hasBack) {
+      event.preventDefault();
+      if (!window.__wikiGoBack?.()) {
+        const back = document.querySelector('[data-launcher-back="true"]');
+        const href = back?.getAttribute('data-launcher-href');
+        if (href) window.location.assign(href);
+      }
+    }
+  });
+
+  render();
+</script>

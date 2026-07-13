@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DocLayout from '../layouts/DocLayout.astro';
+import LauncherScreen from '../components/LauncherScreen.astro';
+import { docs, getNavigatorData, getNavigatorSlugs, getTrailForDoc } from '../lib/wiki';
+
+export function getStaticPaths() {
+  return [
+    ...getNavigatorSlugs().map((slug) => ({
+      params: { slug: slug.join('/') },
+      props: { kind: 'navigator', slug },
+    })),
+    ...docs.map((doc) => ({
+      params: { slug: doc.slug.join('/') },
+      props: { kind: 'document', doc },
+    })),
+  ];
+}
+
+const props = Astro.props as
+  | { kind: 'navigator'; slug: string[] }
+  | { kind: 'document'; doc: (typeof docs)[number] };
+
+const isNavigator = props.kind === 'navigator';
+const navigator = isNavigator ? getNavigatorData(props.slug) : null;
+const doc = isNavigator ? null : props.doc;
+const Content = doc?.Content;
+const breadcrumbs = doc ? getTrailForDoc(doc) : [];
+---
+
+{isNavigator && navigator && (
+  <BaseLayout
+    title={navigator.title}
+    pathname="/"
+    pageMeta={{ href: `${Astro.params.slug ? `/${Astro.params.slug}/` : '/'}`, title: navigator.title, path: navigator.backLabel === 'Home' ? '' : navigator.backLabel, kind: 'navigator' }}
+  >
+    <LauncherScreen
+      title={navigator.title}
+      backLabel={navigator.backLabel}
+      backHref={navigator.backHref}
+      initialActiveIndex={navigator.items.length > 0 ? 1 : 0}
+      mode="top"
+      items={navigator.items.map((item) => ({
+        label: item.label,
+        href: item.href,
+      }))}
+  />
+</BaseLayout>
+)}
+
+{!isNavigator && doc && Content && (
+  <DocLayout
+    title={doc.title}
+    description={doc.description}
+    pathname={doc.href}
+    headings={doc.headings}
+    related={doc.related}
+    breadcrumbs={breadcrumbs}
+    pageMeta={{
+      href: doc.href,
+      title: doc.title,
+      path: breadcrumbs.slice(1, -1).map((item) => item.label).join(' › '),
+      kind: 'document',
+    }}
+  >
+    <Content />
+  </DocLayout>
+)}

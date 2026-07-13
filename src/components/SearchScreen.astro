@@ -1,0 +1,221 @@
+---
+type SearchRecord = {
+  title: string;
+  href: string;
+  path: string;
+  section: string;
+  tags: string[];
+  searchText: string;
+};
+
+const { records } = Astro.props as {
+  records: SearchRecord[];
+};
+---
+
+<main class="flex min-h-[calc(100vh-3.5rem)] justify-center px-5 py-12 pt-32 sm:px-6 lg:px-8">
+  <div class="w-full max-w-[720px] font-sans text-[color:var(--text)]">
+    <h1 class="text-[1.45rem] font-medium tracking-[-0.02em]">Search</h1>
+
+    <div class="mt-10 flex items-center gap-3 border-b border-[color:var(--line)] pb-3">
+      <span class="text-[1.18rem] leading-none text-[color:var(--faint)]">&gt;</span>
+      <input
+        class="w-full bg-transparent text-[1.18rem] leading-[1.6] text-[color:var(--text)] outline-none placeholder:text-[color:var(--faint)]"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        autofocus
+        aria-label="Search"
+        data-search-input
+      />
+    </div>
+
+    <section class="mt-8" data-search-results></section>
+  </div>
+</main>
+
+<script is:inline define:vars={{ records }}>
+  const input = document.querySelector('[data-search-input]');
+  const resultsRoot = document.querySelector('[data-search-results]');
+  const dataset = records.map((record) => ({
+    ...record,
+    titleLower: record.title.toLowerCase(),
+    pathLower: record.path.toLowerCase(),
+    sectionLower: record.section.toLowerCase(),
+    tagsLower: record.tags.join(' ').toLowerCase(),
+  }));
+
+  const sections = ['Concepts', 'Courses', 'Projects', 'Papers', 'Cheat Sheets', 'Templates'];
+  const state = {
+    query: '',
+    selectedIndex: 0,
+    results: [],
+  };
+
+  const normalize = (value) => value.trim().toLowerCase().replace(/\s+/g, ' ');
+
+  const scoreRecord = (record, terms) => {
+    if (terms.length === 0) return 0;
+
+    let score = 0;
+
+    for (const term of terms) {
+      if (!record.searchText.includes(term)) return -1;
+
+      if (record.titleLower.startsWith(term)) score += 120;
+      else if (record.titleLower.includes(term)) score += 80;
+
+      if (record.pathLower.startsWith(term)) score += 50;
+      else if (record.pathLower.includes(term)) score += 30;
+
+      if (record.sectionLower.includes(term)) score += 20;
+      if (record.tagsLower.includes(term)) score += 25;
+      if (record.searchText.includes(term)) score += 8;
+    }
+
+    return score;
+  };
+
+  const search = (query) => {
+    const normalized = normalize(query);
+    if (!normalized) {
+      return dataset
+        .map((record, index) => ({ ...record, score: 0, index }))
+        .sort((a, b) => sections.indexOf(a.section) - sections.indexOf(b.section) || a.path.localeCompare(b.path));
+    }
+
+    const terms = normalized.split(' ').filter(Boolean);
+
+    return dataset
+      .map((record, index) => ({ ...record, score: scoreRecord(record, terms), index }))
+      .filter((record) => record.score >= 0)
+      .sort((a, b) => {
+        if (a.score !== b.score) return b.score - a.score;
+        if (a.section !== b.section) return sections.indexOf(a.section) - sections.indexOf(b.section);
+        return a.path.localeCompare(b.path);
+      });
+  };
+
+  const updateUrl = (query) => {
+    const url = new URL(window.location.href);
+    if (query) {
+      url.searchParams.set('q', query);
+    } else {
+      url.searchParams.delete('q');
+    }
+    history.replaceState({}, '', `${url.pathname}${url.search}`);
+  };
+
+  const render = () => {
+    state.results = search(state.query);
+
+    if (state.results.length === 0) {
+      resultsRoot.innerHTML = '';
+      return;
+    }
+
+    state.selectedIndex = Math.max(0, Math.min(state.selectedIndex, state.results.length - 1));
+
+    const groups = [];
+    let currentSection = '';
+
+    state.results.forEach((record, displayIndex) => {
+      if (record.section !== currentSection) {
+        currentSection = record.section;
+        groups.push(`<div class="mt-6 text-[0.86rem] font-medium text-[color:var(--faint)]">${currentSection}</div>`);
+      }
+
+      const active = displayIndex === state.selectedIndex;
+      groups.push(`
+        <a
+          href="${record.href}"
+          class="search-result mt-2 flex items-start gap-3 text-left outline-none"
+          data-result-index="${displayIndex}"
+          data-nav-link="true"
+        >
+          <span class="search-arrow mt-[0.1rem] w-[1ch] shrink-0 text-[color:var(--text)]">${active ? '>' : ''}</span>
+          <span class="min-w-0">
+            <span class="${active ? 'font-semibold text-[color:var(--text)]' : 'text-[color:var(--text)]'} block text-[1.08rem] leading-[1.55]">${record.title}</span>
+            <span class="block text-[0.96rem] leading-[1.5] text-[color:var(--faint)]">${record.path}</span>
+          </span>
+        </a>
+      `);
+    });
+
+    resultsRoot.innerHTML = groups.join('');
+  };
+
+  const openSelected = () => {
+    const record = state.results[state.selectedIndex];
+    if (!record) return;
+    window.__wikiNavigate?.(record.href) ?? window.location.assign(record.href);
+  };
+
+  const applyQuery = (value) => {
+    state.query = value;
+    state.selectedIndex = 0;
+    updateUrl(value);
+    render();
+  };
+
+  const initialQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+  input.value = initialQuery;
+  applyQuery(initialQuery);
+  input.focus();
+
+  input.addEventListener('input', () => {
+    applyQuery(input.value);
+  });
+
+  input.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented) return;
+    if (document.body.dataset.readingSettingsOpen === 'true') return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      state.selectedIndex = Math.min(state.selectedIndex + 1, Math.max(state.results.length - 1, 0));
+      render();
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      state.selectedIndex = Math.max(state.selectedIndex - 1, 0);
+      render();
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      openSelected();
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      if (!window.__wikiGoBack?.()) {
+        window.location.assign('/');
+      }
+    }
+  });
+
+  resultsRoot.addEventListener('pointerdown', () => {
+    input.focus();
+  });
+
+  resultsRoot.addEventListener('mousemove', (event) => {
+    const row = event.target instanceof Element ? event.target.closest('[data-result-index]') : null;
+    if (!row) return;
+    const index = Number(row.getAttribute('data-result-index'));
+    if (Number.isNaN(index)) return;
+    if (index === state.selectedIndex) return;
+    state.selectedIndex = index;
+    render();
+  });
+
+  resultsRoot.addEventListener('click', (event) => {
+    const row = event.target instanceof Element ? event.target.closest('[data-result-index]') : null;
+    if (!row) return;
+    const index = Number(row.getAttribute('data-result-index'));
+    if (Number.isNaN(index)) return;
+    state.selectedIndex = index;
+    render();
+  });
+</script>

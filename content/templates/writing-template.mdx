@@ -1,0 +1,44 @@
+---
+title: Writing Template
+description: A template for turning notes into durable reference pages.
+order: 1
+---
+
+import Callout from '../../src/components/Callout.astro';
+import CodeBlock from '../../src/components/CodeBlock.astro';
+import Image from '../../src/components/Image.astro';
+
+## Purpose
+
+Use this template when you want a page to survive long after the course or project context is gone.
+
+<Callout type="note" title="Rule of thumb">
+  Explain the idea once, then link to the permanent concept instead of repeating it everywhere.
+</Callout>
+
+## Recommended structure
+
+1. Why it matters
+2. Core objects or definitions
+3. Example
+4. Common failure modes
+5. Further reading
+
+## Example code
+
+<CodeBlock
+  language="ts"
+  filename="state-update.ts"
+  code={`const next = A.map((row, i) =>
+  row.reduce((sum, value, j) => sum + value * x[j], 0)
+);`}
+/>
+
+## Example image
+
+<Image
+  src="/assets/linear-algebra-visual.svg"
+  alt="Example visual for a robotics wiki page"
+  caption="Keep illustrations small and functional."
+/>
+

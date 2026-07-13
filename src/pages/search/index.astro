@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SearchScreen from '../../components/SearchScreen.astro';
+import { getSearchRecords } from '../../lib/wiki';
+
+const records = getSearchRecords();
+---
+
+<BaseLayout title="Search · Robotics Wiki" pathname="/" pageMeta={{ href: '/search/', title: 'Search', path: '', kind: 'utility' }}>
+  <SearchScreen records={records} />
+</BaseLayout>

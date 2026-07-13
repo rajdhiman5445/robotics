@@ -1,0 +1,294 @@
+---
+type ReadingState = {
+  textSize: 'small' | 'medium' | 'large' | 'larger';
+  contentWidth: 'narrow' | 'normal' | 'wide';
+  lineSpacing: 'compact' | 'comfortable' | 'spacious';
+  focusMode: boolean;
+};
+
+const STORAGE_KEY = 'robotics-reading-settings-v1';
+
+const {
+  label = 'Settings',
+  variant = 'floating',
+} = Astro.props as {
+  label?: string;
+  variant?: 'floating' | 'sidebar';
+};
+
+const defaults: ReadingState = {
+  textSize: 'medium',
+  contentWidth: 'normal',
+  lineSpacing: 'comfortable',
+  focusMode: false,
+};
+---
+
+<div class:list={variant === 'floating' ? 'fixed right-4 top-4 z-40' : 'relative z-40'}>
+  <button
+    type="button"
+    class="text-[0.82rem] font-medium text-[color:var(--faint)] outline-none hover:text-[color:var(--text)]"
+    data-reading-ui="settings-toggle"
+    data-reading-settings-toggle
+    aria-expanded="false"
+    aria-controls="reading-settings-panel"
+  >
+    {label}
+  </button>
+
+  <div
+    id="reading-settings-panel"
+    hidden
+    class:list={[
+      'fixed right-4 top-14 z-50 max-h-[calc(100vh-5rem)] w-[min(92vw,22rem)] overflow-auto rounded-xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_18px_40px_rgba(0,0,0,0.28)]',
+    ]}
+    data-reading-ui="settings-panel"
+    data-reading-settings-panel
+  >
+    <div class="grid gap-4">
+      <section class="grid gap-2">
+        <div class="text-[0.75rem] text-[color:var(--faint)]">Text size</div>
+        <div class="flex flex-wrap gap-2" data-setting-group="textSize">
+          <button type="button" data-setting="textSize" data-value="small" class="quiet-link text-[0.9rem] focus:outline-none">Small</button>
+          <button type="button" data-setting="textSize" data-value="medium" class="quiet-link text-[0.9rem] focus:outline-none">Medium</button>
+          <button type="button" data-setting="textSize" data-value="large" class="quiet-link text-[0.9rem] focus:outline-none">Large</button>
+          <button type="button" data-setting="textSize" data-value="larger" class="quiet-link text-[0.9rem] focus:outline-none">Larger</button>
+        </div>
+      </section>
+
+      <section class="grid gap-2">
+        <div class="text-[0.75rem] text-[color:var(--faint)]">Content width</div>
+        <div class="flex flex-wrap gap-2" data-setting-group="contentWidth">
+          <button type="button" data-setting="contentWidth" data-value="narrow" class="quiet-link text-[0.9rem] focus:outline-none">Narrow</button>
+          <button type="button" data-setting="contentWidth" data-value="normal" class="quiet-link text-[0.9rem] focus:outline-none">Normal</button>
+          <button type="button" data-setting="contentWidth" data-value="wide" class="quiet-link text-[0.9rem] focus:outline-none">Wide</button>
+        </div>
+      </section>
+
+      <section class="grid gap-2">
+        <div class="text-[0.75rem] text-[color:var(--faint)]">Line spacing</div>
+        <div class="flex flex-wrap gap-2" data-setting-group="lineSpacing">
+          <button type="button" data-setting="lineSpacing" data-value="compact" class="quiet-link text-[0.9rem] focus:outline-none">Compact</button>
+          <button type="button" data-setting="lineSpacing" data-value="comfortable" class="quiet-link text-[0.9rem] focus:outline-none">Comfortable</button>
+          <button type="button" data-setting="lineSpacing" data-value="spacious" class="quiet-link text-[0.9rem] focus:outline-none">Spacious</button>
+        </div>
+      </section>
+
+      <section class="grid gap-2">
+        <div class="text-[0.75rem] text-[color:var(--faint)]">Focus mode</div>
+        <div class="flex flex-wrap gap-2" data-setting-group="focusMode">
+          <button type="button" data-setting="focusMode" data-value="false" class="quiet-link text-[0.9rem] focus:outline-none">Off</button>
+          <button type="button" data-setting="focusMode" data-value="true" class="quiet-link text-[0.9rem] focus:outline-none">On</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ STORAGE_KEY, defaults }}>
+  const button = document.querySelector('[data-reading-settings-toggle]');
+  const panel = document.querySelector('[data-reading-settings-panel]');
+  const root = document.documentElement;
+  const body = document.body;
+
+  const scaleMap = {
+    small: '0.98rem',
+    medium: '1.05rem',
+    large: '1.12rem',
+    larger: '1.2rem',
+  };
+
+  const widthMap = {
+    narrow: '64ch',
+    normal: '76ch',
+    wide: '88ch',
+  };
+
+  const lineMap = {
+    compact: '1.75',
+    comfortable: '1.9',
+    spacious: '2.12',
+  };
+
+  const readState = () => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { ...defaults };
+      const parsed = JSON.parse(raw);
+      return {
+        textSize: ['small', 'medium', 'large', 'larger'].includes(parsed.textSize)
+          ? parsed.textSize
+          : defaults.textSize,
+        contentWidth: ['narrow', 'normal', 'wide'].includes(parsed.contentWidth)
+          ? parsed.contentWidth
+          : defaults.contentWidth,
+        lineSpacing: ['compact', 'comfortable', 'spacious'].includes(parsed.lineSpacing)
+          ? parsed.lineSpacing
+          : defaults.lineSpacing,
+        focusMode: Boolean(parsed.focusMode),
+      };
+    } catch {
+      return { ...defaults };
+    }
+  };
+
+  let state = readState();
+  let open = false;
+
+  const setVar = (name, value) => {
+    root.style.setProperty(name, value);
+  };
+
+  const applyReadingVars = () => {
+    setVar('--body-font-size', scaleMap[state.textSize]);
+    setVar('--body-line-height', lineMap[state.lineSpacing]);
+    setVar('--content-width', state.focusMode ? 'min(92ch, calc(100vw - 2rem))' : widthMap[state.contentWidth]);
+    body.dataset.readingFocusMode = state.focusMode ? 'true' : 'false';
+  };
+
+  const persist = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Ignore persistence failures.
+    }
+  };
+
+  const syncToggleLabels = () => {
+    document.querySelectorAll('[data-setting]').forEach((item) => {
+      const group = item.getAttribute('data-setting');
+      const value = item.getAttribute('data-value');
+      const active =
+        (group === 'textSize' && value === state.textSize) ||
+        (group === 'contentWidth' && value === state.contentWidth) ||
+        (group === 'lineSpacing' && value === state.lineSpacing) ||
+        (group === 'focusMode' && String(state.focusMode) === value);
+
+      item.setAttribute('aria-pressed', String(active));
+      item.classList.toggle('text-[color:var(--text)]', active);
+      item.classList.toggle('font-medium', active);
+      item.classList.toggle('quiet-link', !active);
+    });
+  };
+
+  const render = () => {
+    if (button) button.setAttribute('aria-expanded', String(open));
+    if (panel) panel.hidden = !open;
+    body.dataset.readingSettingsOpen = open ? 'true' : 'false';
+    applyReadingVars();
+    syncToggleLabels();
+    window.dispatchEvent(new CustomEvent('robotics:reading-settings-change'));
+  };
+
+  const setState = (key, value) => {
+    if (key === 'focusMode') {
+      state.focusMode = value === 'true';
+      if (state.focusMode) {
+        open = false;
+      }
+    } else {
+      state[key] = value;
+    }
+    persist();
+    render();
+  };
+
+  const togglePanel = () => {
+    open = !open;
+    render();
+    if (open) {
+      const firstButton = panel?.querySelector('[aria-pressed="true"]') || panel?.querySelector('button');
+      firstButton?.focus?.();
+    } else {
+      button?.focus?.();
+    }
+  };
+
+  const toggleFocusMode = () => {
+    state.focusMode = !state.focusMode;
+    if (state.focusMode) {
+      open = false;
+    }
+    persist();
+    render();
+  };
+
+  window.__wikiOpenReadingSettings = () => {
+    open = true;
+    render();
+    const firstButton = panel?.querySelector('[aria-pressed="true"]') || panel?.querySelector('button');
+    firstButton?.focus?.();
+    return true;
+  };
+
+  window.__wikiCloseReadingSettings = () => {
+    open = false;
+    render();
+    button?.focus?.();
+    return true;
+  };
+
+  window.__wikiToggleReadingSettings = () => togglePanel();
+  window.__wikiToggleFocusMode = () => toggleFocusMode();
+
+  button?.addEventListener('click', () => togglePanel());
+
+  panel?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const control = target.closest('[data-setting]');
+    if (!control) return;
+
+    const setting = control.getAttribute('data-setting');
+    const value = control.getAttribute('data-value');
+    if (!setting || value === null) return;
+
+    setState(setting, value);
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.altKey && event.code === 'KeyF') {
+      event.preventDefault();
+      toggleFocusMode();
+      return;
+    }
+
+    if (event.altKey && event.code === 'KeyS') {
+      event.preventDefault();
+      togglePanel();
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      if (open) {
+        event.preventDefault();
+        open = false;
+        render();
+        button?.focus?.();
+        return;
+      }
+
+      if (state.focusMode) {
+        event.preventDefault();
+        state.focusMode = false;
+        persist();
+        render();
+      }
+    }
+  });
+
+  const outsideClick = (event) => {
+    if (!open) return;
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    if (panel?.contains(target) || button?.contains(target)) return;
+    open = false;
+    render();
+  };
+
+  document.addEventListener('pointerdown', outsideClick);
+
+  state = readState();
+  render();
+</script>

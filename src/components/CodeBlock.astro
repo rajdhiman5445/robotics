@@ -1,0 +1,16 @@
+---
+const { language = 'text', filename, code } = Astro.props as {
+  language?: string;
+  filename?: string;
+  code: string;
+};
+---
+
+<figure class="my-8">
+  {filename && (
+    <div class="mb-3 text-[0.95rem] font-medium tracking-[-0.01em] text-[color:var(--faint)]">
+      {filename}
+    </div>
+  )}
+  <pre class="overflow-x-auto bg-[color:var(--bg-soft)] px-4 py-3 text-[0.9rem] leading-7 text-[color:var(--text)]"><code class={`language-${language}`}>{code}</code></pre>
+</figure>

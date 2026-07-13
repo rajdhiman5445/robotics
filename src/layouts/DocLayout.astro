@@ -1,0 +1,132 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedConcepts from '../components/RelatedConcepts.astro';
+import ReadingSettings from '../components/ReadingSettings.astro';
+import { allSections, getDocByHref } from '../lib/wiki';
+
+const {
+  title,
+  description,
+  pathname,
+  headings = [],
+  related = [],
+  breadcrumbs = [],
+  pageMeta,
+} = Astro.props as {
+  title: string;
+  description?: string;
+  pathname: string;
+  headings?: { depth: number; slug: string; text: string }[];
+  related?: string[];
+  breadcrumbs?: Array<{ label: string; href?: string }>;
+  pageMeta?: {
+    href: string;
+    title: string;
+    path?: string;
+    kind?: 'document' | 'navigator' | 'utility';
+  };
+};
+
+const relatedItems = related
+  .map((href) => getDocByHref(href) ?? undefined)
+  .filter(Boolean)
+  .map((doc) => ({ label: doc!.title, href: doc!.href }));
+---
+
+<BaseLayout
+  title={`${title} · Robotics Wiki`}
+  description={description}
+  pathname={pathname}
+  showHeader={false}
+  pageMeta={pageMeta}
+>
+  <div
+    class="mx-auto grid max-w-[1600px] gap-0 lg:grid-cols-[220px_minmax(0,1fr)_220px]"
+    data-reading-ui="doc-grid"
+  >
+    <aside data-reading-ui="sidebar-left" class="hidden min-h-[calc(100vh-3.5rem)] lg:block">
+      <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-auto px-5 py-10">
+        <nav class="mt-1 grid gap-1 text-[1rem] leading-7">
+          {allSections
+            .filter((entry) => entry.visible || pathname.startsWith(`/${entry.key}/`))
+            .map((entry) => (
+              <a
+                href={`/${entry.key}/`}
+                class:list={[
+                  'block py-1 pr-2',
+                  pathname.startsWith(`/${entry.key}/`)
+                    ? 'text-[color:var(--text)]'
+                    : 'quiet-link',
+                ]}
+              >
+                <span class="block">{entry.label}</span>
+              </a>
+            ))}
+        </nav>
+      </div>
+    </aside>
+
+    <main class="min-w-0">
+      <div class="px-4 pt-12 pb-10 sm:px-6 lg:px-12 lg:pt-14 lg:pb-12">
+        <article
+          class="mx-auto max-w-[var(--content-width)]"
+          style="font-size: var(--body-font-size); line-height: var(--body-line-height);"
+          data-reading-ui="doc-article"
+        >
+          <div data-reading-ui="breadcrumbs">
+            <Breadcrumbs items={breadcrumbs.length > 0 ? breadcrumbs : [{ label: 'Home', href: '/' }, { label: title }]} />
+          </div>
+          <header class="mb-12" data-reading-ui="doc-header">
+            <h1 class="chapter-title mt-4">{title}</h1>
+            {description && <p class="chapter-summary">{description}</p>}
+          </header>
+          <div class="doc-content">
+            <slot />
+            <RelatedConcepts items={relatedItems} />
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <aside data-reading-ui="sidebar-right" class="hidden xl:block">
+      <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-auto px-5 py-10">
+        <ReadingSettings label="Display" variant="sidebar" />
+        {headings.filter((heading) => heading.depth <= 3).length > 0 ? (
+          <nav class="mt-4 grid gap-1 text-[0.95rem] leading-7" data-reading-ui="toc">
+            {headings
+              .filter((heading) => heading.depth <= 3)
+              .map((heading) => (
+                <a
+                  class:list={[
+                    'block pr-2',
+                    heading.depth === 3 ? 'pl-4' : '',
+                    heading.depth === 2 ? 'font-medium text-[color:var(--text)]' : 'quiet-link',
+                  ]}
+                  href={`#${heading.slug}`}
+                >
+                  {heading.text}
+                </a>
+              ))}
+          </nav>
+        ) : null}
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  window.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented) return;
+    if (event.key !== 'Escape' && event.key !== 'Backspace') return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+    if (window.__wikiGoBack?.()) {
+      event.preventDefault();
+      return;
+    }
+
+    event.preventDefault();
+    window.location.assign('/');
+  });
+</script>

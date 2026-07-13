@@ -1,0 +1,1621 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Finding the best solution under constraints or cost functions."><link rel="icon" href="/favicon.svg"><title>Optimization · Robotics Wiki</title><link rel="stylesheet" href="/_astro/_slug_.elZEQrFE.css"></head> <body data-wiki-page-href="/concepts/optimization/" data-wiki-page-title="Optimization" data-wiki-page-path="Concepts" data-wiki-page-kind="document"> <script>
+      const STACK_KEY = 'robotics-nav-stack';
+      const RECENTS_KEY = 'robotics-recent-pages-v1';
+      const MAX_STACK = 30;
+      const MAX_RECENTS = 5;
+
+      const readStack = () => {
+        try {
+          const raw = sessionStorage.getItem(STACK_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed.filter((entry) => typeof entry === 'string') : [];
+        } catch {
+          return [];
+        }
+      };
+
+      const writeStack = (stack) => {
+        try {
+          sessionStorage.setItem(STACK_KEY, JSON.stringify(stack.slice(-MAX_STACK)));
+        } catch {
+          // Ignore storage failures.
+        }
+      };
+
+      const readRecents = () => {
+        try {
+          const raw = localStorage.getItem(RECENTS_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed)
+            ? parsed
+                .filter((entry) => entry && typeof entry === 'object' && typeof entry.href === 'string')
+                .map((entry) => ({
+                  href: entry.href,
+                  title: typeof entry.title === 'string' ? entry.title : typeof entry.label === 'string' ? entry.label : 'Page',
+                  path: typeof entry.path === 'string' ? entry.path : '',
+                  kind:
+                    entry.kind === 'navigator' || entry.kind === 'utility'
+                      ? entry.kind
+                      : 'document',
+                  timestamp:
+                    typeof entry.timestamp === 'number' ? entry.timestamp : Date.now(),
+                }))
+            : [];
+        } catch {
+          return [];
+        }
+      };
+
+      const writeRecents = (items) => {
+        try {
+          localStorage.setItem(RECENTS_KEY, JSON.stringify(items.slice(0, MAX_RECENTS)));
+        } catch {
+          // Ignore storage failures.
+        }
+      };
+
+      const currentHref = () => `${window.location.pathname}${window.location.search}`;
+      const normalizeHref = (href) => {
+        if (!href) return '';
+        try {
+          const url = new URL(href, window.location.origin);
+          return `${url.pathname}${url.search}`;
+        } catch {
+          return href;
+        }
+      };
+
+      const pushCurrent = () => {
+        const stack = readStack();
+        const current = currentHref();
+        if (stack[stack.length - 1] !== current) {
+          stack.push(current);
+          writeStack(stack);
+        }
+      };
+
+      const recordRecent = () => {
+        const href = normalizeHref(document.body.dataset.wikiPageHref || currentHref());
+        const title = document.body.dataset.wikiPageTitle || document.title.replace(/\s*·\s*Robotics Wiki\s*$/, '').trim();
+        const path = document.body.dataset.wikiPagePath || '';
+        const kind = document.body.dataset.wikiPageKind || 'document';
+
+        if (!href || kind !== 'document') return;
+
+        const items = readRecents().filter((item) => item.href !== href);
+        items.unshift({
+          href,
+          title: title || 'Page',
+          path,
+          kind,
+          timestamp: Date.now(),
+        });
+        writeRecents(items);
+        window.__wikiRecentPages = items;
+      };
+
+      window.__wikiNavigate = (href) => {
+        if (!href) return;
+        if (href === currentHref()) return;
+        pushCurrent();
+        window.location.assign(href);
+        return true;
+      };
+
+      window.__wikiGoBack = () => {
+        const stack = readStack();
+        const target = stack.pop();
+        if (!target) return false;
+        writeStack(stack);
+        window.location.assign(target);
+        return true;
+      };
+
+      window.__wikiGetRecentPages = () => readRecents();
+
+      const isTypingTarget = (target) => {
+        if (!(target instanceof HTMLElement)) return false;
+        if (target.isContentEditable) return true;
+        const tag = target.tagName;
+        return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+      };
+
+      window.addEventListener(
+        'click',
+        (event) => {
+          if (event.defaultPrevented) return;
+          if (event.button !== 0) return;
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+          const target = event.target;
+          const anchor = target instanceof Element ? target.closest('a[href]') : null;
+          if (!anchor) return;
+          if (anchor.getAttribute('target') === '_blank') return;
+
+          const href = anchor.getAttribute('href');
+          if (!href || href.startsWith('#')) return;
+
+          const url = new URL(href, window.location.origin);
+          if (url.origin !== window.location.origin) return;
+          if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return;
+
+          event.preventDefault();
+          window.__wikiNavigate(`${url.pathname}${url.search}`);
+        },
+        true,
+      );
+
+      window.addEventListener('keydown', (event) => {
+        if (event.defaultPrevented) return;
+        if (event.ctrlKey && event.code === 'KeyK') {
+          event.preventDefault();
+          window.__wikiToggleCommandPalette?.();
+          return;
+        }
+
+        if (event.metaKey || event.ctrlKey) return;
+
+        const target = event.target;
+        const typing = isTypingTarget(target);
+
+        const slashShortcut = event.key === '/' && !event.altKey;
+        const altSlashShortcut = event.altKey && event.code === 'Slash';
+
+        if (!slashShortcut && !altSlashShortcut) return;
+        if (typing && !altSlashShortcut) return;
+
+        event.preventDefault();
+        window.__wikiNavigate('/search/');
+      });
+
+      window.addEventListener('DOMContentLoaded', () => {
+        recordRecent();
+      });
+    </script>   <div class="mx-auto grid max-w-[1600px] gap-0 lg:grid-cols-[220px_minmax(0,1fr)_220px]" data-reading-ui="doc-grid"> <aside data-reading-ui="sidebar-left" class="hidden min-h-[calc(100vh-3.5rem)] lg:block"> <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-auto px-5 py-10"> <nav class="mt-1 grid gap-1 text-[1rem] leading-7"> <a href="/concepts/" class="block py-1 pr-2 text-[color:var(--text)]"> <span class="block">Concepts</span> </a><a href="/courses/" class="block py-1 pr-2 quiet-link"> <span class="block">Courses</span> </a><a href="/projects/" class="block py-1 pr-2 quiet-link"> <span class="block">Projects</span> </a><a href="/papers/" class="block py-1 pr-2 quiet-link"> <span class="block">Papers</span> </a><a href="/cheatsheets/" class="block py-1 pr-2 quiet-link"> <span class="block">Cheat Sheets</span> </a> </nav> </div> </aside> <main class="min-w-0"> <div class="px-4 pt-12 pb-10 sm:px-6 lg:px-12 lg:pt-14 lg:pb-12"> <article class="mx-auto max-w-[var(--content-width)]" style="font-size: var(--body-font-size); line-height: var(--body-line-height);" data-reading-ui="doc-article"> <div data-reading-ui="breadcrumbs"> <nav aria-label="Breadcrumb" class="mb-6"> <ol class="flex flex-wrap items-center gap-2 text-[0.82rem] text-[color:var(--faint)]"> <li class="flex items-center gap-2">  <a class="transition hover:text-[color:var(--text)]" href="/"> Home </a> </li><li class="flex items-center gap-2"> <span aria-hidden="true" class="text-[color:var(--faint)]">/</span> <a class="transition hover:text-[color:var(--text)]" href="/concepts/"> Concepts </a> </li><li class="flex items-center gap-2"> <span aria-hidden="true" class="text-[color:var(--faint)]">/</span> <a class="transition hover:text-[color:var(--text)]" href="/concepts/optimization/"> Optimization </a> </li> </ol> </nav> </div> <header class="mb-12" data-reading-ui="doc-header"> <h1 class="chapter-title mt-4">Optimization</h1> <p class="chapter-summary">Finding the best solution under constraints or cost functions.</p> </header> <div class="doc-content"> <h2 id="core-idea">Core idea</h2>
+<p>Optimization formalizes the search for the minimum or maximum of an objective.</p>
+<h2 id="in-robotics">In robotics</h2>
+<ul>
+<li>control tuning</li>
+<li>trajectory generation</li>
+<li>calibration</li>
+</ul>  </div> </article> </div> </main> <aside data-reading-ui="sidebar-right" class="hidden xl:block"> <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-auto px-5 py-10"> <div class="relative z-40"> <button type="button" class="text-[0.82rem] font-medium text-[color:var(--faint)] outline-none hover:text-[color:var(--text)]" data-reading-ui="settings-toggle" data-reading-settings-toggle aria-expanded="false" aria-controls="reading-settings-panel"> Display </button> <div id="reading-settings-panel" hidden class="fixed right-4 top-14 z-50 max-h-[calc(100vh-5rem)] w-[min(92vw,22rem)] overflow-auto rounded-xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_18px_40px_rgba(0,0,0,0.28)]" data-reading-ui="settings-panel" data-reading-settings-panel> <div class="grid gap-4"> <section class="grid gap-2"> <div class="text-[0.75rem] text-[color:var(--faint)]">Text size</div> <div class="flex flex-wrap gap-2" data-setting-group="textSize"> <button type="button" data-setting="textSize" data-value="small" class="quiet-link text-[0.9rem] focus:outline-none">Small</button> <button type="button" data-setting="textSize" data-value="medium" class="quiet-link text-[0.9rem] focus:outline-none">Medium</button> <button type="button" data-setting="textSize" data-value="large" class="quiet-link text-[0.9rem] focus:outline-none">Large</button> <button type="button" data-setting="textSize" data-value="larger" class="quiet-link text-[0.9rem] focus:outline-none">Larger</button> </div> </section> <section class="grid gap-2"> <div class="text-[0.75rem] text-[color:var(--faint)]">Content width</div> <div class="flex flex-wrap gap-2" data-setting-group="contentWidth"> <button type="button" data-setting="contentWidth" data-value="narrow" class="quiet-link text-[0.9rem] focus:outline-none">Narrow</button> <button type="button" data-setting="contentWidth" data-value="normal" class="quiet-link text-[0.9rem] focus:outline-none">Normal</button> <button type="button" data-setting="contentWidth" data-value="wide" class="quiet-link text-[0.9rem] focus:outline-none">Wide</button> </div> </section> <section class="grid gap-2"> <div class="text-[0.75rem] text-[color:var(--faint)]">Line spacing</div> <div class="flex flex-wrap gap-2" data-setting-group="lineSpacing"> <button type="button" data-setting="lineSpacing" data-value="compact" class="quiet-link text-[0.9rem] focus:outline-none">Compact</button> <button type="button" data-setting="lineSpacing" data-value="comfortable" class="quiet-link text-[0.9rem] focus:outline-none">Comfortable</button> <button type="button" data-setting="lineSpacing" data-value="spacious" class="quiet-link text-[0.9rem] focus:outline-none">Spacious</button> </div> </section> <section class="grid gap-2"> <div class="text-[0.75rem] text-[color:var(--faint)]">Focus mode</div> <div class="flex flex-wrap gap-2" data-setting-group="focusMode"> <button type="button" data-setting="focusMode" data-value="false" class="quiet-link text-[0.9rem] focus:outline-none">Off</button> <button type="button" data-setting="focusMode" data-value="true" class="quiet-link text-[0.9rem] focus:outline-none">On</button> </div> </section> </div> </div> </div> <script>(function(){const STORAGE_KEY = "robotics-reading-settings-v1";
+const defaults = {"textSize":"medium","contentWidth":"normal","lineSpacing":"comfortable","focusMode":false};
+
+  const button = document.querySelector('[data-reading-settings-toggle]');
+  const panel = document.querySelector('[data-reading-settings-panel]');
+  const root = document.documentElement;
+  const body = document.body;
+
+  const scaleMap = {
+    small: '0.98rem',
+    medium: '1.05rem',
+    large: '1.12rem',
+    larger: '1.2rem',
+  };
+
+  const widthMap = {
+    narrow: '64ch',
+    normal: '76ch',
+    wide: '88ch',
+  };
+
+  const lineMap = {
+    compact: '1.75',
+    comfortable: '1.9',
+    spacious: '2.12',
+  };
+
+  const readState = () => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { ...defaults };
+      const parsed = JSON.parse(raw);
+      return {
+        textSize: ['small', 'medium', 'large', 'larger'].includes(parsed.textSize)
+          ? parsed.textSize
+          : defaults.textSize,
+        contentWidth: ['narrow', 'normal', 'wide'].includes(parsed.contentWidth)
+          ? parsed.contentWidth
+          : defaults.contentWidth,
+        lineSpacing: ['compact', 'comfortable', 'spacious'].includes(parsed.lineSpacing)
+          ? parsed.lineSpacing
+          : defaults.lineSpacing,
+        focusMode: Boolean(parsed.focusMode),
+      };
+    } catch {
+      return { ...defaults };
+    }
+  };
+
+  let state = readState();
+  let open = false;
+
+  const setVar = (name, value) => {
+    root.style.setProperty(name, value);
+  };
+
+  const applyReadingVars = () => {
+    setVar('--body-font-size', scaleMap[state.textSize]);
+    setVar('--body-line-height', lineMap[state.lineSpacing]);
+    setVar('--content-width', state.focusMode ? 'min(92ch, calc(100vw - 2rem))' : widthMap[state.contentWidth]);
+    body.dataset.readingFocusMode = state.focusMode ? 'true' : 'false';
+  };
+
+  const persist = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Ignore persistence failures.
+    }
+  };
+
+  const syncToggleLabels = () => {
+    document.querySelectorAll('[data-setting]').forEach((item) => {
+      const group = item.getAttribute('data-setting');
+      const value = item.getAttribute('data-value');
+      const active =
+        (group === 'textSize' && value === state.textSize) ||
+        (group === 'contentWidth' && value === state.contentWidth) ||
+        (group === 'lineSpacing' && value === state.lineSpacing) ||
+        (group === 'focusMode' && String(state.focusMode) === value);
+
+      item.setAttribute('aria-pressed', String(active));
+      item.classList.toggle('text-[color:var(--text)]', active);
+      item.classList.toggle('font-medium', active);
+      item.classList.toggle('quiet-link', !active);
+    });
+  };
+
+  const render = () => {
+    if (button) button.setAttribute('aria-expanded', String(open));
+    if (panel) panel.hidden = !open;
+    body.dataset.readingSettingsOpen = open ? 'true' : 'false';
+    applyReadingVars();
+    syncToggleLabels();
+    window.dispatchEvent(new CustomEvent('robotics:reading-settings-change'));
+  };
+
+  const setState = (key, value) => {
+    if (key === 'focusMode') {
+      state.focusMode = value === 'true';
+      if (state.focusMode) {
+        open = false;
+      }
+    } else {
+      state[key] = value;
+    }
+    persist();
+    render();
+  };
+
+  const togglePanel = () => {
+    open = !open;
+    render();
+    if (open) {
+      const firstButton = panel?.querySelector('[aria-pressed="true"]') || panel?.querySelector('button');
+      firstButton?.focus?.();
+    } else {
+      button?.focus?.();
+    }
+  };
+
+  const toggleFocusMode = () => {
+    state.focusMode = !state.focusMode;
+    if (state.focusMode) {
+      open = false;
+    }
+    persist();
+    render();
+  };
+
+  window.__wikiOpenReadingSettings = () => {
+    open = true;
+    render();
+    const firstButton = panel?.querySelector('[aria-pressed="true"]') || panel?.querySelector('button');
+    firstButton?.focus?.();
+    return true;
+  };
+
+  window.__wikiCloseReadingSettings = () => {
+    open = false;
+    render();
+    button?.focus?.();
+    return true;
+  };
+
+  window.__wikiToggleReadingSettings = () => togglePanel();
+  window.__wikiToggleFocusMode = () => toggleFocusMode();
+
+  button?.addEventListener('click', () => togglePanel());
+
+  panel?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const control = target.closest('[data-setting]');
+    if (!control) return;
+
+    const setting = control.getAttribute('data-setting');
+    const value = control.getAttribute('data-value');
+    if (!setting || value === null) return;
+
+    setState(setting, value);
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.altKey && event.code === 'KeyF') {
+      event.preventDefault();
+      toggleFocusMode();
+      return;
+    }
+
+    if (event.altKey && event.code === 'KeyS') {
+      event.preventDefault();
+      togglePanel();
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      if (open) {
+        event.preventDefault();
+        open = false;
+        render();
+        button?.focus?.();
+        return;
+      }
+
+      if (state.focusMode) {
+        event.preventDefault();
+        state.focusMode = false;
+        persist();
+        render();
+      }
+    }
+  });
+
+  const outsideClick = (event) => {
+    if (!open) return;
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    if (panel?.contains(target) || button?.contains(target)) return;
+    open = false;
+    render();
+  };
+
+  document.addEventListener('pointerdown', outsideClick);
+
+  state = readState();
+  render();
+})();</script> <nav class="mt-4 grid gap-1 text-[0.95rem] leading-7" data-reading-ui="toc"> <a class="block pr-2 font-medium text-[color:var(--text)]" href="#core-idea"> Core idea </a><a class="block pr-2 font-medium text-[color:var(--text)]" href="#in-robotics"> In robotics </a> </nav> </div> </aside> </div>  <div data-command-palette-root class="fixed inset-0 z-[70] pointer-events-none" aria-hidden="true"> <button type="button" class="absolute inset-0 bg-black/55 opacity-0 transition-opacity duration-150 ease-out" data-command-palette-overlay aria-label="Close command palette" tabindex="-1"></button> <div class="absolute left-1/2 top-1/2 w-[min(92vw,30rem)] -translate-x-1/2 -translate-y-1/2 opacity-0 transition-[opacity,transform] duration-150 ease-out" style="transform: translate(-50%, -50%) scale(0.99);" data-command-palette-panel> <div class="overflow-hidden rounded-2xl bg-[color:var(--bg-elevated)] shadow-[0_24px_80px_rgba(0,0,0,0.36)]"> <div class="border-b border-white/5 px-4 py-3"> <div class="text-[0.92rem] font-medium tracking-[-0.01em] text-[color:var(--text)]">
+Command Palette
+</div> </div> <div class="grid gap-3 px-4 py-3"> <section class="grid gap-1" data-command-section="navigation"> <div class="text-[0.68rem] text-[color:var(--faint)]">Navigate</div> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="navigate" data-command-href="/"> Home </button><button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="navigate" data-command-href="/concepts/"> Concepts </button><button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="navigate" data-command-href="/courses/"> Courses </button><button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="navigate" data-command-href="/projects/"> Projects </button><button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="navigate" data-command-href="/papers/"> Papers </button><button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="navigate" data-command-href="/cheatsheets/"> Cheat Sheets </button> </section> <section class="grid gap-1" data-command-section="actions"> <div class="text-[0.68rem] text-[color:var(--faint)]">Utilities</div> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="start-focus">
+Start Focus Session
+</button> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="pause-timer">
+Pause Timer
+</button> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="resume-timer">
+Resume Timer
+</button> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="end-session">
+End Session
+</button> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="pomodoro-settings">
+Pomodoro Settings
+</button> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="toggle-focus">
+Toggle Focus Mode
+</button> <button type="button" class="w-full rounded-lg px-3 py-1.5 text-left text-[0.96rem] leading-6 text-[color:var(--text)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none" data-command-item="true" data-command-kind="action" data-command-action="reader-settings">
+Reader Settings
+</button> </section> <section class="grid gap-1" data-command-section="recent"> <div class="text-[0.72rem] text-[color:var(--faint)]">Recent</div> <div class="grid gap-1" data-command-recents></div> </section> </div> </div> </div> </div> <script>
+  const root = document.querySelector('[data-command-palette-root]');
+  const overlay = root?.querySelector('[data-command-palette-overlay]');
+  const panel = root?.querySelector('[data-command-palette-panel]');
+  const recentSection = root?.querySelector('[data-command-section="recent"]');
+  const recentContainer = root?.querySelector('[data-command-recents]');
+  const actionsSection = root?.querySelector('[data-command-section="actions"]');
+  const STORAGE_KEY = 'robotics-recent-pages-v1';
+  const startFocusButton = root?.querySelector('[data-command-action="start-focus"]');
+  const pauseTimerButton = root?.querySelector('[data-command-action="pause-timer"]');
+  const resumeTimerButton = root?.querySelector('[data-command-action="resume-timer"]');
+  const endSessionButton = root?.querySelector('[data-command-action="end-session"]');
+  const pomodoroSettingsButton = root?.querySelector('[data-command-action="pomodoro-settings"]');
+  const toggleFocusButton = root?.querySelector('[data-command-action="toggle-focus"]');
+  const readerSettingsButton = root?.querySelector('[data-command-action="reader-settings"]');
+
+  if (
+    !root ||
+    !overlay ||
+    !panel ||
+    !recentSection ||
+    !recentContainer ||
+    !actionsSection ||
+    !startFocusButton ||
+    !pauseTimerButton ||
+    !resumeTimerButton ||
+    !endSessionButton ||
+    !pomodoroSettingsButton ||
+    !toggleFocusButton ||
+    !readerSettingsButton
+  ) {
+    // Nothing to mount.
+  } else {
+    const rootElement = /** @type {HTMLElement} */ (root);
+    const overlayElement = /** @type {HTMLElement} */ (overlay);
+    const panelElement = /** @type {HTMLElement} */ (panel);
+    const recentSectionElement = /** @type {HTMLElement} */ (recentSection);
+    const recentContainerElement = /** @type {HTMLElement} */ (recentContainer);
+    const actionsSectionElement = /** @type {HTMLElement} */ (actionsSection);
+    const startFocusElement = /** @type {HTMLElement} */ (startFocusButton);
+    const pauseTimerElement = /** @type {HTMLElement} */ (pauseTimerButton);
+    const resumeTimerElement = /** @type {HTMLElement} */ (resumeTimerButton);
+    const endSessionElement = /** @type {HTMLElement} */ (endSessionButton);
+    const pomodoroSettingsElement = /** @type {HTMLElement} */ (pomodoroSettingsButton);
+    const toggleFocusElement = /** @type {HTMLElement} */ (toggleFocusButton);
+    const readerSettingsElement = /** @type {HTMLElement} */ (readerSettingsButton);
+    const body = document.body;
+
+    let selectedIndex = 0;
+    let open = false;
+    let lastFocused = null;
+
+    const isReadingPage = () => Boolean(document.querySelector('[data-reading-ui="doc-grid"]'));
+    const getPomodoroSnapshot = () =>
+      window.__wikiPomodoroSnapshot?.() ?? {
+        status: 'idle',
+        phase: null,
+        dialogKind: null,
+        remainingMs: null,
+        canStart: true,
+        canPause: false,
+        canResume: false,
+        canEnd: false,
+      };
+
+    const readRecents = () => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed)
+          ? parsed
+              .filter((item) => item && typeof item === 'object' && typeof item.href === 'string')
+              .map((item) => ({
+                href: item.href,
+                title: typeof item.title === 'string' ? item.title : typeof item.label === 'string' ? item.label : 'Page',
+                path: typeof item.path === 'string' ? item.path : '',
+                kind: item.kind === 'navigator' || item.kind === 'utility' ? item.kind : 'document',
+                timestamp: typeof item.timestamp === 'number' ? item.timestamp : Date.now(),
+              }))
+          : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const normalizeHref = (href) => {
+      if (!href) return '';
+      try {
+        const url = new URL(href, window.location.origin);
+        return `${url.pathname}${url.search}`;
+      } catch {
+        return href;
+      }
+    };
+
+    const currentHref = () => normalizeHref(`${window.location.pathname}${window.location.search}`);
+
+    const formatRelativeTime = (timestamp) => {
+      const diff = Math.max(0, Date.now() - timestamp);
+      const minute = 60 * 1000;
+      const hour = 60 * minute;
+      const day = 24 * hour;
+
+      if (diff < minute) return 'Just now';
+      if (diff < 45 * minute) return `${Math.round(diff / minute)} min ago`;
+      if (diff < 90 * minute) return '1 hr ago';
+      if (diff < 24 * hour) return `${Math.round(diff / hour)} hr ago`;
+      if (diff < 48 * hour) return 'Yesterday';
+      if (diff < 7 * day) return `${Math.round(diff / day)} days ago`;
+
+      return new Intl.DateTimeFormat(undefined, {
+        month: 'short',
+        day: 'numeric',
+      }).format(timestamp);
+    };
+
+    const createRecentButton = (item) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className =
+        'flex w-full items-start justify-between gap-4 rounded-lg px-3 py-2 text-left outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none focus-visible:outline-none';
+      button.dataset.commandItem = 'true';
+      button.dataset.commandKind = 'navigate';
+      button.dataset.commandHref = item.href;
+
+      const content = document.createElement('div');
+      content.className = 'min-w-0 flex-1';
+
+      const title = document.createElement('div');
+      title.className = 'truncate text-[0.96rem] leading-6 text-[color:var(--text)]';
+      title.textContent = item.title;
+
+      const path = document.createElement('div');
+      path.className = 'mt-0.5 truncate text-[0.75rem] leading-5 text-[color:var(--muted)]';
+      path.textContent = item.path || '';
+      if (!item.path) {
+        path.hidden = true;
+      }
+
+      const time = document.createElement('div');
+      time.className = 'shrink-0 pt-0.5 text-[0.7rem] leading-5 text-[color:var(--faint)]';
+      time.textContent = formatRelativeTime(item.timestamp);
+
+      content.append(title, path);
+      button.append(content, time);
+      return button;
+    };
+
+    const visibleItems = () =>
+      Array.from(rootElement.querySelectorAll('[data-command-item="true"]')).filter((item) => {
+        if (!(item instanceof HTMLElement)) return false;
+        if (item.closest('[hidden]')) return false;
+        return item.offsetParent !== null;
+      });
+
+    const updateItemStyles = () => {
+      const items = visibleItems();
+      items.forEach((item, index) => {
+        const active = index === selectedIndex;
+        item.dataset.commandSelected = active ? 'true' : 'false';
+        item.style.backgroundColor = active ? 'rgba(255, 255, 255, 0.05)' : 'transparent';
+        item.style.color = active ? 'var(--text)' : 'var(--muted)';
+        item.style.fontWeight = active ? '600' : '400';
+        item.setAttribute('aria-selected', String(active));
+      });
+
+      const active = items[selectedIndex];
+      active?.focus?.();
+    };
+
+    const rebuildRecentItems = () => {
+      recentContainerElement.replaceChildren();
+      const recents = readRecents().filter(
+        (item) => item.kind === 'document' && normalizeHref(item.href) !== currentHref(),
+      );
+
+      if (!recents.length) {
+        recentSectionElement.hidden = true;
+        return;
+      }
+
+      recentSectionElement.hidden = false;
+
+      for (const item of recents.slice(0, 5)) {
+        recentContainerElement.appendChild(createRecentButton(item));
+      }
+    };
+
+    const syncUtilities = () => {
+      const snapshot = getPomodoroSnapshot();
+      const readingPage = isReadingPage();
+      const hiddenWhenDialog = Boolean(snapshot.dialogKind);
+
+      startFocusElement.hidden = snapshot.status !== 'idle' || hiddenWhenDialog;
+      pauseTimerElement.hidden = snapshot.status !== 'running' || hiddenWhenDialog;
+      resumeTimerElement.hidden = snapshot.status !== 'paused' || hiddenWhenDialog;
+      endSessionElement.hidden = (snapshot.status !== 'running' && snapshot.status !== 'paused') || hiddenWhenDialog;
+      pomodoroSettingsElement.hidden = false;
+      toggleFocusElement.hidden = !readingPage;
+      readerSettingsElement.hidden = !readingPage;
+      actionsSectionElement.hidden = false;
+    };
+
+    const syncAvailability = () => {
+      rootElement.dataset.commandPaletteReading = isReadingPage() ? 'true' : 'false';
+      rebuildRecentItems();
+      syncUtilities();
+      selectedIndex = 0;
+      updateItemStyles();
+    };
+
+    const setOpen = (nextOpen, restoreFocus = true) => {
+      open = nextOpen;
+      body.dataset.commandPaletteOpen = open ? 'true' : 'false';
+      rootElement.setAttribute('aria-hidden', open ? 'false' : 'true');
+      rootElement.style.pointerEvents = open ? 'auto' : 'none';
+      overlayElement.style.opacity = open ? '1' : '0';
+      overlayElement.style.pointerEvents = open ? 'auto' : 'none';
+      panelElement.style.opacity = open ? '1' : '0';
+      panelElement.style.pointerEvents = open ? 'auto' : 'none';
+      panelElement.style.transform = open
+        ? 'translate(-50%, -50%) scale(1)'
+        : 'translate(-50%, -50%) scale(0.99)';
+      overlayElement.toggleAttribute('inert', !open);
+      panelElement.toggleAttribute('inert', !open);
+
+      if (open) {
+        lastFocused = restoreFocus ? document.activeElement : null;
+        syncAvailability();
+        const items = visibleItems();
+        const active = items[selectedIndex] ?? items[0];
+        active?.focus?.();
+        return;
+      }
+
+      updateItemStyles();
+      if (restoreFocus && lastFocused instanceof HTMLElement) {
+        lastFocused.focus?.();
+      }
+      lastFocused = null;
+    };
+
+    const moveSelection = (delta) => {
+      const items = visibleItems();
+      if (!items.length) return;
+      selectedIndex = (selectedIndex + delta + items.length) % items.length;
+      updateItemStyles();
+    };
+
+    const executeSelected = () => {
+      const items = visibleItems();
+      const current = items[selectedIndex];
+      if (!(current instanceof HTMLElement)) return;
+
+      const kind = current.dataset.commandKind;
+      const href = current.dataset.commandHref;
+      const action = current.dataset.commandAction;
+
+      closePalette(false);
+
+      if (kind === 'navigate' && href) {
+        window.__wikiNavigate?.(href) ?? window.location.assign(href);
+        return;
+      }
+
+      if (kind === 'action') {
+        if (action === 'toggle-focus') {
+          window.__wikiToggleFocusMode?.();
+        } else if (action === 'reader-settings') {
+          window.__wikiOpenReadingSettings?.();
+        } else if (action === 'start-focus') {
+          window.__wikiPomodoroSuppressKeydownUntil = performance.now() + 250;
+          window.__wikiOpenPomodoroSetup?.();
+        } else if (action === 'pause-timer') {
+          window.__wikiPomodoroPause?.();
+        } else if (action === 'resume-timer') {
+          window.__wikiPomodoroResume?.();
+        } else if (action === 'end-session') {
+          window.__wikiPomodoroEndSession?.();
+        } else if (action === 'pomodoro-settings') {
+          window.__wikiPomodoroSuppressKeydownUntil = performance.now() + 250;
+          window.__wikiOpenPomodoroSettings?.();
+        }
+      }
+    };
+
+    const openPalette = () => {
+      syncAvailability();
+      setOpen(true);
+    };
+
+    const closePalette = (restoreFocus = true) => {
+      setOpen(false, restoreFocus);
+    };
+
+    const togglePalette = () => {
+      if (open) {
+        closePalette();
+      } else {
+        openPalette();
+      }
+    };
+
+    window.__wikiOpenCommandPalette = openPalette;
+    window.__wikiCloseCommandPalette = closePalette;
+    window.__wikiToggleCommandPalette = togglePalette;
+
+    overlayElement.addEventListener('click', () => closePalette());
+
+    rootElement.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const button = target.closest('[data-command-item="true"]');
+      if (!(button instanceof HTMLElement)) return;
+
+      const href = button.dataset.commandHref;
+      const kind = button.dataset.commandKind;
+      const action = button.dataset.commandAction;
+
+      selectedIndex = visibleItems().indexOf(button);
+      updateItemStyles();
+
+      if (kind === 'navigate' && href) {
+        closePalette(false);
+        window.__wikiNavigate?.(href) ?? window.location.assign(href);
+        return;
+      }
+
+      if (kind === 'action') {
+        closePalette(false);
+
+        if (action === 'reader-settings') {
+          window.__wikiOpenReadingSettings?.();
+        } else if (action === 'toggle-focus') {
+          window.__wikiToggleFocusMode?.();
+        } else if (action === 'start-focus') {
+          window.__wikiPomodoroSuppressKeydownUntil = performance.now() + 250;
+          window.__wikiOpenPomodoroSetup?.();
+        } else if (action === 'pause-timer') {
+          window.__wikiPomodoroPause?.();
+        } else if (action === 'resume-timer') {
+          window.__wikiPomodoroResume?.();
+        } else if (action === 'end-session') {
+          window.__wikiPomodoroEndSession?.();
+        } else if (action === 'pomodoro-settings') {
+          window.__wikiPomodoroSuppressKeydownUntil = performance.now() + 250;
+          window.__wikiOpenPomodoroSettings?.();
+        }
+      }
+    });
+
+    window.addEventListener(
+      'keydown',
+      (event) => {
+        if (open) {
+          event.stopImmediatePropagation();
+        }
+
+        if (event.ctrlKey && event.code === 'KeyK') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          togglePalette();
+          return;
+        }
+
+        if (!open) {
+          return;
+        }
+
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          closePalette();
+          return;
+        }
+
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          moveSelection(1);
+          return;
+        }
+
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          moveSelection(-1);
+          return;
+        }
+
+        if (event.key === 'Home') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          selectedIndex = 0;
+          updateItemStyles();
+          return;
+        }
+
+        if (event.key === 'End') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          const items = visibleItems();
+          if (!items.length) return;
+          selectedIndex = items.length - 1;
+          updateItemStyles();
+          return;
+        }
+
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          executeSelected();
+        }
+      },
+      true,
+    );
+
+    window.addEventListener('robotics:pomodoro-change', () => {
+      syncUtilities();
+      if (open) {
+        updateItemStyles();
+      }
+    });
+
+    syncAvailability();
+    setOpen(false, false);
+  }
+</script> <button type="button" data-pomodoro-open-settings class="fixed bottom-4 right-4 z-[67] rounded-md px-2 py-1 text-[0.72rem] font-medium tracking-[-0.01em] text-[color:var(--faint)] outline-none transition-none hover:text-[color:var(--text)] focus:outline-none focus-visible:outline-none" aria-label="Open pomodoro settings" title="Open pomodoro settings"> <span data-pomodoro-indicator>Focus</span> </button> <div data-pomodoro-root class="fixed inset-0 z-[66] pointer-events-none"> <div data-pomodoro-session-layer hidden class="fixed inset-0 z-[79] pointer-events-auto"> <button type="button" data-pomodoro-session-overlay class="absolute inset-0 bg-black/55" aria-label="Close session dialog" tabindex="-1"></button> <div class="absolute bottom-16 right-4 w-[min(92vw,21rem)] rounded-2xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_24px_70px_rgba(0,0,0,0.34)]"> <div class="text-[0.95rem] font-medium tracking-[-0.01em]" data-pomodoro-session-title>
+Focus · 24:58
+</div> <div class="mt-4 grid gap-2"> <button type="button" data-pomodoro-session-primary class="rounded-md bg-white/5 px-3 py-1 text-left text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none">
+Pause
+</button> <button type="button" data-pomodoro-session-skip class="rounded-md bg-white/5 px-3 py-1 text-left text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none">
+Skip Break
+</button> <button type="button" data-pomodoro-session-end class="rounded-md bg-white/5 px-3 py-1 text-left text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none">
+End Session
+</button> <button type="button" data-pomodoro-session-close class="quiet-link rounded-md px-2 py-1 text-left text-[0.88rem] outline-none focus:outline-none focus-visible:outline-none">
+Close
+</button> </div> </div> </div> <div data-pomodoro-config-layer hidden class="fixed inset-0 z-[80] pointer-events-auto"> <button type="button" data-pomodoro-config-overlay class="absolute inset-0 bg-black/55" aria-label="Close pomodoro dialog" tabindex="-1"></button> <div class="absolute bottom-16 right-4 w-[min(92vw,24rem)] rounded-2xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_24px_70px_rgba(0,0,0,0.34)]" data-pomodoro-config-dialog> <div class="text-[0.95rem] font-medium tracking-[-0.01em]" data-pomodoro-config-title>
+Start Focus Session
+</div> <div class="mt-4 grid gap-4"> <section class="grid gap-2"> <div class="text-[0.72rem] text-[color:var(--faint)]">Focus duration</div> <div class="flex flex-wrap gap-2" data-pomodoro-focus-presets> <button type="button" data-pomodoro-focus-option data-value="25" class="pomodoro-chip">25 min</button> <button type="button" data-pomodoro-focus-option data-value="45" class="pomodoro-chip">45 min</button> <button type="button" data-pomodoro-focus-option data-value="60" class="pomodoro-chip">60 min</button> <button type="button" data-pomodoro-focus-option data-value="custom" class="pomodoro-chip">Custom...</button> </div> <input data-pomodoro-focus-custom hidden type="number" min="5" max="240" step="5" inputmode="numeric" class="w-28 rounded-md border border-white/10 bg-transparent px-2 py-1 text-[0.9rem] text-[color:var(--text)] outline-none focus:border-white/20"> </section> <section class="grid gap-2"> <div class="text-[0.72rem] text-[color:var(--faint)]">Break duration</div> <div class="flex flex-wrap gap-2" data-pomodoro-break-presets> <button type="button" data-pomodoro-break-option data-value="5" class="pomodoro-chip">5 min</button> <button type="button" data-pomodoro-break-option data-value="10" class="pomodoro-chip">10 min</button> <button type="button" data-pomodoro-break-option data-value="15" class="pomodoro-chip">15 min</button> </div> </section> <div class="flex items-center justify-end gap-2"> <button type="button" data-pomodoro-cancel class="quiet-link rounded-md px-2 py-1 text-[0.88rem] outline-none focus:outline-none focus-visible:outline-none">
+Cancel
+</button> <button type="button" data-pomodoro-confirm class="rounded-md bg-white/5 px-3 py-1 text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none">
+Start
+</button> </div> </div> </div> </div> <div data-pomodoro-complete-layer hidden class="fixed inset-0 z-[81] pointer-events-auto"> <button type="button" data-pomodoro-complete-overlay class="absolute inset-0 bg-black/55" aria-label="Close completion dialog" tabindex="-1"></button> <div class="absolute bottom-16 right-4 w-[min(92vw,21rem)] rounded-2xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_24px_70px_rgba(0,0,0,0.34)]"> <div class="text-[0.95rem] font-medium tracking-[-0.01em]" data-pomodoro-complete-title>
+Focus session complete.
+</div> <div class="mt-4 flex items-center justify-end gap-2" data-pomodoro-complete-actions> <button type="button" data-pomodoro-complete-primary class="rounded-md bg-white/5 px-3 py-1 text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none">
+Start Break
+</button> <button type="button" data-pomodoro-complete-dismiss class="quiet-link rounded-md px-2 py-1 text-[0.88rem] outline-none focus:outline-none focus-visible:outline-none">
+Dismiss
+</button> </div> </div> </div> </div>  <script type="module">
+  import {
+    POMODORO_HISTORY_LIMIT,
+    buildPomodoroPageVisit,
+    createPomodoroHistoryEntry,
+    defaultPomodoroPrefs,
+    formatPomodoroCountdown,
+    normalizePomodoroState,
+    readPomodoroState,
+    trimPomodoroHistory,
+    writePomodoroState,
+  } from '/src/lib/pomodoro.ts';
+
+  const root = document.querySelector('[data-pomodoro-root]');
+  const settingsTrigger = document.querySelector('[data-pomodoro-open-settings]');
+  const indicator = document.querySelector('[data-pomodoro-indicator]');
+  const configLayer = root?.querySelector('[data-pomodoro-config-layer]');
+    const configOverlay = root?.querySelector('[data-pomodoro-config-overlay]');
+    const configTitle = root?.querySelector('[data-pomodoro-config-title]');
+    const sessionLayer = root?.querySelector('[data-pomodoro-session-layer]');
+    const sessionOverlay = root?.querySelector('[data-pomodoro-session-overlay]');
+    const sessionTitle = root?.querySelector('[data-pomodoro-session-title]');
+    const sessionPrimary = root?.querySelector('[data-pomodoro-session-primary]');
+    const sessionSkip = root?.querySelector('[data-pomodoro-session-skip]');
+    const sessionEnd = root?.querySelector('[data-pomodoro-session-end]');
+    const sessionClose = root?.querySelector('[data-pomodoro-session-close]');
+    const focusOptions = root?.querySelector('[data-pomodoro-focus-presets]');
+  const breakOptions = root?.querySelector('[data-pomodoro-break-presets]');
+  const focusCustom = root?.querySelector('[data-pomodoro-focus-custom]');
+  const configCancel = root?.querySelector('[data-pomodoro-cancel]');
+  const configConfirm = root?.querySelector('[data-pomodoro-confirm]');
+  const completeLayer = root?.querySelector('[data-pomodoro-complete-layer]');
+  const completeOverlay = root?.querySelector('[data-pomodoro-complete-overlay]');
+  const completeTitle = root?.querySelector('[data-pomodoro-complete-title]');
+  const completeActions = root?.querySelector('[data-pomodoro-complete-actions]');
+  const completePrimary = root?.querySelector('[data-pomodoro-complete-primary]');
+  const completeDismiss = root?.querySelector('[data-pomodoro-complete-dismiss]');
+
+  if (
+    !settingsTrigger ||
+    !root ||
+    !indicator ||
+    !sessionLayer ||
+    !sessionOverlay ||
+    !sessionTitle ||
+    !sessionPrimary ||
+    !sessionSkip ||
+    !sessionEnd ||
+    !sessionClose ||
+    !configLayer ||
+    !configOverlay ||
+    !configTitle ||
+    !focusOptions ||
+    !breakOptions ||
+    !focusCustom ||
+    !configCancel ||
+    !configConfirm ||
+    !completeLayer ||
+    !completeOverlay ||
+    !completeTitle ||
+    !completeActions ||
+    !completePrimary ||
+    !completeDismiss
+  ) {
+    // Nothing to mount.
+  } else {
+    const rootElement = /** @type {HTMLElement} */ (root);
+    const settingsTriggerElement = /** @type {HTMLElement} */ (settingsTrigger);
+    const indicatorElement = /** @type {HTMLElement} */ (indicator);
+    const sessionLayerElement = /** @type {HTMLElement} */ (sessionLayer);
+    const sessionOverlayElement = /** @type {HTMLElement} */ (sessionOverlay);
+    const sessionTitleElement = /** @type {HTMLElement} */ (sessionTitle);
+    const sessionPrimaryElement = /** @type {HTMLElement} */ (sessionPrimary);
+    const sessionSkipElement = /** @type {HTMLElement} */ (sessionSkip);
+    const sessionEndElement = /** @type {HTMLElement} */ (sessionEnd);
+    const sessionCloseElement = /** @type {HTMLElement} */ (sessionClose);
+    const configLayerElement = /** @type {HTMLElement} */ (configLayer);
+    const configTitleElement = /** @type {HTMLElement} */ (configTitle);
+    const focusOptionsElement = /** @type {HTMLElement} */ (focusOptions);
+    const breakOptionsElement = /** @type {HTMLElement} */ (breakOptions);
+    const focusCustomElement = /** @type {HTMLInputElement} */ (focusCustom);
+    const configCancelElement = /** @type {HTMLElement} */ (configCancel);
+    const configConfirmElement = /** @type {HTMLElement} */ (configConfirm);
+    const completeLayerElement = /** @type {HTMLElement} */ (completeLayer);
+    const completeTitleElement = /** @type {HTMLElement} */ (completeTitle);
+    const completeActionsElement = /** @type {HTMLElement} */ (completeActions);
+    const completePrimaryElement = /** @type {HTMLElement} */ (completePrimary);
+    const completeDismissElement = /** @type {HTMLElement} */ (completeDismiss);
+
+    const body = document.body;
+    let state = normalizePomodoroState(readPomodoroState());
+    let configMode = 'start';
+    let selectedBreak = state.prefs.breakMinutes;
+    let selectedFocusMode = ['25', '45', '60'].includes(String(state.prefs.focusMinutes))
+      ? String(state.prefs.focusMinutes)
+      : 'custom';
+    let focusedCustomValue =
+      selectedFocusMode === 'custom' ? String(state.prefs.focusMinutes) : String(defaultPomodoroPrefs.focusMinutes);
+    let openDialog = null;
+    let lastActiveElement = null;
+    let timer = null;
+
+    const isReadingPage = () => document.body.dataset.wikiPageKind === 'document';
+    const isFocusMode = () => body.dataset.readingFocusMode === 'true';
+
+    const syncState = () => {
+      state = normalizePomodoroState(state);
+      writePomodoroState(state);
+      window.__wikiPomodoroSnapshot = () => getSnapshot();
+      window.__wikiPomodoroHistory = () => state.history.slice(0, POMODORO_HISTORY_LIMIT);
+      if (state.session && state.dialog?.kind !== 'completion') {
+        startTimer();
+      } else {
+        stopTimer();
+      }
+      window.dispatchEvent(new CustomEvent('robotics:pomodoro-change'));
+    };
+
+    const getRunningRemaining = () => {
+      if (!state.session) return null;
+      if (state.session.pausedRemainingMs !== null) return state.session.pausedRemainingMs;
+      return Math.max(0, state.session.phaseEndsAt - Date.now());
+    };
+
+    const getSnapshot = () => {
+      if (state.dialog?.kind === 'setup') {
+        return {
+          status: 'setup',
+          phase: null,
+          dialogKind: 'setup',
+          remainingMs: null,
+          canStart: false,
+          canPause: false,
+          canResume: false,
+          canEnd: false,
+        };
+      }
+
+      if (state.dialog?.kind === 'completion') {
+        return {
+          status: 'completion',
+          phase: state.dialog.phase,
+          dialogKind: 'completion',
+          remainingMs: null,
+          canStart: false,
+          canPause: false,
+          canResume: false,
+          canEnd: false,
+        };
+      }
+
+      if (!state.session) {
+        return {
+          status: 'idle',
+          phase: null,
+          dialogKind: null,
+          remainingMs: null,
+          canStart: true,
+          canPause: false,
+          canResume: false,
+          canEnd: false,
+        };
+      }
+
+      const remainingMs = getRunningRemaining() ?? 0;
+
+      if (state.session.pausedRemainingMs !== null) {
+        return {
+          status: 'paused',
+          phase: state.session.phase,
+          dialogKind: null,
+          remainingMs,
+          canStart: false,
+          canPause: false,
+          canResume: true,
+          canEnd: true,
+        };
+      }
+
+      return {
+        status: 'running',
+        phase: state.session.phase,
+        dialogKind: null,
+        remainingMs,
+        canStart: false,
+        canPause: true,
+        canResume: false,
+        canEnd: true,
+      };
+    };
+
+    const setIndicator = () => {
+      const snapshot = getSnapshot();
+      let label = 'Focus';
+
+      if (snapshot.status === 'running' || snapshot.status === 'paused') {
+        const phaseLabel = state.session?.phase === 'break' ? 'Break' : 'Focus';
+        label = `${phaseLabel} · ${formatPomodoroCountdown(snapshot.remainingMs ?? 0)}`;
+      } else if (snapshot.status === 'setup' || snapshot.status === 'completion') {
+        label = 'Focus';
+      }
+
+      if (isFocusMode() && (snapshot.status === 'running' || snapshot.status === 'paused')) {
+        indicatorElement.textContent = label;
+        indicatorElement.style.color = 'var(--faint)';
+        indicatorElement.style.fontSize = '0.72rem';
+        return;
+      }
+
+      if (isFocusMode() && snapshot.status === 'idle') {
+        indicatorElement.textContent = 'Focus';
+        indicatorElement.style.color = 'var(--faint)';
+        indicatorElement.style.fontSize = '0.72rem';
+        return;
+      }
+
+      if (snapshot.status === 'idle') {
+        indicatorElement.textContent = 'Focus';
+      } else if (snapshot.status === 'paused') {
+        indicatorElement.textContent = label;
+      } else if (snapshot.status === 'running') {
+        indicatorElement.textContent = label;
+      } else {
+        indicatorElement.textContent = label;
+      }
+    };
+
+    const setButtonState = (button, active) => {
+      button.dataset.active = active ? 'true' : 'false';
+    };
+
+    const updatePresetButtons = () => {
+      const focusButtons = Array.from(focusOptionsElement.querySelectorAll('[data-pomodoro-focus-option]'));
+      focusButtons.forEach((button) => {
+        const value = button.getAttribute('data-value');
+        const active = value === selectedFocusMode || (selectedFocusMode === 'custom' && value === 'custom');
+        setButtonState(button, active);
+      });
+
+      const breakButtons = Array.from(breakOptionsElement.querySelectorAll('[data-pomodoro-break-option]'));
+      breakButtons.forEach((button) => {
+        const value = button.getAttribute('data-value');
+        setButtonState(button, value === String(selectedBreak));
+      });
+    };
+
+    const setConfigMode = (mode) => {
+      configMode = mode;
+      configTitleElement.textContent = mode === 'settings' ? 'Pomodoro Settings' : 'Start Focus Session';
+      configConfirmElement.textContent = mode === 'settings' ? 'Save' : 'Start';
+    };
+
+    const isActivationSuppressed = () => performance.now() < (window.__wikiPomodoroSuppressActivationUntil || 0);
+
+    const setConfigSelection = (focusMinutes, breakMinutes) => {
+      selectedBreak = breakMinutes;
+      selectedFocusMode = ['25', '45', '60'].includes(String(focusMinutes)) ? String(focusMinutes) : 'custom';
+      focusedCustomValue = String(focusMinutes);
+      focusCustomElement.hidden = selectedFocusMode !== 'custom';
+      focusCustomElement.value = focusedCustomValue;
+      updatePresetButtons();
+      writePomodoroState(state);
+    };
+
+    const renderConfig = () => {
+      focusCustomElement.hidden = selectedFocusMode !== 'custom';
+      focusCustomElement.value = focusedCustomValue;
+      updatePresetButtons();
+      configLayerElement.hidden = false;
+      openDialog = 'config';
+      lastActiveElement = document.activeElement;
+      configConfirmElement.focus?.();
+    };
+
+    const closeConfig = () => {
+      configLayerElement.hidden = true;
+      openDialog = null;
+      if (lastActiveElement instanceof HTMLElement) {
+        lastActiveElement.focus?.();
+      }
+    };
+
+    const updateSessionControls = () => {
+      const snapshot = getSnapshot();
+      if (!state.session) return;
+
+      const phaseLabel = state.session.phase === 'break' ? 'Break' : 'Focus';
+      const remainingLabel =
+        snapshot.status === 'paused' ? 'Paused' : formatPomodoroCountdown(snapshot.remainingMs ?? 0);
+      sessionTitleElement.textContent = `${phaseLabel} · ${remainingLabel}`;
+
+      const paused = snapshot.status === 'paused';
+      const isBreak = state.session.phase === 'break';
+      sessionPrimaryElement.textContent = paused ? 'Resume' : 'Pause';
+      sessionSkipElement.hidden = !isBreak;
+      sessionSkipElement.textContent = 'Skip Break';
+      sessionEndElement.textContent = 'End Session';
+      sessionCloseElement.textContent = 'Close';
+    };
+
+    const renderSessionControls = () => {
+      if (!state.session) return;
+      updateSessionControls();
+      sessionLayerElement.hidden = false;
+      openDialog = 'session';
+      lastActiveElement = document.activeElement;
+      sessionPrimaryElement.focus?.();
+    };
+
+    const closeSessionControls = (restoreFocus = true) => {
+      sessionLayerElement.hidden = true;
+      if (openDialog === 'session') {
+        openDialog = null;
+      }
+      if (restoreFocus && lastActiveElement instanceof HTMLElement) {
+        lastActiveElement.focus?.();
+      }
+    };
+
+    const renderCompletion = () => {
+      const phase = state.dialog?.kind === 'completion' ? state.dialog.phase : 'focus';
+      completeTitleElement.textContent =
+        phase === 'focus' ? '✓ Focus complete' : '✓ Break complete';
+      completePrimaryElement.hidden = phase !== 'focus';
+      completePrimaryElement.textContent = phase === 'focus' ? 'Start Break' : 'Start Focus';
+      completeActionsElement.style.gap = '0.5rem';
+      completeLayerElement.hidden = false;
+      openDialog = 'completion';
+      lastActiveElement = document.activeElement;
+      (phase === 'focus' ? completePrimaryElement : completeDismissElement).focus?.();
+    };
+
+    const closeCompletion = () => {
+      completeLayerElement.hidden = true;
+      openDialog = null;
+      if (lastActiveElement instanceof HTMLElement) {
+        lastActiveElement.focus?.();
+      }
+    };
+
+    const pushHistory = (completed, cancelled, endedPhase) => {
+      const now = Date.now();
+      const session = state.session;
+      if (!session) return;
+
+      const entry = createPomodoroHistoryEntry({
+        date: now,
+        focusMinutes: session.focusMinutes,
+        breakMinutes: session.breakMinutes,
+        pagesVisited: session.pagesVisited,
+        completed,
+        cancelled,
+        endedPhase,
+      });
+
+      state.history = trimPomodoroHistory([entry, ...state.history]);
+    };
+
+    const recordPageVisit = () => {
+      const session = state.session;
+      if (!session || state.dialog?.kind === 'setup') return;
+      if (!isReadingPage()) return;
+
+      const href = `${window.location.pathname}${window.location.search}`;
+      const title = document.body.dataset.wikiPageTitle || document.title.replace(/\s*·\s*Robotics Wiki\s*$/, '').trim();
+      const path = document.body.dataset.wikiPagePath || '';
+      if (!href || !title) return;
+
+      if (session.pagesVisited.some((page) => page.href === href)) return;
+      session.pagesVisited.unshift(buildPomodoroPageVisit({ href, title, path }));
+      state.session = session;
+    };
+
+    const save = () => {
+      writePomodoroState(state);
+      syncState();
+      setIndicator();
+    };
+
+    const clearSession = () => {
+      state.session = null;
+    };
+
+    const finishCurrentPhaseIfNeeded = () => {
+      if (!state.session || state.session.pausedRemainingMs !== null) return;
+      const now = Date.now();
+      if (now < state.session.phaseEndsAt) return;
+
+      if (state.session.phase === 'focus') {
+        state.session.pausedRemainingMs = null;
+        state.dialog = { kind: 'completion', phase: 'focus' };
+        state.session.phaseEndsAt = now;
+        state.session.phaseStartedAt = now;
+      } else {
+        pushHistory(true, false, 'break');
+        clearSession();
+        state.dialog = { kind: 'completion', phase: 'break' };
+      }
+    };
+
+    const tick = () => {
+      finishCurrentPhaseIfNeeded();
+      save();
+      if (state.dialog?.kind === 'completion') {
+        if (openDialog === 'session') {
+          closeSessionControls(false);
+        }
+        if (openDialog !== 'completion') {
+          openCompletion();
+        } else {
+          renderCompletion();
+        }
+        return;
+      }
+
+      if (openDialog === 'session') {
+        updateSessionControls();
+      }
+    };
+
+    const startTimer = () => {
+      if (timer) return;
+      timer = window.setInterval(tick, 1000);
+    };
+
+    const stopTimer = () => {
+      if (!timer) return;
+      window.clearInterval(timer);
+      timer = null;
+    };
+
+    const openSetup = (mode) => {
+      if (state.dialog?.kind === 'completion') return;
+      window.__wikiPomodoroSuppressKeydownUntil = performance.now() + 250;
+      window.__wikiPomodoroSuppressActivationUntil = performance.now() + 250;
+      setConfigMode(mode);
+      setConfigSelection(state.prefs.focusMinutes, state.prefs.breakMinutes);
+      state.dialog = { kind: 'setup', mode, focusMinutes: state.prefs.focusMinutes, breakMinutes: state.prefs.breakMinutes };
+      syncState();
+      renderConfig();
+    };
+
+    const openTimerDialog = () => {
+      if (state.session) {
+        renderSessionControls();
+        return;
+      }
+
+      openSetup('start');
+    };
+
+    const openCompletion = () => {
+      if (state.dialog?.kind !== 'completion') return;
+      syncState();
+      renderCompletion();
+    };
+
+    const dismissCompletion = () => {
+      const phase = state.dialog?.kind === 'completion' ? state.dialog.phase : 'focus';
+
+      if (phase === 'focus' && state.session) {
+        pushHistory(true, false, 'focus');
+        clearSession();
+      }
+
+      state.dialog = null;
+      syncState();
+      closeCompletion();
+      setIndicator();
+    };
+
+    const beginSession = () => {
+      const focusMinutes = selectedFocusMode === 'custom' ? Number(focusedCustomValue) || state.prefs.focusMinutes : Number(selectedFocusMode);
+      const breakMinutes = selectedBreak;
+
+      state.prefs = { focusMinutes, breakMinutes };
+      state.session = {
+        id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        startedAt: Date.now(),
+        phase: 'focus',
+        phaseStartedAt: Date.now(),
+        phaseEndsAt: Date.now() + focusMinutes * 60 * 1000,
+        pausedRemainingMs: null,
+        pagesVisited: [],
+        focusMinutes,
+        breakMinutes,
+      };
+      state.dialog = null;
+      syncState();
+      recordPageVisit();
+      closeConfig();
+      startTimer();
+      setIndicator();
+    };
+
+    const saveSettings = () => {
+      const focusMinutes = selectedFocusMode === 'custom' ? Number(focusedCustomValue) || state.prefs.focusMinutes : Number(selectedFocusMode);
+      const breakMinutes = selectedBreak;
+
+      state.prefs = { focusMinutes, breakMinutes };
+      state.dialog = null;
+      syncState();
+      closeConfig();
+    };
+
+    const pauseTimer = () => {
+      if (!state.session || state.session.pausedRemainingMs !== null || state.dialog) return;
+      state.session.pausedRemainingMs = Math.max(0, state.session.phaseEndsAt - Date.now());
+      syncState();
+      setIndicator();
+      if (openDialog === 'session') {
+        updateSessionControls();
+      }
+    };
+
+    const resumeTimer = () => {
+      if (!state.session || state.session.pausedRemainingMs === null || state.dialog) return;
+      const remaining = state.session.pausedRemainingMs;
+      state.session.pausedRemainingMs = null;
+      state.session.phaseEndsAt = Date.now() + remaining;
+      syncState();
+      setIndicator();
+      if (openDialog === 'session') {
+        updateSessionControls();
+      }
+    };
+
+    const endSession = () => {
+      if (!state.session) return;
+      const endedPhase = state.session.phase;
+      pushHistory(false, true, endedPhase);
+      state.session = null;
+      state.dialog = null;
+      syncState();
+      closeSessionControls(false);
+      closeConfig();
+      closeCompletion();
+      setIndicator();
+    };
+
+    const startBreak = () => {
+      if (!state.session || state.dialog?.kind !== 'completion' || state.dialog.phase !== 'focus') return;
+      state.dialog = null;
+      state.session.phase = 'break';
+      state.session.phaseStartedAt = Date.now();
+      state.session.phaseEndsAt = Date.now() + state.session.breakMinutes * 60 * 1000;
+      state.session.pausedRemainingMs = null;
+      syncState();
+      closeCompletion();
+      startTimer();
+      setIndicator();
+    };
+
+    const skipBreak = () => {
+      if (!state.session || state.session.phase !== 'break') return;
+      state.session.phase = 'focus';
+      state.session.phaseStartedAt = Date.now();
+      state.session.phaseEndsAt = Date.now() + state.session.focusMinutes * 60 * 1000;
+      state.session.pausedRemainingMs = null;
+      syncState();
+      closeSessionControls(false);
+      startTimer();
+      setIndicator();
+    };
+
+    const cancelConfig = () => {
+      state.dialog = null;
+      syncState();
+      closeConfig();
+    };
+
+    settingsTriggerElement.addEventListener('click', () => {
+      openTimerDialog();
+    });
+
+    const onKeydown = (event) => {
+      if (performance.now() < (window.__wikiPomodoroSuppressKeydownUntil || 0)) {
+        return;
+      }
+      if (isActivationSuppressed()) {
+        return;
+      }
+
+      if (openDialog === 'config') {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          cancelConfig();
+          return;
+        }
+
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          if (configMode === 'settings') {
+            saveSettings();
+          } else {
+            beginSession();
+          }
+        }
+      }
+
+      if (openDialog === 'completion') {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          dismissCompletion();
+        }
+      }
+    };
+
+    focusOptionsElement.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('[data-pomodoro-focus-option]');
+      if (!(button instanceof HTMLElement)) return;
+      const value = button.getAttribute('data-value');
+      if (!value) return;
+
+      selectedFocusMode = value;
+      if (value === 'custom') {
+        focusCustomElement.hidden = false;
+        focusCustomElement.focus?.();
+        focusedCustomValue = String(focusCustomElement.value || state.prefs.focusMinutes || defaultPomodoroPrefs.focusMinutes);
+      } else {
+        focusCustomElement.hidden = true;
+        focusedCustomValue = value;
+      }
+      updatePresetButtons();
+      syncState();
+    });
+
+    breakOptionsElement.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('[data-pomodoro-break-option]');
+      if (!(button instanceof HTMLElement)) return;
+      const value = button.getAttribute('data-value');
+      if (!value) return;
+
+      selectedBreak = Number(value);
+      updatePresetButtons();
+      syncState();
+    });
+
+    focusCustomElement.addEventListener('input', () => {
+      focusedCustomValue = focusCustomElement.value;
+      syncState();
+    });
+
+    configOverlay.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      cancelConfig();
+    });
+    configCancelElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      cancelConfig();
+    });
+    configConfirmElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      if (configMode === 'settings') {
+        saveSettings();
+      } else {
+        beginSession();
+      }
+    });
+
+    completeOverlay.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      dismissCompletion();
+    });
+    completeDismissElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      dismissCompletion();
+    });
+    completePrimaryElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      if (state.dialog?.kind !== 'completion') return;
+      if (state.dialog.phase === 'focus') {
+        startBreak();
+      } else {
+        beginSession();
+      }
+    });
+
+    sessionOverlayElement.addEventListener('click', () => {
+      closeSessionControls();
+    });
+    sessionPrimaryElement.addEventListener('click', () => {
+      if (!state.session) return;
+      if (state.session.pausedRemainingMs !== null) {
+        resumeTimer();
+        return;
+      }
+      pauseTimer();
+    });
+    sessionSkipElement.addEventListener('click', () => {
+      skipBreak();
+    });
+    sessionEndElement.addEventListener('click', () => {
+      endSession();
+    });
+    sessionCloseElement.addEventListener('click', () => {
+      closeSessionControls();
+    });
+
+    window.addEventListener('keydown', onKeydown, true);
+    window.addEventListener('robotics:pomodoro-change', () => {
+      setIndicator();
+    });
+    window.addEventListener('robotics:reading-settings-change', () => {
+      setIndicator();
+    });
+
+    window.__wikiPomodoroSnapshot = () => getSnapshot();
+    window.__wikiPomodoroHistory = () => state.history.slice(0, POMODORO_HISTORY_LIMIT);
+    window.__wikiOpenPomodoroSetup = () => openSetup('start');
+    window.__wikiOpenPomodoroSettings = () => openSetup('settings');
+    window.__wikiPomodoroPause = pauseTimer;
+    window.__wikiPomodoroResume = resumeTimer;
+    window.__wikiPomodoroEndSession = endSession;
+    window.__wikiPomodoroDismissDialog = () => {
+      if (state.dialog?.kind === 'completion') dismissCompletion();
+      else cancelConfig();
+    };
+    window.__wikiPomodoroStartBreak = startBreak;
+    window.__wikiPomodoroStartSession = beginSession;
+
+    // Restore any in-progress session or visible dialog.
+    finishCurrentPhaseIfNeeded();
+    if (state.session) {
+      recordPageVisit();
+    }
+    if (state.dialog?.kind === 'setup') {
+      configMode = state.dialog.mode;
+      selectedFocusMode = ['25', '45', '60'].includes(String(state.dialog.focusMinutes))
+        ? String(state.dialog.focusMinutes)
+        : 'custom';
+      focusedCustomValue = String(state.dialog.focusMinutes);
+      selectedBreak = state.dialog.breakMinutes;
+      setConfigMode(state.dialog.mode);
+      setConfigSelection(state.dialog.focusMinutes, state.dialog.breakMinutes);
+      renderConfig();
+    } else if (state.dialog?.kind === 'completion') {
+      openCompletion();
+    } else if (state.session) {
+      startTimer();
+    }
+
+    setIndicator();
+    syncState();
+  }
+</script> </body></html> <script>
+  window.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented) return;
+    if (event.key !== 'Escape' && event.key !== 'Backspace') return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+    if (window.__wikiGoBack?.()) {
+      event.preventDefault();
+      return;
+    }
+
+    event.preventDefault();
+    window.location.assign('/');
+  });
+</script>

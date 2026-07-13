@@ -1,0 +1,939 @@
+---
+---
+
+<button
+  type="button"
+  data-pomodoro-open-settings
+  class="fixed bottom-4 right-4 z-[67] rounded-md px-2 py-1 text-[0.72rem] font-medium tracking-[-0.01em] text-[color:var(--faint)] outline-none transition-none hover:text-[color:var(--text)] focus:outline-none focus-visible:outline-none"
+  aria-label="Open pomodoro settings"
+  title="Open pomodoro settings"
+>
+  <span data-pomodoro-indicator>Focus</span>
+</button>
+
+<div data-pomodoro-root class="fixed inset-0 z-[66] pointer-events-none">
+  <div data-pomodoro-session-layer hidden class="fixed inset-0 z-[79] pointer-events-auto">
+    <button
+      type="button"
+      data-pomodoro-session-overlay
+      class="absolute inset-0 bg-black/55"
+      aria-label="Close session dialog"
+      tabindex="-1"
+    ></button>
+
+    <div
+      class="absolute bottom-16 right-4 w-[min(92vw,21rem)] rounded-2xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_24px_70px_rgba(0,0,0,0.34)]"
+    >
+      <div class="text-[0.95rem] font-medium tracking-[-0.01em]" data-pomodoro-session-title>
+        Focus · 24:58
+      </div>
+      <div class="mt-4 grid gap-2">
+        <button
+          type="button"
+          data-pomodoro-session-primary
+          class="rounded-md bg-white/5 px-3 py-1 text-left text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none"
+        >
+          Pause
+        </button>
+        <button
+          type="button"
+          data-pomodoro-session-skip
+          class="rounded-md bg-white/5 px-3 py-1 text-left text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none"
+        >
+          Skip Break
+        </button>
+        <button
+          type="button"
+          data-pomodoro-session-end
+          class="rounded-md bg-white/5 px-3 py-1 text-left text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none"
+        >
+          End Session
+        </button>
+        <button
+          type="button"
+          data-pomodoro-session-close
+          class="quiet-link rounded-md px-2 py-1 text-left text-[0.88rem] outline-none focus:outline-none focus-visible:outline-none"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div data-pomodoro-config-layer hidden class="fixed inset-0 z-[80] pointer-events-auto">
+    <button
+      type="button"
+      data-pomodoro-config-overlay
+      class="absolute inset-0 bg-black/55"
+      aria-label="Close pomodoro dialog"
+      tabindex="-1"
+    ></button>
+
+    <div
+      class="absolute bottom-16 right-4 w-[min(92vw,24rem)] rounded-2xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_24px_70px_rgba(0,0,0,0.34)]"
+      data-pomodoro-config-dialog
+    >
+      <div class="text-[0.95rem] font-medium tracking-[-0.01em]" data-pomodoro-config-title>
+        Start Focus Session
+      </div>
+
+      <div class="mt-4 grid gap-4">
+        <section class="grid gap-2">
+          <div class="text-[0.72rem] text-[color:var(--faint)]">Focus duration</div>
+          <div class="flex flex-wrap gap-2" data-pomodoro-focus-presets>
+            <button type="button" data-pomodoro-focus-option data-value="25" class="pomodoro-chip">25 min</button>
+            <button type="button" data-pomodoro-focus-option data-value="45" class="pomodoro-chip">45 min</button>
+            <button type="button" data-pomodoro-focus-option data-value="60" class="pomodoro-chip">60 min</button>
+            <button type="button" data-pomodoro-focus-option data-value="custom" class="pomodoro-chip">Custom...</button>
+          </div>
+          <input
+            data-pomodoro-focus-custom
+            hidden
+            type="number"
+            min="5"
+            max="240"
+            step="5"
+            inputmode="numeric"
+            class="w-28 rounded-md border border-white/10 bg-transparent px-2 py-1 text-[0.9rem] text-[color:var(--text)] outline-none focus:border-white/20"
+          />
+        </section>
+
+        <section class="grid gap-2">
+          <div class="text-[0.72rem] text-[color:var(--faint)]">Break duration</div>
+          <div class="flex flex-wrap gap-2" data-pomodoro-break-presets>
+            <button type="button" data-pomodoro-break-option data-value="5" class="pomodoro-chip">5 min</button>
+            <button type="button" data-pomodoro-break-option data-value="10" class="pomodoro-chip">10 min</button>
+            <button type="button" data-pomodoro-break-option data-value="15" class="pomodoro-chip">15 min</button>
+          </div>
+        </section>
+
+        <div class="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            data-pomodoro-cancel
+            class="quiet-link rounded-md px-2 py-1 text-[0.88rem] outline-none focus:outline-none focus-visible:outline-none"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            data-pomodoro-confirm
+            class="rounded-md bg-white/5 px-3 py-1 text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none"
+          >
+            Start
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-pomodoro-complete-layer hidden class="fixed inset-0 z-[81] pointer-events-auto">
+    <button
+      type="button"
+      data-pomodoro-complete-overlay
+      class="absolute inset-0 bg-black/55"
+      aria-label="Close completion dialog"
+      tabindex="-1"
+    ></button>
+
+    <div
+      class="absolute bottom-16 right-4 w-[min(92vw,21rem)] rounded-2xl bg-[color:var(--bg-elevated)] p-4 text-[color:var(--text)] shadow-[0_24px_70px_rgba(0,0,0,0.34)]"
+    >
+      <div class="text-[0.95rem] font-medium tracking-[-0.01em]" data-pomodoro-complete-title>
+        Focus session complete.
+      </div>
+      <div class="mt-4 flex items-center justify-end gap-2" data-pomodoro-complete-actions>
+        <button
+          type="button"
+          data-pomodoro-complete-primary
+          class="rounded-md bg-white/5 px-3 py-1 text-[0.88rem] font-medium text-[color:var(--text)] outline-none focus:outline-none focus-visible:outline-none"
+        >
+          Start Break
+        </button>
+        <button
+          type="button"
+          data-pomodoro-complete-dismiss
+          class="quiet-link rounded-md px-2 py-1 text-[0.88rem] outline-none focus:outline-none focus-visible:outline-none"
+        >
+          Dismiss
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .pomodoro-chip {
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.88rem;
+    outline: none;
+    transition: none;
+    color: var(--muted);
+  }
+
+  .pomodoro-chip[data-active='true'] {
+    color: var(--text);
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .pomodoro-chip:focus,
+  .pomodoro-chip:focus-visible {
+    outline: none;
+  }
+</style>
+
+<script type="module">
+  import {
+    POMODORO_HISTORY_LIMIT,
+    buildPomodoroPageVisit,
+    createPomodoroHistoryEntry,
+    defaultPomodoroPrefs,
+    formatPomodoroCountdown,
+    normalizePomodoroState,
+    readPomodoroState,
+    trimPomodoroHistory,
+    writePomodoroState,
+  } from '/src/lib/pomodoro.ts';
+
+  const root = document.querySelector('[data-pomodoro-root]');
+  const settingsTrigger = document.querySelector('[data-pomodoro-open-settings]');
+  const indicator = document.querySelector('[data-pomodoro-indicator]');
+  const configLayer = root?.querySelector('[data-pomodoro-config-layer]');
+    const configOverlay = root?.querySelector('[data-pomodoro-config-overlay]');
+    const configTitle = root?.querySelector('[data-pomodoro-config-title]');
+    const sessionLayer = root?.querySelector('[data-pomodoro-session-layer]');
+    const sessionOverlay = root?.querySelector('[data-pomodoro-session-overlay]');
+    const sessionTitle = root?.querySelector('[data-pomodoro-session-title]');
+    const sessionPrimary = root?.querySelector('[data-pomodoro-session-primary]');
+    const sessionSkip = root?.querySelector('[data-pomodoro-session-skip]');
+    const sessionEnd = root?.querySelector('[data-pomodoro-session-end]');
+    const sessionClose = root?.querySelector('[data-pomodoro-session-close]');
+    const focusOptions = root?.querySelector('[data-pomodoro-focus-presets]');
+  const breakOptions = root?.querySelector('[data-pomodoro-break-presets]');
+  const focusCustom = root?.querySelector('[data-pomodoro-focus-custom]');
+  const configCancel = root?.querySelector('[data-pomodoro-cancel]');
+  const configConfirm = root?.querySelector('[data-pomodoro-confirm]');
+  const completeLayer = root?.querySelector('[data-pomodoro-complete-layer]');
+  const completeOverlay = root?.querySelector('[data-pomodoro-complete-overlay]');
+  const completeTitle = root?.querySelector('[data-pomodoro-complete-title]');
+  const completeActions = root?.querySelector('[data-pomodoro-complete-actions]');
+  const completePrimary = root?.querySelector('[data-pomodoro-complete-primary]');
+  const completeDismiss = root?.querySelector('[data-pomodoro-complete-dismiss]');
+
+  if (
+    !settingsTrigger ||
+    !root ||
+    !indicator ||
+    !sessionLayer ||
+    !sessionOverlay ||
+    !sessionTitle ||
+    !sessionPrimary ||
+    !sessionSkip ||
+    !sessionEnd ||
+    !sessionClose ||
+    !configLayer ||
+    !configOverlay ||
+    !configTitle ||
+    !focusOptions ||
+    !breakOptions ||
+    !focusCustom ||
+    !configCancel ||
+    !configConfirm ||
+    !completeLayer ||
+    !completeOverlay ||
+    !completeTitle ||
+    !completeActions ||
+    !completePrimary ||
+    !completeDismiss
+  ) {
+    // Nothing to mount.
+  } else {
+    const rootElement = /** @type {HTMLElement} */ (root);
+    const settingsTriggerElement = /** @type {HTMLElement} */ (settingsTrigger);
+    const indicatorElement = /** @type {HTMLElement} */ (indicator);
+    const sessionLayerElement = /** @type {HTMLElement} */ (sessionLayer);
+    const sessionOverlayElement = /** @type {HTMLElement} */ (sessionOverlay);
+    const sessionTitleElement = /** @type {HTMLElement} */ (sessionTitle);
+    const sessionPrimaryElement = /** @type {HTMLElement} */ (sessionPrimary);
+    const sessionSkipElement = /** @type {HTMLElement} */ (sessionSkip);
+    const sessionEndElement = /** @type {HTMLElement} */ (sessionEnd);
+    const sessionCloseElement = /** @type {HTMLElement} */ (sessionClose);
+    const configLayerElement = /** @type {HTMLElement} */ (configLayer);
+    const configTitleElement = /** @type {HTMLElement} */ (configTitle);
+    const focusOptionsElement = /** @type {HTMLElement} */ (focusOptions);
+    const breakOptionsElement = /** @type {HTMLElement} */ (breakOptions);
+    const focusCustomElement = /** @type {HTMLInputElement} */ (focusCustom);
+    const configCancelElement = /** @type {HTMLElement} */ (configCancel);
+    const configConfirmElement = /** @type {HTMLElement} */ (configConfirm);
+    const completeLayerElement = /** @type {HTMLElement} */ (completeLayer);
+    const completeTitleElement = /** @type {HTMLElement} */ (completeTitle);
+    const completeActionsElement = /** @type {HTMLElement} */ (completeActions);
+    const completePrimaryElement = /** @type {HTMLElement} */ (completePrimary);
+    const completeDismissElement = /** @type {HTMLElement} */ (completeDismiss);
+
+    const body = document.body;
+    let state = normalizePomodoroState(readPomodoroState());
+    let configMode = 'start';
+    let selectedBreak = state.prefs.breakMinutes;
+    let selectedFocusMode = ['25', '45', '60'].includes(String(state.prefs.focusMinutes))
+      ? String(state.prefs.focusMinutes)
+      : 'custom';
+    let focusedCustomValue =
+      selectedFocusMode === 'custom' ? String(state.prefs.focusMinutes) : String(defaultPomodoroPrefs.focusMinutes);
+    let openDialog = null;
+    let lastActiveElement = null;
+    let timer = null;
+
+    const isReadingPage = () => document.body.dataset.wikiPageKind === 'document';
+    const isFocusMode = () => body.dataset.readingFocusMode === 'true';
+
+    const syncState = () => {
+      state = normalizePomodoroState(state);
+      writePomodoroState(state);
+      window.__wikiPomodoroSnapshot = () => getSnapshot();
+      window.__wikiPomodoroHistory = () => state.history.slice(0, POMODORO_HISTORY_LIMIT);
+      if (state.session && state.dialog?.kind !== 'completion') {
+        startTimer();
+      } else {
+        stopTimer();
+      }
+      window.dispatchEvent(new CustomEvent('robotics:pomodoro-change'));
+    };
+
+    const getRunningRemaining = () => {
+      if (!state.session) return null;
+      if (state.session.pausedRemainingMs !== null) return state.session.pausedRemainingMs;
+      return Math.max(0, state.session.phaseEndsAt - Date.now());
+    };
+
+    const getSnapshot = () => {
+      if (state.dialog?.kind === 'setup') {
+        return {
+          status: 'setup',
+          phase: null,
+          dialogKind: 'setup',
+          remainingMs: null,
+          canStart: false,
+          canPause: false,
+          canResume: false,
+          canEnd: false,
+        };
+      }
+
+      if (state.dialog?.kind === 'completion') {
+        return {
+          status: 'completion',
+          phase: state.dialog.phase,
+          dialogKind: 'completion',
+          remainingMs: null,
+          canStart: false,
+          canPause: false,
+          canResume: false,
+          canEnd: false,
+        };
+      }
+
+      if (!state.session) {
+        return {
+          status: 'idle',
+          phase: null,
+          dialogKind: null,
+          remainingMs: null,
+          canStart: true,
+          canPause: false,
+          canResume: false,
+          canEnd: false,
+        };
+      }
+
+      const remainingMs = getRunningRemaining() ?? 0;
+
+      if (state.session.pausedRemainingMs !== null) {
+        return {
+          status: 'paused',
+          phase: state.session.phase,
+          dialogKind: null,
+          remainingMs,
+          canStart: false,
+          canPause: false,
+          canResume: true,
+          canEnd: true,
+        };
+      }
+
+      return {
+        status: 'running',
+        phase: state.session.phase,
+        dialogKind: null,
+        remainingMs,
+        canStart: false,
+        canPause: true,
+        canResume: false,
+        canEnd: true,
+      };
+    };
+
+    const setIndicator = () => {
+      const snapshot = getSnapshot();
+      let label = 'Focus';
+
+      if (snapshot.status === 'running' || snapshot.status === 'paused') {
+        const phaseLabel = state.session?.phase === 'break' ? 'Break' : 'Focus';
+        label = `${phaseLabel} · ${formatPomodoroCountdown(snapshot.remainingMs ?? 0)}`;
+      } else if (snapshot.status === 'setup' || snapshot.status === 'completion') {
+        label = 'Focus';
+      }
+
+      if (isFocusMode() && (snapshot.status === 'running' || snapshot.status === 'paused')) {
+        indicatorElement.textContent = label;
+        indicatorElement.style.color = 'var(--faint)';
+        indicatorElement.style.fontSize = '0.72rem';
+        return;
+      }
+
+      if (isFocusMode() && snapshot.status === 'idle') {
+        indicatorElement.textContent = 'Focus';
+        indicatorElement.style.color = 'var(--faint)';
+        indicatorElement.style.fontSize = '0.72rem';
+        return;
+      }
+
+      if (snapshot.status === 'idle') {
+        indicatorElement.textContent = 'Focus';
+      } else if (snapshot.status === 'paused') {
+        indicatorElement.textContent = label;
+      } else if (snapshot.status === 'running') {
+        indicatorElement.textContent = label;
+      } else {
+        indicatorElement.textContent = label;
+      }
+    };
+
+    const setButtonState = (button, active) => {
+      button.dataset.active = active ? 'true' : 'false';
+    };
+
+    const updatePresetButtons = () => {
+      const focusButtons = Array.from(focusOptionsElement.querySelectorAll('[data-pomodoro-focus-option]'));
+      focusButtons.forEach((button) => {
+        const value = button.getAttribute('data-value');
+        const active = value === selectedFocusMode || (selectedFocusMode === 'custom' && value === 'custom');
+        setButtonState(button, active);
+      });
+
+      const breakButtons = Array.from(breakOptionsElement.querySelectorAll('[data-pomodoro-break-option]'));
+      breakButtons.forEach((button) => {
+        const value = button.getAttribute('data-value');
+        setButtonState(button, value === String(selectedBreak));
+      });
+    };
+
+    const setConfigMode = (mode) => {
+      configMode = mode;
+      configTitleElement.textContent = mode === 'settings' ? 'Pomodoro Settings' : 'Start Focus Session';
+      configConfirmElement.textContent = mode === 'settings' ? 'Save' : 'Start';
+    };
+
+    const isActivationSuppressed = () => performance.now() < (window.__wikiPomodoroSuppressActivationUntil || 0);
+
+    const setConfigSelection = (focusMinutes, breakMinutes) => {
+      selectedBreak = breakMinutes;
+      selectedFocusMode = ['25', '45', '60'].includes(String(focusMinutes)) ? String(focusMinutes) : 'custom';
+      focusedCustomValue = String(focusMinutes);
+      focusCustomElement.hidden = selectedFocusMode !== 'custom';
+      focusCustomElement.value = focusedCustomValue;
+      updatePresetButtons();
+      writePomodoroState(state);
+    };
+
+    const renderConfig = () => {
+      focusCustomElement.hidden = selectedFocusMode !== 'custom';
+      focusCustomElement.value = focusedCustomValue;
+      updatePresetButtons();
+      configLayerElement.hidden = false;
+      openDialog = 'config';
+      lastActiveElement = document.activeElement;
+      configConfirmElement.focus?.();
+    };
+
+    const closeConfig = () => {
+      configLayerElement.hidden = true;
+      openDialog = null;
+      if (lastActiveElement instanceof HTMLElement) {
+        lastActiveElement.focus?.();
+      }
+    };
+
+    const updateSessionControls = () => {
+      const snapshot = getSnapshot();
+      if (!state.session) return;
+
+      const phaseLabel = state.session.phase === 'break' ? 'Break' : 'Focus';
+      const remainingLabel =
+        snapshot.status === 'paused' ? 'Paused' : formatPomodoroCountdown(snapshot.remainingMs ?? 0);
+      sessionTitleElement.textContent = `${phaseLabel} · ${remainingLabel}`;
+
+      const paused = snapshot.status === 'paused';
+      const isBreak = state.session.phase === 'break';
+      sessionPrimaryElement.textContent = paused ? 'Resume' : 'Pause';
+      sessionSkipElement.hidden = !isBreak;
+      sessionSkipElement.textContent = 'Skip Break';
+      sessionEndElement.textContent = 'End Session';
+      sessionCloseElement.textContent = 'Close';
+    };
+
+    const renderSessionControls = () => {
+      if (!state.session) return;
+      updateSessionControls();
+      sessionLayerElement.hidden = false;
+      openDialog = 'session';
+      lastActiveElement = document.activeElement;
+      sessionPrimaryElement.focus?.();
+    };
+
+    const closeSessionControls = (restoreFocus = true) => {
+      sessionLayerElement.hidden = true;
+      if (openDialog === 'session') {
+        openDialog = null;
+      }
+      if (restoreFocus && lastActiveElement instanceof HTMLElement) {
+        lastActiveElement.focus?.();
+      }
+    };
+
+    const renderCompletion = () => {
+      const phase = state.dialog?.kind === 'completion' ? state.dialog.phase : 'focus';
+      completeTitleElement.textContent =
+        phase === 'focus' ? '✓ Focus complete' : '✓ Break complete';
+      completePrimaryElement.hidden = phase !== 'focus';
+      completePrimaryElement.textContent = phase === 'focus' ? 'Start Break' : 'Start Focus';
+      completeActionsElement.style.gap = '0.5rem';
+      completeLayerElement.hidden = false;
+      openDialog = 'completion';
+      lastActiveElement = document.activeElement;
+      (phase === 'focus' ? completePrimaryElement : completeDismissElement).focus?.();
+    };
+
+    const closeCompletion = () => {
+      completeLayerElement.hidden = true;
+      openDialog = null;
+      if (lastActiveElement instanceof HTMLElement) {
+        lastActiveElement.focus?.();
+      }
+    };
+
+    const pushHistory = (completed, cancelled, endedPhase) => {
+      const now = Date.now();
+      const session = state.session;
+      if (!session) return;
+
+      const entry = createPomodoroHistoryEntry({
+        date: now,
+        focusMinutes: session.focusMinutes,
+        breakMinutes: session.breakMinutes,
+        pagesVisited: session.pagesVisited,
+        completed,
+        cancelled,
+        endedPhase,
+      });
+
+      state.history = trimPomodoroHistory([entry, ...state.history]);
+    };
+
+    const recordPageVisit = () => {
+      const session = state.session;
+      if (!session || state.dialog?.kind === 'setup') return;
+      if (!isReadingPage()) return;
+
+      const href = `${window.location.pathname}${window.location.search}`;
+      const title = document.body.dataset.wikiPageTitle || document.title.replace(/\s*·\s*Robotics Wiki\s*$/, '').trim();
+      const path = document.body.dataset.wikiPagePath || '';
+      if (!href || !title) return;
+
+      if (session.pagesVisited.some((page) => page.href === href)) return;
+      session.pagesVisited.unshift(buildPomodoroPageVisit({ href, title, path }));
+      state.session = session;
+    };
+
+    const save = () => {
+      writePomodoroState(state);
+      syncState();
+      setIndicator();
+    };
+
+    const clearSession = () => {
+      state.session = null;
+    };
+
+    const finishCurrentPhaseIfNeeded = () => {
+      if (!state.session || state.session.pausedRemainingMs !== null) return;
+      const now = Date.now();
+      if (now < state.session.phaseEndsAt) return;
+
+      if (state.session.phase === 'focus') {
+        state.session.pausedRemainingMs = null;
+        state.dialog = { kind: 'completion', phase: 'focus' };
+        state.session.phaseEndsAt = now;
+        state.session.phaseStartedAt = now;
+      } else {
+        pushHistory(true, false, 'break');
+        clearSession();
+        state.dialog = { kind: 'completion', phase: 'break' };
+      }
+    };
+
+    const tick = () => {
+      finishCurrentPhaseIfNeeded();
+      save();
+      if (state.dialog?.kind === 'completion') {
+        if (openDialog === 'session') {
+          closeSessionControls(false);
+        }
+        if (openDialog !== 'completion') {
+          openCompletion();
+        } else {
+          renderCompletion();
+        }
+        return;
+      }
+
+      if (openDialog === 'session') {
+        updateSessionControls();
+      }
+    };
+
+    const startTimer = () => {
+      if (timer) return;
+      timer = window.setInterval(tick, 1000);
+    };
+
+    const stopTimer = () => {
+      if (!timer) return;
+      window.clearInterval(timer);
+      timer = null;
+    };
+
+    const openSetup = (mode) => {
+      if (state.dialog?.kind === 'completion') return;
+      window.__wikiPomodoroSuppressKeydownUntil = performance.now() + 250;
+      window.__wikiPomodoroSuppressActivationUntil = performance.now() + 250;
+      setConfigMode(mode);
+      setConfigSelection(state.prefs.focusMinutes, state.prefs.breakMinutes);
+      state.dialog = { kind: 'setup', mode, focusMinutes: state.prefs.focusMinutes, breakMinutes: state.prefs.breakMinutes };
+      syncState();
+      renderConfig();
+    };
+
+    const openTimerDialog = () => {
+      if (state.session) {
+        renderSessionControls();
+        return;
+      }
+
+      openSetup('start');
+    };
+
+    const openCompletion = () => {
+      if (state.dialog?.kind !== 'completion') return;
+      syncState();
+      renderCompletion();
+    };
+
+    const dismissCompletion = () => {
+      const phase = state.dialog?.kind === 'completion' ? state.dialog.phase : 'focus';
+
+      if (phase === 'focus' && state.session) {
+        pushHistory(true, false, 'focus');
+        clearSession();
+      }
+
+      state.dialog = null;
+      syncState();
+      closeCompletion();
+      setIndicator();
+    };
+
+    const beginSession = () => {
+      const focusMinutes = selectedFocusMode === 'custom' ? Number(focusedCustomValue) || state.prefs.focusMinutes : Number(selectedFocusMode);
+      const breakMinutes = selectedBreak;
+
+      state.prefs = { focusMinutes, breakMinutes };
+      state.session = {
+        id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        startedAt: Date.now(),
+        phase: 'focus',
+        phaseStartedAt: Date.now(),
+        phaseEndsAt: Date.now() + focusMinutes * 60 * 1000,
+        pausedRemainingMs: null,
+        pagesVisited: [],
+        focusMinutes,
+        breakMinutes,
+      };
+      state.dialog = null;
+      syncState();
+      recordPageVisit();
+      closeConfig();
+      startTimer();
+      setIndicator();
+    };
+
+    const saveSettings = () => {
+      const focusMinutes = selectedFocusMode === 'custom' ? Number(focusedCustomValue) || state.prefs.focusMinutes : Number(selectedFocusMode);
+      const breakMinutes = selectedBreak;
+
+      state.prefs = { focusMinutes, breakMinutes };
+      state.dialog = null;
+      syncState();
+      closeConfig();
+    };
+
+    const pauseTimer = () => {
+      if (!state.session || state.session.pausedRemainingMs !== null || state.dialog) return;
+      state.session.pausedRemainingMs = Math.max(0, state.session.phaseEndsAt - Date.now());
+      syncState();
+      setIndicator();
+      if (openDialog === 'session') {
+        updateSessionControls();
+      }
+    };
+
+    const resumeTimer = () => {
+      if (!state.session || state.session.pausedRemainingMs === null || state.dialog) return;
+      const remaining = state.session.pausedRemainingMs;
+      state.session.pausedRemainingMs = null;
+      state.session.phaseEndsAt = Date.now() + remaining;
+      syncState();
+      setIndicator();
+      if (openDialog === 'session') {
+        updateSessionControls();
+      }
+    };
+
+    const endSession = () => {
+      if (!state.session) return;
+      const endedPhase = state.session.phase;
+      pushHistory(false, true, endedPhase);
+      state.session = null;
+      state.dialog = null;
+      syncState();
+      closeSessionControls(false);
+      closeConfig();
+      closeCompletion();
+      setIndicator();
+    };
+
+    const startBreak = () => {
+      if (!state.session || state.dialog?.kind !== 'completion' || state.dialog.phase !== 'focus') return;
+      state.dialog = null;
+      state.session.phase = 'break';
+      state.session.phaseStartedAt = Date.now();
+      state.session.phaseEndsAt = Date.now() + state.session.breakMinutes * 60 * 1000;
+      state.session.pausedRemainingMs = null;
+      syncState();
+      closeCompletion();
+      startTimer();
+      setIndicator();
+    };
+
+    const skipBreak = () => {
+      if (!state.session || state.session.phase !== 'break') return;
+      state.session.phase = 'focus';
+      state.session.phaseStartedAt = Date.now();
+      state.session.phaseEndsAt = Date.now() + state.session.focusMinutes * 60 * 1000;
+      state.session.pausedRemainingMs = null;
+      syncState();
+      closeSessionControls(false);
+      startTimer();
+      setIndicator();
+    };
+
+    const cancelConfig = () => {
+      state.dialog = null;
+      syncState();
+      closeConfig();
+    };
+
+    settingsTriggerElement.addEventListener('click', () => {
+      openTimerDialog();
+    });
+
+    const onKeydown = (event) => {
+      if (performance.now() < (window.__wikiPomodoroSuppressKeydownUntil || 0)) {
+        return;
+      }
+      if (isActivationSuppressed()) {
+        return;
+      }
+
+      if (openDialog === 'config') {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          cancelConfig();
+          return;
+        }
+
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          if (configMode === 'settings') {
+            saveSettings();
+          } else {
+            beginSession();
+          }
+        }
+      }
+
+      if (openDialog === 'completion') {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          dismissCompletion();
+        }
+      }
+    };
+
+    focusOptionsElement.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('[data-pomodoro-focus-option]');
+      if (!(button instanceof HTMLElement)) return;
+      const value = button.getAttribute('data-value');
+      if (!value) return;
+
+      selectedFocusMode = value;
+      if (value === 'custom') {
+        focusCustomElement.hidden = false;
+        focusCustomElement.focus?.();
+        focusedCustomValue = String(focusCustomElement.value || state.prefs.focusMinutes || defaultPomodoroPrefs.focusMinutes);
+      } else {
+        focusCustomElement.hidden = true;
+        focusedCustomValue = value;
+      }
+      updatePresetButtons();
+      syncState();
+    });
+
+    breakOptionsElement.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('[data-pomodoro-break-option]');
+      if (!(button instanceof HTMLElement)) return;
+      const value = button.getAttribute('data-value');
+      if (!value) return;
+
+      selectedBreak = Number(value);
+      updatePresetButtons();
+      syncState();
+    });
+
+    focusCustomElement.addEventListener('input', () => {
+      focusedCustomValue = focusCustomElement.value;
+      syncState();
+    });
+
+    configOverlay.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      cancelConfig();
+    });
+    configCancelElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      cancelConfig();
+    });
+    configConfirmElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      if (configMode === 'settings') {
+        saveSettings();
+      } else {
+        beginSession();
+      }
+    });
+
+    completeOverlay.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      dismissCompletion();
+    });
+    completeDismissElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      dismissCompletion();
+    });
+    completePrimaryElement.addEventListener('click', () => {
+      if (isActivationSuppressed()) return;
+      if (state.dialog?.kind !== 'completion') return;
+      if (state.dialog.phase === 'focus') {
+        startBreak();
+      } else {
+        beginSession();
+      }
+    });
+
+    sessionOverlayElement.addEventListener('click', () => {
+      closeSessionControls();
+    });
+    sessionPrimaryElement.addEventListener('click', () => {
+      if (!state.session) return;
+      if (state.session.pausedRemainingMs !== null) {
+        resumeTimer();
+        return;
+      }
+      pauseTimer();
+    });
+    sessionSkipElement.addEventListener('click', () => {
+      skipBreak();
+    });
+    sessionEndElement.addEventListener('click', () => {
+      endSession();
+    });
+    sessionCloseElement.addEventListener('click', () => {
+      closeSessionControls();
+    });
+
+    window.addEventListener('keydown', onKeydown, true);
+    window.addEventListener('robotics:pomodoro-change', () => {
+      setIndicator();
+    });
+    window.addEventListener('robotics:reading-settings-change', () => {
+      setIndicator();
+    });
+
+    window.__wikiPomodoroSnapshot = () => getSnapshot();
+    window.__wikiPomodoroHistory = () => state.history.slice(0, POMODORO_HISTORY_LIMIT);
+    window.__wikiOpenPomodoroSetup = () => openSetup('start');
+    window.__wikiOpenPomodoroSettings = () => openSetup('settings');
+    window.__wikiPomodoroPause = pauseTimer;
+    window.__wikiPomodoroResume = resumeTimer;
+    window.__wikiPomodoroEndSession = endSession;
+    window.__wikiPomodoroDismissDialog = () => {
+      if (state.dialog?.kind === 'completion') dismissCompletion();
+      else cancelConfig();
+    };
+    window.__wikiPomodoroStartBreak = startBreak;
+    window.__wikiPomodoroStartSession = beginSession;
+
+    // Restore any in-progress session or visible dialog.
+    finishCurrentPhaseIfNeeded();
+    if (state.session) {
+      recordPageVisit();
+    }
+    if (state.dialog?.kind === 'setup') {
+      configMode = state.dialog.mode;
+      selectedFocusMode = ['25', '45', '60'].includes(String(state.dialog.focusMinutes))
+        ? String(state.dialog.focusMinutes)
+        : 'custom';
+      focusedCustomValue = String(state.dialog.focusMinutes);
+      selectedBreak = state.dialog.breakMinutes;
+      setConfigMode(state.dialog.mode);
+      setConfigSelection(state.dialog.focusMinutes, state.dialog.breakMinutes);
+      renderConfig();
+    } else if (state.dialog?.kind === 'completion') {
+      openCompletion();
+    } else if (state.session) {
+      startTimer();
+    }
+
+    setIndicator();
+    syncState();
+  }
+</script>

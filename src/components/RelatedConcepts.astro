@@ -1,0 +1,25 @@
+---
+const { items = [] } = Astro.props as {
+  items?: Array<{
+    label: string;
+    href: string;
+  }>;
+};
+---
+
+{items.length > 0 && (
+  <section class="mt-14 border-t border-[color:var(--line)] pt-8" data-reading-ui="related-concepts">
+    <h2 class="text-[0.95rem] font-medium tracking-[-0.01em] text-[color:var(--faint)]">
+      Related concepts
+    </h2>
+    <ul class="mt-4 grid gap-2">
+      {items.map((item) => (
+        <li>
+          <a class="quiet-link block py-1 text-[1rem] leading-7" href={item.href}>
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

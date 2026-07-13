@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LauncherScreen from '../../components/LauncherScreen.astro';
+import { allSections, getNavigatorData, getSectionMeta } from '../../lib/wiki';
+
+export function getStaticPaths() {
+  return allSections.map((section) => ({
+    params: { section: section.key },
+  }));
+}
+
+const { section } = Astro.params;
+const meta = getSectionMeta(section);
+const navigator = getNavigatorData([section]);
+---
+
+<BaseLayout
+  title={meta?.label ?? section}
+  pathname="/"
+  pageMeta={{ href: `/${section}/`, title: navigator.title, path: navigator.backLabel === 'Home' ? '' : navigator.backLabel, kind: 'navigator' }}
+>
+  <LauncherScreen
+    title={navigator.title}
+    backLabel={navigator.backLabel}
+    backHref={navigator.backHref}
+    initialActiveIndex={navigator.items.length > 0 ? 1 : 0}
+    mode="top"
+    items={navigator.items.map((item) => ({
+      label: item.label,
+      href: item.href,
+    }))}
+  />
+</BaseLayout>
