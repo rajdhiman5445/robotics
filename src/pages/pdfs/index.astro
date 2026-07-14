@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LauncherScreen from '../../components/LauncherScreen.astro';
+import { getPdfEntries } from '../../lib/pdfs';
+
+const items = getPdfEntries();
+---
+
+<BaseLayout
+  title="PDFs · Robotics Wiki"
+  pathname="/"
+  pageMeta={{ href: '/pdfs/', title: 'PDFs', path: '', kind: 'navigator' }}
+>
+  <LauncherScreen
+    title="PDFs"
+    backLabel="Home"
+    backHref="/"
+    initialActiveIndex={items.length > 0 ? 1 : 0}
+    mode="top"
+    items={items.map((item) => ({
+      label: item.title,
+      href: item.href,
+    }))}
+  />
+</BaseLayout>

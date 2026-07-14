@@ -1,0 +1,39 @@
+---
+import { existsSync } from 'node:fs';
+import PdfLayout from '../../layouts/PdfLayout.astro';
+import { getPdfBySlug, getPdfEntries, getPdfTrail } from '../../lib/pdfs';
+
+export function getStaticPaths() {
+  return getPdfEntries().map((pdf) => ({
+    params: { slug: pdf.slug.join('/') },
+    props: { pdf },
+  }));
+}
+
+const pdf = Astro.props?.pdf ?? getPdfBySlug(Astro.params.slug ?? '');
+
+if (!pdf) {
+  throw new Error(`Unknown PDF route: ${Astro.params.slug ?? ''}`);
+}
+
+const fileExists = existsSync(pdf.filePath);
+
+if (!fileExists) {
+  throw new Error(`Missing PDF file: ${pdf.filePath}`);
+}
+
+const breadcrumbs = getPdfTrail(pdf);
+---
+
+<PdfLayout
+  title={pdf.title}
+  pathname={pdf.href}
+  source={pdf.assetHref}
+  breadcrumbs={breadcrumbs}
+  pageMeta={{
+    href: pdf.href,
+    title: pdf.title,
+    path: pdf.path,
+    kind: 'document',
+  }}
+/>

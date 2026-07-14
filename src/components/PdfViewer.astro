@@ -1,0 +1,902 @@
+---
+const {
+  source,
+  storageKey,
+  title,
+} = Astro.props as {
+  source: string;
+  storageKey: string;
+  title: string;
+};
+---
+
+<section
+  class="grid gap-4"
+  tabindex="0"
+  data-pdf-reader-root
+  data-pdf-source={source}
+  data-pdf-storage-key={storageKey}
+  aria-label={title}
+>
+  <div class="grid gap-4" data-pdf-pages></div>
+
+  <p class="hidden text-[0.9rem] text-[color:var(--faint)]" data-pdf-status aria-live="polite"></p>
+  <p class="hidden text-[0.9rem] text-[color:var(--faint)]" data-pdf-error aria-live="polite"></p>
+</section>
+
+<script>
+  import * as pdfjsLib from 'pdfjs-dist/build/pdf.mjs';
+  import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+
+  const root = document.querySelector('[data-pdf-reader-root]');
+  if (!root) {
+    // Nothing to mount.
+  } else {
+    const rootElement = /** @type {HTMLElement} */ (root);
+    const pagesContainer = rootElement.querySelector('[data-pdf-pages]');
+    const statusNode = rootElement.querySelector('[data-pdf-status]');
+    const errorNode = rootElement.querySelector('[data-pdf-error]');
+    const source = rootElement.getAttribute('data-pdf-source') || '';
+    const storageKey = rootElement.getAttribute('data-pdf-storage-key') || '';
+    const zoomButtons = Array.from(document.querySelectorAll('[data-pdf-zoom-choice]'));
+    const zoomLabel = document.querySelector('[data-pdf-zoom-label]');
+    const pageLabel = document.querySelector('[data-pdf-page-label]');
+    const pageCountLabel = document.querySelector('[data-pdf-page-count]');
+    const titleLabel = document.querySelector('[data-pdf-document-title]');
+    const authorLabel = document.querySelector('[data-pdf-document-author]');
+    const contentsContainer = document.querySelector('[data-pdf-contents]');
+
+    const zoomModes = ['fit-width', '100', '125', '150', '200'];
+    const zoomFactors = {
+      '100': 1,
+      '125': 1.25,
+      '150': 1.5,
+      '200': 2,
+    };
+
+    const defaultState = {
+      zoom: 'fit-width',
+      scrollY: 0,
+      pageNumber: 1,
+      pageFraction: 0,
+    };
+
+    const readState = () => {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return { ...defaultState };
+        const parsed = JSON.parse(raw);
+        return {
+          zoom: zoomModes.includes(parsed.zoom) ? parsed.zoom : defaultState.zoom,
+          scrollY: typeof parsed.scrollY === 'number' ? parsed.scrollY : defaultState.scrollY,
+          pageNumber: typeof parsed.pageNumber === 'number' ? parsed.pageNumber : defaultState.pageNumber,
+          pageFraction: typeof parsed.pageFraction === 'number' ? parsed.pageFraction : defaultState.pageFraction,
+        };
+      } catch {
+        return { ...defaultState };
+      }
+    };
+
+    const persistState = () => {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(state));
+      } catch {
+        // Ignore persistence failures.
+      }
+    };
+
+    let state = readState();
+    let pdfDoc = null;
+    let pageData = [];
+    let shellData = [];
+    let observer = null;
+    let renderGeneration = 0;
+    let layoutWidth = 0;
+    let currentPage = 1;
+    let updateTimer = 0;
+    let restoring = false;
+    let pageLabelDirty = false;
+    let outlineItems = [];
+    let documentInfo = {
+      title: rootElement.getAttribute('aria-label') || '',
+      author: '—',
+    };
+
+    const isTypingTarget = (target) => {
+      if (!(target instanceof HTMLElement)) return false;
+      if (target.isContentEditable) return true;
+      const tag = target.tagName;
+      return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+    };
+
+    const getZoomLabel = () => {
+      if (state.zoom === 'fit-width') return 'Fit Width';
+      return `${state.zoom}%`;
+    };
+
+    const currentScaleForPage = (page) => {
+      if (!page) return 1;
+      const available = Math.max(320, layoutWidth || pagesContainer?.clientWidth || 0);
+      const fitWidthScale = available / page.width;
+      if (state.zoom === 'fit-width') {
+        return fitWidthScale;
+      }
+
+      return fitWidthScale * (zoomFactors[state.zoom] ?? 1);
+    };
+
+    const setStatus = (message) => {
+      if (!statusNode) return;
+      statusNode.textContent = message;
+      statusNode.hidden = !message;
+    };
+
+    const setError = (message) => {
+      if (!errorNode) return;
+      errorNode.textContent = message;
+      errorNode.hidden = !message;
+      if (message) {
+        setStatus('');
+      }
+    };
+
+    const syncZoomButtons = () => {
+      zoomButtons.forEach((button) => {
+        const value = button.getAttribute('data-pdf-zoom-choice');
+        const active = value === state.zoom;
+        button.setAttribute('aria-pressed', String(active));
+        button.classList.toggle('text-[color:var(--text)]', active);
+        button.classList.toggle('font-medium', active);
+        button.classList.toggle('quiet-link', !active);
+      });
+
+      if (zoomLabel) {
+        zoomLabel.textContent = getZoomLabel();
+      }
+    };
+
+    const syncDocumentInfo = () => {
+      if (titleLabel) {
+        titleLabel.textContent = documentInfo.title || title;
+      }
+
+      if (authorLabel) {
+        authorLabel.textContent = documentInfo.author || '—';
+      }
+    };
+
+    const syncOutlineActive = () => {
+      if (!outlineItems.length) return;
+
+      let activeItem = null;
+      let activePage = -1;
+
+      for (const item of outlineItems) {
+        if (item.pageIndex === null) continue;
+        if (item.pageIndex <= currentPage && item.pageIndex >= activePage) {
+          activePage = item.pageIndex;
+          activeItem = item;
+        }
+      }
+
+      outlineItems.forEach((item) => {
+        const active = item === activeItem;
+        item.element.setAttribute('aria-current', active ? 'true' : 'false');
+        item.element.classList.toggle('text-[color:var(--text)]', active);
+        item.element.classList.toggle('font-medium', active);
+        item.element.classList.toggle('text-[color:var(--muted)]', !active);
+      });
+    };
+
+    const updateSidebarStatus = () => {
+      if (pageLabel && !pageLabel.matches(':focus')) {
+        pageLabel.value = String(currentPage);
+      }
+
+      if (pageCountLabel && pdfDoc) {
+        pageCountLabel.textContent = String(pdfDoc.numPages);
+      }
+
+      if (titleLabel) {
+        titleLabel.textContent = documentInfo.title || rootElement.getAttribute('aria-label') || '';
+      }
+
+      if (authorLabel) {
+        authorLabel.textContent = documentInfo.author || '—';
+      }
+
+      syncOutlineActive();
+    };
+
+    const setDocumentMetadata = (metadata) => {
+      const info = metadata?.info ?? {};
+      const fallbackTitle = rootElement.getAttribute('aria-label') || '';
+      const pdfTitle = typeof info.Title === 'string' && info.Title.trim() ? info.Title.trim() : fallbackTitle;
+      const pdfAuthor = typeof info.Author === 'string' && info.Author.trim() ? info.Author.trim() : '—';
+
+      documentInfo = {
+        title: pdfTitle || fallbackTitle,
+        author: pdfAuthor,
+      };
+
+      syncDocumentInfo();
+    };
+
+    const clearOutline = (message) => {
+      outlineItems = [];
+      if (!contentsContainer) return;
+      contentsContainer.replaceChildren();
+
+      const empty = document.createElement('div');
+      empty.className = 'text-[0.92rem] leading-7 text-[color:var(--muted)]';
+      empty.textContent = message;
+      contentsContainer.appendChild(empty);
+    };
+
+    const resolveOutlinePageIndex = async (dest) => {
+      if (!pdfDoc || !dest) return null;
+
+      let target = dest;
+      if (typeof target === 'string') {
+        try {
+          target = await pdfDoc.getDestination(target);
+        } catch {
+          return null;
+        }
+      }
+
+      if (!Array.isArray(target) || target.length === 0) {
+        return null;
+      }
+
+      const first = target[0];
+      try {
+        if (first && typeof first === 'object') {
+          return (await pdfDoc.getPageIndex(first)) + 1;
+        }
+      } catch {
+        // Fall through to numeric handling below.
+      }
+
+      if (typeof first === 'number' && Number.isFinite(first)) {
+        return Math.max(1, Math.floor(first));
+      }
+
+      return null;
+    };
+
+    const createOutlineEntry = (entry, depth = 0) => {
+      if (!contentsContainer) return;
+
+      const row = document.createElement(entry.pageIndex ? 'button' : 'div');
+      row.className = 'block rounded-md px-2 py-1 text-left text-[0.92rem] leading-6 text-[color:var(--muted)] outline-none transition-colors duration-75 hover:bg-white/5 focus:outline-none';
+      row.style.paddingLeft = `${0.5 + depth * 0.85}rem`;
+
+      if (entry.pageIndex) {
+        row.type = 'button';
+        row.dataset.outlinePage = String(entry.pageIndex);
+        row.addEventListener('click', () => {
+          jumpToPage(entry.pageIndex);
+        });
+      } else {
+        row.classList.add('cursor-default');
+      }
+
+      row.textContent = entry.title;
+      contentsContainer.appendChild(row);
+
+      outlineItems.push({
+        element: row,
+        pageIndex: entry.pageIndex,
+      });
+
+      if (Array.isArray(entry.items)) {
+        for (const child of entry.items) {
+          createOutlineEntry(child, depth + 1);
+        }
+      }
+    };
+
+    const buildContents = async (outline) => {
+      if (!contentsContainer) return;
+
+      outlineItems = [];
+      contentsContainer.replaceChildren();
+
+      if (!outline || outline.length === 0) {
+        clearOutline('No outline available.');
+        return;
+      }
+
+      const roots = [];
+
+      const walk = async (item) => {
+        if (!item || typeof item.title !== 'string') return null;
+
+        const pageIndex = item.url ? null : await resolveOutlinePageIndex(item.dest);
+        const node = {
+          title: item.title,
+          pageIndex,
+          items: [],
+        };
+
+        if (Array.isArray(item.items) && item.items.length > 0) {
+          for (const child of item.items) {
+            const resolved = await walk(child);
+            if (resolved) {
+              node.items.push(resolved);
+            }
+          }
+        }
+
+        return node;
+      };
+
+      for (const item of outline) {
+        const resolved = await walk(item);
+        if (resolved) {
+          roots.push(resolved);
+        }
+      }
+
+      if (!roots.length) {
+        clearOutline('No outline available.');
+        return;
+      }
+
+      for (const rootItem of roots) {
+        createOutlineEntry(rootItem, 0);
+      }
+
+      syncOutlineActive();
+    };
+
+    const updateCurrentPageFromViewport = () => {
+      if (!shellData.length) return;
+
+      const viewportTop = 0;
+      const viewportBottom = window.innerHeight;
+      let bestIndex = currentPage;
+      let bestScore = -1;
+
+      for (const item of shellData) {
+        const rect = item.shell.getBoundingClientRect();
+        const visibleTop = Math.max(rect.top, viewportTop);
+        const visibleBottom = Math.min(rect.bottom, viewportBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+        if (visibleHeight > bestScore) {
+          bestScore = visibleHeight;
+          bestIndex = item.pageIndex;
+        }
+      }
+
+      if (bestIndex !== currentPage) {
+        currentPage = bestIndex;
+        state.pageNumber = bestIndex;
+        const item = shellData[bestIndex - 1];
+        if (item) {
+          const top = item.shell.offsetTop;
+          const height = Math.max(1, item.shell.offsetHeight);
+          const scrollY = window.scrollY + 24;
+          state.pageFraction = Math.min(1, Math.max(0, (scrollY - top) / height));
+          state.scrollY = window.scrollY;
+        }
+        updateSidebarStatus();
+      }
+    };
+
+    const computeCurrentPage = () => {
+      if (!shellData.length) return 1;
+      const scrollY = window.scrollY + 24;
+      let page = 1;
+
+      for (const item of shellData) {
+        if (item.shell.offsetTop <= scrollY) {
+          page = item.pageIndex;
+        } else {
+          break;
+        }
+      }
+
+      const item = shellData[page - 1];
+      if (!item) return page;
+
+      const top = item.shell.offsetTop;
+      const height = Math.max(1, item.shell.offsetHeight);
+      const fraction = Math.min(1, Math.max(0, (scrollY - top) / height));
+
+      state.pageNumber = page;
+      state.pageFraction = fraction;
+      state.scrollY = window.scrollY;
+      currentPage = page;
+      updateSidebarStatus();
+      return page;
+    };
+
+    const clampPageNumber = (value) => {
+      const maxPages = pdfDoc?.numPages ?? shellData.length ?? 1;
+      const parsed = Number.parseInt(String(value), 10);
+      if (!Number.isFinite(parsed)) return currentPage;
+      return Math.min(maxPages, Math.max(1, parsed));
+    };
+
+    const jumpToPage = (pageNumber) => {
+      const page = clampPageNumber(pageNumber);
+      const item = shellData[page - 1];
+      if (!item) return;
+
+      currentPage = page;
+      state.pageNumber = page;
+      state.pageFraction = 0;
+      state.scrollY = item.shell.offsetTop;
+      updateSidebarStatus();
+      persistState();
+      restoring = true;
+      window.scrollTo({ top: item.shell.offsetTop, behavior: 'auto' });
+      window.requestAnimationFrame(() => {
+        restoring = false;
+        renderVisiblePages();
+      });
+    };
+
+    const schedulePersist = () => {
+      window.clearTimeout(updateTimer);
+      updateTimer = window.setTimeout(() => {
+        computeCurrentPage();
+        persistState();
+      }, 120);
+    };
+
+    const getTargetScrollTop = () => {
+      const item = shellData[state.pageNumber - 1];
+      if (item) {
+        const height = Math.max(1, item.shell.offsetHeight);
+        return item.shell.offsetTop + height * Math.min(1, Math.max(0, state.pageFraction));
+      }
+
+      return state.scrollY || 0;
+    };
+
+    const restoreScrollPosition = () => {
+      if (!shellData.length) return;
+      restoring = true;
+      const target = getTargetScrollTop();
+      window.scrollTo({ top: target, behavior: 'auto' });
+      window.requestAnimationFrame(() => {
+        restoring = false;
+        computeCurrentPage();
+        renderVisiblePages();
+      });
+    };
+
+    const renderPage = async (pageIndex) => {
+      const item = shellData[pageIndex - 1];
+      if (!item || !pdfDoc) return;
+
+      console.debug('[pdf] renderPage:start', {
+        pageIndex,
+        zoom: state.zoom,
+        renderedKey: item.renderedKey,
+        renderingKey: item.renderingKey,
+      });
+
+      let page;
+      try {
+        page = await pdfDoc.getPage(pageIndex);
+        console.debug('[pdf] getPage:ok', { pageIndex });
+      } catch (error) {
+        console.error('[pdf] getPage:failed', { pageIndex, error });
+        setError(`Unable to load page ${pageIndex}.`);
+        return;
+      }
+
+      const scale = currentScaleForPage(pageData[pageIndex - 1]);
+      const renderKey = `${state.zoom}:${scale.toFixed(4)}:${Math.min(window.devicePixelRatio || 1, 2)}`;
+      const viewport = page.getViewport({ scale });
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const renderViewport = page.getViewport({ scale: scale * dpr });
+
+      console.debug('[pdf] viewport', {
+        pageIndex,
+        scale,
+        viewportWidth: viewport.width,
+        viewportHeight: viewport.height,
+        renderViewportWidth: renderViewport.width,
+        renderViewportHeight: renderViewport.height,
+        dpr,
+      });
+
+      if (item.renderedKey === renderKey || item.renderingKey === renderKey) return;
+
+      const generation = renderGeneration;
+      if (item.renderingKey && item.renderingKey !== renderKey) {
+        item.renderTask?.cancel?.();
+      }
+      item.renderingKey = renderKey;
+
+      const canvas = item.canvas;
+      const context = canvas.getContext('2d', { alpha: false });
+
+      console.debug('[pdf] canvas', {
+        pageIndex,
+        canvasWidthBefore: canvas.width,
+        canvasHeightBefore: canvas.height,
+        attachedToDom: document.body.contains(canvas),
+        sameCanvasInShell: item.frame.contains(canvas),
+        hasContext: Boolean(context),
+      });
+
+      if (!context) {
+        console.error('[pdf] canvas:getContext failed', { pageIndex });
+        return;
+      }
+
+      canvas.width = Math.floor(renderViewport.width);
+      canvas.height = Math.floor(renderViewport.height);
+      canvas.style.width = `${viewport.width}px`;
+      canvas.style.height = `${viewport.height}px`;
+
+      item.frame.style.width = `${viewport.width}px`;
+      item.frame.style.height = `${viewport.height}px`;
+      item.scroller.style.height = `${viewport.height}px`;
+      item.shell.style.height = `${viewport.height}px`;
+      item.shell.dataset.pdfReady = 'true';
+
+      const renderTask = page.render({
+        canvasContext: context,
+        viewport: renderViewport,
+      });
+
+      item.renderTask = renderTask;
+      console.debug('[pdf] render:start', {
+        pageIndex,
+        canvasWidth: canvas.width,
+        canvasHeight: canvas.height,
+        sameCanvasInDom: document.body.contains(canvas),
+      });
+
+      if (!pdfDoc) return;
+
+      try {
+        await renderTask.promise;
+        console.debug('[pdf] render:success', {
+          pageIndex,
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height,
+        });
+      } catch (error) {
+        console.error('[pdf] render:failed', { pageIndex, error });
+        if (error?.name !== 'RenderingCancelledException') {
+          setError('Unable to render this PDF page.');
+        }
+      } finally {
+        if (generation === renderGeneration) {
+          item.renderedKey = renderKey;
+        }
+        if (item.renderingKey === renderKey) {
+          item.renderingKey = '';
+        }
+      }
+    };
+
+    const renderVisiblePages = () => {
+      const threshold = 1200;
+      for (const item of shellData) {
+        const rect = item.shell.getBoundingClientRect();
+        const visible = rect.bottom > -threshold && rect.top < window.innerHeight + threshold;
+        if (visible) {
+          void renderPage(item.pageIndex);
+        }
+      }
+
+      updateCurrentPageFromViewport();
+    };
+
+    const layoutPages = () => {
+      if (!shellData.length) return;
+
+      renderGeneration += 1;
+      layoutWidth = pagesContainer?.clientWidth || 0;
+
+      shellData.forEach((item, index) => {
+        const page = pageData[index];
+        if (!page) return;
+
+        const scale = currentScaleForPage(page);
+        const viewportWidth = page.width * scale;
+        const viewportHeight = page.height * scale;
+
+        item.shell.style.height = `${viewportHeight}px`;
+        item.shell.style.marginTop = index === 0 ? '0' : '1.5rem';
+        item.scroller.style.height = `${viewportHeight}px`;
+        item.frame.style.width = `${viewportWidth}px`;
+        item.frame.style.height = `${viewportHeight}px`;
+        item.frame.style.minHeight = `${viewportHeight}px`;
+        item.shell.dataset.pdfReady = item.renderedKey ? 'true' : 'false';
+      });
+
+      syncZoomButtons();
+      updateSidebarStatus();
+      renderVisiblePages();
+    };
+
+    const createPageShell = (index) => {
+      const shell = document.createElement('section');
+      shell.className = 'grid gap-3';
+      shell.dataset.pdfPage = String(index);
+
+      const scroller = document.createElement('div');
+      scroller.className = 'pdf-page-scroller overflow-x-auto overflow-y-hidden';
+
+      const frame = document.createElement('div');
+      frame.className =
+        'relative mx-auto overflow-hidden rounded-xl border border-[color:var(--line)] bg-[color:var(--bg-elevated)]';
+
+      const canvas = document.createElement('canvas');
+      canvas.className = 'block';
+      canvas.setAttribute('role', 'img');
+      canvas.setAttribute('aria-label', `Page ${index}`);
+
+      frame.appendChild(canvas);
+      scroller.appendChild(frame);
+      shell.replaceChildren(scroller);
+
+      return {
+        pageIndex: index,
+        shell,
+        frame,
+        scroller,
+        canvas,
+        renderedKey: '',
+        renderingKey: '',
+        renderTask: null,
+      };
+    };
+
+    const buildPages = async () => {
+      if (!pdfDoc || !pagesContainer) return;
+
+      pagesContainer.replaceChildren();
+      pageData = [];
+      shellData = [];
+
+      const totalPages = pdfDoc.numPages;
+      setStatus('Loading PDF…');
+
+      for (let index = 1; index <= totalPages; index += 1) {
+        const page = await pdfDoc.getPage(index);
+        const viewport = page.getViewport({ scale: 1 });
+        pageData.push({
+          width: viewport.width,
+          height: viewport.height,
+        });
+
+        const shell = createPageShell(index);
+        shellData.push(shell);
+        pagesContainer.appendChild(shell.shell);
+      }
+
+      currentPage = state.pageNumber;
+      updateSidebarStatus();
+      syncZoomButtons();
+      layoutPages();
+      setStatus('');
+      restoreScrollPosition();
+    };
+
+    const setZoom = (zoom) => {
+      if (!zoomModes.includes(zoom)) return;
+
+      computeCurrentPage();
+      state.zoom = zoom;
+      persistState();
+      layoutPages();
+      window.requestAnimationFrame(() => {
+        renderVisiblePages();
+        restoreScrollPosition();
+      });
+    };
+
+    const applyScrollStep = (delta) => {
+      window.scrollBy({ top: delta, behavior: 'smooth' });
+    };
+
+    const openDocument = async () => {
+      try {
+        setStatus('Loading PDF…');
+        const loadingTask = pdfjsLib.getDocument({
+          url: source,
+          withCredentials: false,
+          wasmUrl: '/pdfjs/wasm/',
+          cMapUrl: '/pdfjs/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: '/pdfjs/standard_fonts/',
+        });
+
+        pdfDoc = await loadingTask.promise;
+        await buildPages();
+
+        void (async () => {
+          const [outlineResult, metadataResult] = await Promise.allSettled([
+            pdfDoc.getOutline(),
+            pdfDoc.getMetadata(),
+          ]);
+
+          if (metadataResult.status === 'fulfilled') {
+            setDocumentMetadata(metadataResult.value);
+          }
+
+          if (outlineResult.status === 'fulfilled') {
+            await buildContents(outlineResult.value);
+          } else {
+            clearOutline('No outline available.');
+          }
+
+          updateSidebarStatus();
+        })();
+
+        const observerOptions = {
+          root: null,
+          rootMargin: '1200px 0px',
+          threshold: 0.01,
+        };
+
+        observer?.disconnect?.();
+        observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const index = Number(entry.target.getAttribute('data-pdf-page'));
+              if (!Number.isNaN(index)) {
+                void renderPage(index);
+              }
+            }
+          }
+        }, observerOptions);
+
+        shellData.forEach((item) => observer?.observe(item.shell));
+        renderVisiblePages();
+        setStatus('');
+      } catch (error) {
+        setError('Unable to open this PDF.');
+      }
+    };
+
+    zoomButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const zoom = button.getAttribute('data-pdf-zoom-choice');
+        if (zoom) setZoom(zoom);
+      });
+    });
+
+    if (pageLabel) {
+      pageLabel.addEventListener('focus', () => {
+        pageLabelDirty = true;
+      });
+
+      pageLabel.addEventListener('blur', () => {
+        if (!pageLabelDirty) return;
+        pageLabelDirty = false;
+        const nextPage = clampPageNumber(pageLabel.value);
+        pageLabel.value = String(nextPage);
+      });
+
+      pageLabel.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          pageLabelDirty = false;
+          jumpToPage(pageLabel.value);
+          pageLabel.blur();
+          return;
+        }
+
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          pageLabelDirty = false;
+          updateSidebarStatus();
+          pageLabel.blur();
+        }
+      });
+
+      pageLabel.addEventListener('input', () => {
+        pageLabelDirty = true;
+      });
+    }
+
+    window.addEventListener('scroll', () => {
+      if (restoring) return;
+      schedulePersist();
+      renderVisiblePages();
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      computeCurrentPage();
+      layoutPages();
+      window.requestAnimationFrame(() => {
+        restoreScrollPosition();
+      });
+    });
+
+    window.addEventListener('robotics:reading-settings-change', () => {
+      computeCurrentPage();
+      layoutPages();
+      window.requestAnimationFrame(() => {
+        restoreScrollPosition();
+      });
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.defaultPrevented) return;
+      if (document.body.dataset.commandPaletteOpen === 'true') return;
+      if (document.body.dataset.readingSettingsOpen === 'true') return;
+      if (isTypingTarget(event.target)) return;
+
+      if ((event.ctrlKey || event.metaKey) && (event.key === '+' || event.key === '=')) {
+        event.preventDefault();
+        const currentIndex = zoomModes.indexOf(state.zoom);
+        setZoom(zoomModes[Math.min(zoomModes.length - 1, Math.max(1, currentIndex + 1))]);
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key === '-') {
+        event.preventDefault();
+        const currentIndex = zoomModes.indexOf(state.zoom);
+        setZoom(zoomModes[Math.max(0, currentIndex - 1)]);
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key === '0') {
+        event.preventDefault();
+        setZoom('fit-width');
+        return;
+      }
+
+      if (event.key === 'PageDown') {
+        event.preventDefault();
+        applyScrollStep(window.innerHeight * 0.9);
+        return;
+      }
+
+      if (event.key === 'PageUp') {
+        event.preventDefault();
+        applyScrollStep(-window.innerHeight * 0.9);
+        return;
+      }
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        applyScrollStep(72);
+        return;
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        applyScrollStep(-72);
+        return;
+      }
+
+      if (event.key === 'Home') {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      if (event.key === 'End') {
+        event.preventDefault();
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+      }
+    }, true);
+
+    window.__wikiPdfOpen = () => {
+      rootElement.focus?.();
+      return true;
+    };
+
+    window.__wikiPdfSetZoom = setZoom;
+    window.__wikiPdfGetState = () => ({ ...state });
+
+    void openDocument();
+  }
+</script>

@@ -1,0 +1,122 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ScratchPad from '../components/ScratchPad.astro';
+import ReadingSettings from '../components/ReadingSettings.astro';
+import PdfViewer from '../components/PdfViewer.astro';
+import { allSections } from '../lib/wiki';
+
+const {
+  title,
+  pathname,
+  source,
+  breadcrumbs = [],
+  pageMeta,
+} = Astro.props as {
+  title: string;
+  pathname: string;
+  source: string;
+  breadcrumbs?: Array<{ label: string; href?: string }>;
+  pageMeta?: {
+    href: string;
+    title: string;
+    path?: string;
+    kind?: 'document' | 'navigator' | 'utility';
+  };
+};
+
+const scratchKey = pageMeta?.href ? `scratch:${pageMeta.href.replace(/\/$/, '') || '/'}` : '';
+---
+
+<BaseLayout
+  title={`${title} · Robotics Wiki`}
+  description={title}
+  pathname={pathname}
+  showHeader={false}
+  pageMeta={pageMeta}
+>
+  <div
+    class="mx-auto grid max-w-[1600px] gap-0 lg:grid-cols-[220px_minmax(0,1fr)_220px]"
+    data-reading-ui="doc-grid"
+  >
+    <aside data-reading-ui="sidebar-left" class="hidden min-h-[calc(100vh-3.5rem)] lg:block">
+      <div class="sticky top-14 flex max-h-[calc(100vh-3.5rem)] min-h-[calc(100vh-3.5rem)] flex-col overflow-auto px-5 py-10">
+        <nav class="mt-1 grid gap-1 text-[1rem] leading-7">
+          {allSections
+            .filter((entry) => entry.visible || pathname.startsWith(`/${entry.key}/`))
+            .map((entry) => (
+              <a
+                href={`/${entry.key}/`}
+                class:list={[
+                  'block py-1 pr-2',
+                  pathname.startsWith(`/${entry.key}/`)
+                    ? 'text-[color:var(--text)]'
+                    : 'quiet-link',
+                ]}
+              >
+                <span class="block">{entry.label}</span>
+              </a>
+            ))}
+        </nav>
+
+        {scratchKey ? <ScratchPad storageKey={scratchKey} /> : null}
+      </div>
+    </aside>
+
+    <main class="min-w-0">
+      <div class="px-4 pt-12 pb-10 sm:px-6 lg:px-12 lg:pt-14 lg:pb-12">
+        <article
+          class="mx-auto max-w-[var(--content-width)]"
+          style="font-size: var(--body-font-size); line-height: var(--body-line-height);"
+          data-reading-ui="doc-article"
+        >
+          <div data-reading-ui="breadcrumbs">
+            <Breadcrumbs items={breadcrumbs.length > 0 ? breadcrumbs : [{ label: 'Home', href: '/' }, { label: title }]} />
+          </div>
+          <header class="mb-4" data-reading-ui="doc-header">
+            <h1 class="mt-3 text-[1.15rem] font-medium tracking-[-0.02em] text-[color:var(--text)] sm:text-[1.25rem]">
+              {title}
+            </h1>
+          </header>
+          <PdfViewer source={source} storageKey={pageMeta?.href ?? source} title={title} />
+        </article>
+      </div>
+    </main>
+
+    <aside data-reading-ui="sidebar-right" class="hidden xl:block">
+      <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-auto px-5 py-10 pdf-sidebar-scrollbar" data-pdf-sidebar-scroll>
+        <ReadingSettings label="Display" variant="sidebar" />
+
+        <div class="mt-8 grid gap-8" data-pdf-ui="sidebar-content">
+          <section class="grid gap-2">
+            <div class="text-[0.75rem] text-[color:var(--faint)]">Document</div>
+            <div class="grid gap-1 text-[0.95rem] leading-7 text-[color:var(--text)]">
+              <div><span data-pdf-document-title>{title}</span></div>
+              <div class="text-[color:var(--muted)]"><span data-pdf-document-author>—</span></div>
+              <div class="text-[color:var(--muted)]">
+                Page
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="1"
+                  inputmode="numeric"
+                  aria-label="Go to page"
+                  class="inline w-[4.2ch] bg-transparent text-[color:var(--text)] outline-none [appearance:textfield]"
+                  data-pdf-page-label
+                />
+                /
+                <span data-pdf-page-count>—</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="grid gap-2">
+            <div class="text-[0.75rem] text-[color:var(--faint)]">Contents</div>
+            <div class="grid gap-1" data-pdf-contents></div>
+          </section>
+        </div>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

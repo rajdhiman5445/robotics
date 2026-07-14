@@ -157,6 +157,24 @@
     max-width: 100%;
   }
 
+  .pdf-page-scroller {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .pdf-page-scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdf-sidebar-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .pdf-sidebar-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .doc-content .katex-display {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -220,6 +238,10 @@ body[data-reading-focus-mode='true'] [data-reading-ui='breadcrumbs'] {
 }
 
 body[data-reading-focus-mode='true'] [data-reading-ui='toc'] {
+  display: none !important;
+}
+
+body[data-reading-focus-mode='true'] [data-pdf-ui='sidebar-content'] {
   display: none !important;
 }
 

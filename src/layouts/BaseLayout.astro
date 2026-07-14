@@ -208,6 +208,21 @@ const {
         window.__wikiNavigate('/search/');
       });
 
+      window.addEventListener('keydown', (event) => {
+        if (event.defaultPrevented) return;
+        if (event.key !== 'Escape') return;
+        if (document.body.dataset.commandPaletteOpen === 'true') return;
+        if (document.body.dataset.readingSettingsOpen === 'true') return;
+
+        const target = event.target;
+        if (isTypingTarget(target)) return;
+
+        event.preventDefault();
+        if (!window.__wikiGoBack?.()) {
+          window.location.assign('/');
+        }
+      });
+
       window.addEventListener('DOMContentLoaded', () => {
         recordRecent();
       });
