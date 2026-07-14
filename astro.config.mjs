@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 import tailwind from '@astrojs/tailwind';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 
 export default defineConfig({
@@ -12,6 +14,7 @@ export default defineConfig({
   },
   markdown: {
     syntaxHighlight: 'shiki',
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [remarkGfm, remarkMath],
+    rehypePlugins: [rehypeKatex],
   },
 });

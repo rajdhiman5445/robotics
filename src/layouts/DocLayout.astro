@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import RelatedConcepts from '../components/RelatedConcepts.astro';
+import ScratchPad from '../components/ScratchPad.astro';
 import ReadingSettings from '../components/ReadingSettings.astro';
 import { allSections, getDocByHref } from '../lib/wiki';
 
@@ -32,6 +33,8 @@ const relatedItems = related
   .map((href) => getDocByHref(href) ?? undefined)
   .filter(Boolean)
   .map((doc) => ({ label: doc!.title, href: doc!.href }));
+
+const scratchKey = pageMeta?.href ? `scratch:${pageMeta.href.replace(/\/$/, '') || '/'}` : '';
 ---
 
 <BaseLayout
@@ -46,7 +49,7 @@ const relatedItems = related
     data-reading-ui="doc-grid"
   >
     <aside data-reading-ui="sidebar-left" class="hidden min-h-[calc(100vh-3.5rem)] lg:block">
-      <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-auto px-5 py-10">
+      <div class="sticky top-14 flex max-h-[calc(100vh-3.5rem)] min-h-[calc(100vh-3.5rem)] flex-col overflow-auto px-5 py-10">
         <nav class="mt-1 grid gap-1 text-[1rem] leading-7">
           {allSections
             .filter((entry) => entry.visible || pathname.startsWith(`/${entry.key}/`))
@@ -64,6 +67,8 @@ const relatedItems = related
               </a>
             ))}
         </nav>
+
+        {scratchKey ? <ScratchPad storageKey={scratchKey} /> : null}
       </div>
     </aside>
 
@@ -116,10 +121,35 @@ const relatedItems = related
 </BaseLayout>
 
 <script is:inline>
+  const isTypingTarget = (target) => {
+    if (!(target instanceof HTMLElement)) return false;
+    if (target.isContentEditable) return true;
+    const tag = target.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  };
+
   window.addEventListener('keydown', (event) => {
     if (event.defaultPrevented) return;
     if (event.key !== 'Escape' && event.key !== 'Backspace') return;
     if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+    const target = event.target;
+    const focusedScratch = target instanceof HTMLElement && target.closest?.('[data-scratch-pad]');
+
+    if (event.key === 'Escape' && focusedScratch) {
+      event.preventDefault();
+      if (target instanceof HTMLTextAreaElement) {
+        target.blur();
+      } else {
+        const scratch = document.querySelector('[data-scratch-pad]');
+        if (scratch instanceof HTMLTextAreaElement) {
+          scratch.blur();
+        }
+      }
+      return;
+    }
+
+    if (isTypingTarget(target)) return;
 
     if (window.__wikiGoBack?.()) {
       event.preventDefault();

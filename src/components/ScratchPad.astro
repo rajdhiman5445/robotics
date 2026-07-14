@@ -1,0 +1,84 @@
+---
+const { storageKey } = Astro.props as {
+  storageKey: string;
+};
+---
+
+<div class="mt-auto flex min-h-0 flex-1 flex-col pt-8" data-scratch-root data-scratch-key={storageKey}>
+  <div class="flex min-h-0 flex-1 flex-col gap-2">
+    <div class="text-[0.75rem] text-[color:var(--faint)]">Scratch</div>
+    <textarea
+      data-scratch-pad
+      aria-label="Scratch pad"
+      class="min-h-[8rem] flex-1 resize-none bg-transparent text-[0.92rem] leading-7 text-[color:var(--muted)] outline-none placeholder:text-[color:var(--faint)]"
+      spellcheck="false"
+    ></textarea>
+  </div>
+</div>
+
+<script is:inline define:vars={{ STORAGE_KEY: storageKey }}>
+  const root = document.querySelector('[data-scratch-root]');
+  const textarea = root?.querySelector('[data-scratch-pad]');
+
+  if (!root || !textarea || !STORAGE_KEY) {
+    // Nothing to mount.
+  } else {
+    const textareaElement = /** @type {HTMLTextAreaElement} */ (textarea);
+    let saveTimer = null;
+
+    const read = () => {
+      try {
+        return localStorage.getItem(STORAGE_KEY) ?? '';
+      } catch {
+        return '';
+      }
+    };
+
+    const write = () => {
+      try {
+        localStorage.setItem(STORAGE_KEY, textareaElement.value);
+      } catch {
+        // Ignore persistence failures.
+      }
+    };
+
+    const focusEnd = () => {
+      textareaElement.focus({ preventScroll: true });
+      const position = textareaElement.value.length;
+      textareaElement.setSelectionRange(position, position);
+    };
+
+    const scheduleWrite = () => {
+      if (saveTimer !== null) {
+        window.clearTimeout(saveTimer);
+      }
+      saveTimer = window.setTimeout(() => {
+        saveTimer = null;
+        write();
+      }, 180);
+    };
+
+    textareaElement.value = read();
+
+    textareaElement.addEventListener('input', scheduleWrite);
+    textareaElement.addEventListener('blur', write);
+
+    window.addEventListener('beforeunload', write);
+    window.addEventListener(
+      'keydown',
+      (event) => {
+        if (event.altKey && event.code === 'KeyN') {
+          event.preventDefault();
+          focusEnd();
+          return;
+        }
+
+        if (event.key === 'Escape' && document.activeElement === textareaElement) {
+          event.preventDefault();
+          textareaElement.blur();
+        }
+      },
+      true,
+    );
+  }
+</script>
