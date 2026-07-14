@@ -159,9 +159,15 @@ const { records } = Astro.props as {
   };
 
   const initialQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+  const focusInput = () => {
+    input.focus({ preventScroll: true });
+  };
+
   input.value = initialQuery;
   applyQuery(initialQuery);
-  input.focus();
+  focusInput();
+  requestAnimationFrame(focusInput);
+  window.addEventListener('load', focusInput, { once: true });
 
   input.addEventListener('input', () => {
     applyQuery(input.value);
@@ -195,6 +201,32 @@ const { records } = Astro.props as {
       }
     }
   });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented) return;
+    if (document.body.dataset.readingSettingsOpen === 'true') return;
+    if (document.activeElement === input) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      state.selectedIndex = Math.min(state.selectedIndex + 1, Math.max(state.results.length - 1, 0));
+      render();
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      state.selectedIndex = Math.max(state.selectedIndex - 1, 0);
+      render();
+    } else if (event.key === 'Enter') {
+      if (state.results.length > 0) {
+        event.preventDefault();
+        openSelected();
+      }
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      if (!window.__wikiGoBack?.()) {
+        window.location.assign('/');
+      }
+    }
+  }, true);
 
   resultsRoot.addEventListener('pointerdown', () => {
     input.focus();
