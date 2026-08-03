@@ -26,7 +26,7 @@ $$
 
 ## Examples of Linear Functions
 
-1. $ y = f(x) = mx $
+## 1. $ y = f(x) = mx $
 $$
 f(x_1 + x_2) = m(x_1 + x_2) = mx_1 + mx_2 = f(x_1) + f(x_2)
 
@@ -34,7 +34,7 @@ f(\alpha x) = m(\alpha x) = \alpha (mx) = \alpha f(x)
 $$ 
 This is a linear function
 
-2. $y = f(x) = mx + c$
+## 2. $y = f(x) = mx + c$
 
 $$
 f(x_1 + x_2) = m(x_1 + x_2) + c
@@ -45,9 +45,10 @@ $$
 Hence this function is not Linear Function. 
 
 ## Vector Space
-Let V be a set of vectors & F is a scalar field of numbers. 
-V is called a vector space over a scalar field F when vectors are closed under vector addition and scalar multiplication. 
 
+Let V be a set of vectors & F is a scalar field of numbers. 
+V is called a vector space over a scalar field F when vectors are closed under vector addition and scalar multiplication.  
+<br> 
 Vector space should satisfy the following properties:
 
 - A1 : $x + y \in V, \forall x, y \in V$
@@ -55,7 +56,7 @@ Vector space should satisfy the following properties:
 - A3 : $(x + y) + z = x + (y + z)$
 - A4 : Vector space always contains a zero vector. 
 - A5 : For each $\vec{x}$, there exists a $vec{-x}$ such that $\vec{x} + \vec{-x} = \vec{O}$
-
+<br>
 - M1 : $\alpha x \in V, \forall x \in V$
 - M2 : $(\alpha \beta) x = \alpha ( \beta x)$
 - M3 : $(\alpha + \beta) x = \alpha x + \beta x$
@@ -63,7 +64,7 @@ Vector space should satisfy the following properties:
 - M5 : $1.x = x$
 
 <br> 
-# If all these properties are satisfied, then V is a vector space over F.
+If all these properties are satisfied, then V is a vector space over F.
 
 ## In robotics
 
