@@ -16,6 +16,11 @@ Let D and R are set of points. A function f that maps points in D to R is said t
  1. Additive:  $f (x_1 + x_2) = f(x_1) + f(x_2)$
  2. Homogeneity (Scaling property): $ f(\alpha x) = \alpha f(x) $
 
+Superposition of both these properties (combinations) leads to 
+
+$$
+f(\alpha_1 x_1 + \alpha_2 x_2) = \alpha_1 f(x_1) + \alpha_2 f(x_2)
+$$
 
 
 ## In robotics
