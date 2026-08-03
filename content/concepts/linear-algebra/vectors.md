@@ -26,7 +26,7 @@ $$
 
 ## Examples of Linear Functions
 
-## 1. $ y = f(x) = mx $
+1. $ y = f(x) = mx $
 $$
 f(x_1 + x_2) = m(x_1 + x_2) = mx_1 + mx_2 = f(x_1) + f(x_2)
 
@@ -34,7 +34,7 @@ f(\alpha x) = m(\alpha x) = \alpha (mx) = \alpha f(x)
 $$ 
 This is a linear function
 
-## 2. $y = f(x) = mx + c$
+2. $y = f(x) = mx + c$
 
 $$
 f(x_1 + x_2) = m(x_1 + x_2) + c
@@ -65,6 +65,18 @@ Vector space should satisfy the following properties:
 
 <br> 
 If all these properties are satisfied, then V is a vector space over F.
+
+## Example of a Linear Function defined over vector space 
+
+$\vec{b} = f(\vec{x}) = A\vec{x}$
+$\vec{x} \in \mathbb{R}^n, \vec{b} \in \mathbb{R}^m, A \in \mathbb{R}^{m \times n}$
+<br>
+1. $f(\vec{x_1} + \vec{x_2}) = A(\vec{x_1} + \vec{x_2})$
+$A\vec{x_1} + A\vec{x_2} = f(\vec{x_1}) + f(\vec{x_2})$
+<br>
+2. $f(\alpha \vec{x} ) = A(\alpha \vec{x}) = \alpha f(\vec{x})$
+
+This is a linear Function.  
 
 ## In robotics
 
