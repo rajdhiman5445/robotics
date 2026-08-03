@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "399c574881df098b",
@@ -185,11 +186,12 @@
   },
   "active": "025771c0097695bd",
   "lastOpenFiles": [
+    "concepts/linear-algebra/vectors.md",
+    "courses/Machine Learning/Lecture 1.md",
     "courses/Machine Learning/ml_images/training_validation.png",
     "courses/Machine Learning/ml_images/Pasted image.png",
     "courses/Machine Learning/ml_images/pipeline_2.png",
     "ml_images/ml_pipeline.md",
-    "courses/Machine Learning/Lecture 1.md",
     "ml_images",
     "courses/Machine Learning/ml_images/ml_pipeline.png",
     "courses/Machine Learning/ml_images/training.png",

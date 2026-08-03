@@ -1,10 +1,10 @@
 ## What do we understand by learning? 
-	- Learning is any process by which a system improves performance from experience.” – Herbert Simon (1950) 
-	- Machine Learning is the study of algorithms that 
-		- improve their performance P 
-		- at some task T 
-		- with experience E.
-		- A well-defined learning task is given by  <P, T, E> - Tom Mitchell (1998)
+- Learning is any process by which a system improves performance from experience.” – Herbert Simon (1950). 
+- Machine Learning is the study of algorithms that 
+	- improve their performance P 
+	- at some task T 
+	- with experience E. 
+	- A well-defined learning task is given by <P, T, E> - Tom Mitchell (1998)
 
 ## How to design a learning system 
 - Understand the problem statement 
