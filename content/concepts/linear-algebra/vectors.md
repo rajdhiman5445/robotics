@@ -44,6 +44,27 @@ f(x_1 + x_2) = m(x_1 + x_2) + c
 $$
 Hence this function is not Linear Function. 
 
+## Vector Space
+Let V be a set of vectors & F is a scalar field of numbers. 
+V is called a vector space over a scalar field F when vectors are closed under vector addition and scalar multiplication. 
+
+Vector space should satisfy the following properties:
+
+- A1 : $x + y \in V, \forall x, y \in V$
+- A2 : $x + y = y + x$
+- A3 : $(x + y) + z = x + (y + z)$
+- A4 : Vector space always contains a zero vector. 
+- A5 : For each $\vec{x}$, there exists a $vec{-x}$ such that $\vec{x} + \vec{-x} = \vec{O}$
+
+- M1 : $\alpha x \in V, \forall x \in V$
+- M2 : $(\alpha \beta) x = \alpha ( \beta x)$
+- M3 : $(\alpha + \beta) x = \alpha x + \beta x$
+- M4 : $\alpha (x + y) = \alpha x + \alpha y$
+- M5 : $1.x = x$
+
+<br> 
+# If all these properties are satisfied, then V is a vector space over F.
+
 ## In robotics
 
 - position
