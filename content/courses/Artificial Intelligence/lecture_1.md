@@ -1,5 +1,5 @@
 --- 
-title: Lecture 1: Intro to AI
+title: Lecture 1 Intro to AI
 tag: AI
 ---
 
