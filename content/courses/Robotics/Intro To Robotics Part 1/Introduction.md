@@ -4,6 +4,10 @@
 
 The equations used in class are variations of Grübler's formula (specifically, the Kutzbach criterion). They calculate the mobility ($M$), which is the number of independent variables (or degrees of freedom) required to uniquely specify the physical position of a mechanism.
 
+![Planar linkage, articulated robot, and spatial degrees of freedom](images/mobility-overview.png)
+
+*Mobility in practice: a planar linkage, an articulated robot, and the translations and rotations available to a free rigid body in space.*
+
 ### 1. The Planar Case (2D)
 
 The formula is:
@@ -51,6 +55,10 @@ $$
 ## Part 2: Deriving Rotational Matrices
 
 A rotation matrix describes the orientation of a rotating frame (call it $\{B\}$) relative to a reference frame (call it $\{A\}$).
+
+![Robot arm joint with fixed and rotated coordinate frames](images/coordinate-frames-rotation.png)
+
+*Coordinate frames attached to robot links. The orange arrow illustrates a rotation about the vertical Z-axis; the translucent link shows a second orientation.*
 
 ### The 2D Derivation
 
