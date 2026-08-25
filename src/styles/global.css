@@ -63,6 +63,28 @@
     color: var(--text);
   }
 
+  ul,
+  ol {
+    @apply my-6 pl-6;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li + li {
+    @apply mt-2;
+  }
+
+  li > ul,
+  li > ol {
+    @apply my-2;
+  }
+
   h1,
   h2,
   h3,
