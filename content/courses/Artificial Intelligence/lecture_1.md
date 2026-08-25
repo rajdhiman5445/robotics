@@ -3,15 +3,15 @@ title: Introduction to Artificial Intelligence
 tag: AI
 ---
 
-# Lecture 1 — Introduction to Artificial Intelligence
+## Lecture 1 — Introduction to Artificial Intelligence
 
-I’ll treat **Lecture 1 as the only lecture being explained here**. I’ve also looked at the other uploaded decks enough to understand the course progression, so I can point out useful connections without teaching those later lectures yet.
+<br>
 
 The lecture’s stated goals are to understand what AI is and is not, understand definitions and goals of AI, look at its history, and understand the different approaches to AI. 
 
 ---
 
-# 1. What is Artificial Intelligence?
+## 1. What is Artificial Intelligence?
 
 The first important point is that **AI is surprisingly difficult to define precisely**.
 
@@ -34,7 +34,7 @@ The lecture approaches this question using **four different definitions of AI**.
 
 ---
 
-# 2. The Four Ways of Thinking About AI
+## 2. The Four Ways of Thinking About AI
 
 The lecture presents a useful 2×2 framework:
 
@@ -56,9 +56,9 @@ A machine might arrive at a good decision using a completely different process f
 
 ---
 
-## Concept: Thinking Humanly
+### Concept: Thinking Humanly
 
-### What is it?
+#### What is it?
 
 The idea is:
 
@@ -68,7 +68,7 @@ The lecture describes this approach as requiring knowledge of brain function and
 
 **Cognitive science** is the study of how humans think, learn, remember, perceive, make decisions, and solve problems.
 
-### How does it work?
+#### How does it work?
 
 Imagine giving a person a puzzle.
 
@@ -91,13 +91,13 @@ We could study how the human recognizes the situation, recalls the rule, and rea
 
 A thinking-humanly AI system would try to model that kind of human reasoning process.
 
-### Why does it matter?
+#### Why does it matter?
 
 If our goal is to understand human intelligence, reproducing the *process* can be just as important as reproducing the final answer.
 
 This connects AI with neuroscience and psychology. The lecture's historical foundations explicitly identify the study of the brain and human cognition as contributors to AI. 
 
-### Important distinction
+#### Important distinction
 
 **Thinking humanly ≠ producing human-like answers.**
 
@@ -105,7 +105,7 @@ A machine could give the same answer as a human while reaching it through a comp
 
 That distinction becomes important when we compare this approach with **acting humanly**.
 
-### In simple terms:
+#### In simple terms:
 
 Thinking-humanly AI asks:
 
@@ -115,11 +115,11 @@ The focus is on the **internal reasoning process**, not merely the final result.
 
 ---
 
-# 3. Acting Humanly
+## 3. Acting Humanly
 
-## Concept: Acting Humanly
+### Concept: Acting Humanly
 
-### What is it?
+#### What is it?
 
 Instead of asking whether a machine thinks like a human, we can ask:
 
@@ -131,7 +131,7 @@ The classic idea associated with this approach is the **Turing Test**.
 
 ---
 
-## The Turing Test
+### The Turing Test
 
 Imagine three participants:
 
@@ -153,7 +153,7 @@ Instead, it is:
 
 > **“Can the computer behave convincingly enough like a human that we cannot distinguish it from one?”**
 
-### Why is this interesting?
+#### Why is this interesting?
 
 It gives us an **observable test** of intelligent behavior.
 
@@ -170,7 +170,7 @@ you infer that they are intelligent.
 
 The Turing Test applies a similar idea to machines.
 
-### What capabilities would a machine need?
+#### What capabilities would a machine need?
 
 A machine attempting the classic Turing Test would need abilities related to:
 
@@ -180,7 +180,7 @@ A machine attempting the classic Turing Test would need abilities related to:
 * learning,
 * communication.
 
-### Important distinction
+#### Important distinction
 
 **Acting humanly does not necessarily mean thinking humanly.**
 
@@ -188,7 +188,7 @@ A machine could potentially produce human-like behavior using a mechanism very d
 
 That is one of the central distinctions in the four-way framework.
 
-### In simple terms:
+#### In simple terms:
 
 Acting-humanly AI asks:
 
@@ -198,11 +198,11 @@ The focus is on **what we can observe**, rather than whether the machine's inter
 
 ---
 
-# 4. Thinking Rationally
+## 4. Thinking Rationally
 
-## Concept: Thinking Rationally
+### Concept: Thinking Rationally
 
-### What is it?
+#### What is it?
 
 This approach asks:
 
@@ -222,7 +222,7 @@ The important point is that the conclusion follows logically from the premises.
 
 ---
 
-## Why logic is useful for AI
+### Why logic is useful for AI
 
 Suppose an AI system has these facts:
 
@@ -243,7 +243,7 @@ The lecture mentions deductive logic systems such as **Prolog** as examples.
 
 ---
 
-## The major problem with pure logical reasoning
+### The major problem with pure logical reasoning
 
 The real world is messy.
 
@@ -275,7 +275,7 @@ The real situation is uncertain.
 
 This is why the lecture points out that real-world problems often lack complete or consistent information. 
 
-### In simple terms:
+#### In simple terms:
 
 Thinking-rationally AI asks:
 
@@ -285,9 +285,9 @@ It is powerful when information and rules are clear, but real-world decision-mak
 
 ---
 
-# 5. Acting Rationally — The Most Important Approach for This Course
+## 5. Acting Rationally — The Most Important Approach for This Course
 
-## Concept: Acting Rationally
+### Concept: Acting Rationally
 
 This is probably the **most important conceptual shift in Lecture 1**.
 
@@ -305,7 +305,7 @@ The lecture calls this the **rational-agent approach**. It says the aim is to ma
 
 ---
 
-## What does “rational” mean?
+### What does “rational” mean?
 
 This is a word that can easily be misunderstood.
 
@@ -323,7 +323,7 @@ That is the idea of rationality.
 
 ---
 
-## The robot vacuum example
+### The robot vacuum example
 
 The lecture gives a very useful example.
 
@@ -364,7 +364,7 @@ This example is important because it introduces the basic structure behind much 
 
 ---
 
-## Why this approach is so useful
+### Why this approach is so useful
 
 The rational-agent perspective gives us a common framework:
 
@@ -378,7 +378,7 @@ It is especially important because the later lectures on search are essentially 
 
 You don't need to learn those search algorithms yet; the important Lecture 1 connection is simply that **AI can be viewed as intelligent decision-making by an agent.**
 
-### In simple terms:
+#### In simple terms:
 
 Acting-rationally AI asks:
 
@@ -388,7 +388,7 @@ This does **not** require the machine to think exactly like a human. It requires
 
 ---
 
-# 6. The Four Approaches — The Big Distinction
+## 6. The Four Approaches — The Big Distinction
 
 It is worth putting all four together:
 
@@ -405,7 +405,7 @@ That distinction will matter throughout the rest of the course.
 
 ---
 
-# 7. Why Study AI?
+## 7. Why Study AI?
 
 The lecture starts from a simple observation:
 
@@ -432,19 +432,19 @@ It is that AI provides methods for solving problems where a system must:
 
 That is why AI appears across such different fields.
 
-### In simple terms:
+#### In simple terms:
 
 AI is studied because many real-world problems require **decision-making, prediction, learning, reasoning, and action**.
 
 ---
 
-# 8. A Brief History and the Foundations of AI
+## 8. A Brief History and the Foundations of AI
 
 The lecture emphasizes that AI did not suddenly appear with modern computers.
 
 It grew out of several different fields.
 
-## Philosophy
+### Philosophy
 
 Philosophy contributed questions about:
 
@@ -461,7 +461,7 @@ This is important because AI later asks:
 
 ---
 
-## Mathematics
+### Mathematics
 
 The lecture mentions **George Boole** and formal Boolean reasoning.
 
@@ -474,7 +474,7 @@ This became important in logical reasoning and eventually digital computing.
 
 ---
 
-## Economics
+### Economics
 
 Economics contributed the idea of agents making decisions in order to maximize some notion of payoff or benefit.
 
@@ -484,7 +484,7 @@ That connects strongly to the **rational-agent** view of AI:
 
 ---
 
-## Neuroscience
+### Neuroscience
 
 The study of how biological brains process information helped inspire ideas behind **artificial neural networks**.
 
@@ -496,7 +496,7 @@ The lecture identifies neuroscience as one of AI's foundations.
 
 ---
 
-## Psychology
+### Psychology
 
 Psychology contributed knowledge about:
 
@@ -506,25 +506,25 @@ Psychology contributed knowledge about:
 
 This particularly influenced early approaches that tried to model human reasoning. 
 
-### In simple terms:
+#### In simple terms:
 
 AI is an interdisciplinary subject. Its foundations come from **philosophy, mathematics, economics, neuroscience, psychology**, and eventually computer science.
 
 ---
 
-# 9. The Beginning of AI as a Computer Science Field
+## 9. The Beginning of AI as a Computer Science Field
 
 The lecture identifies the **Dartmouth Conference of 1956** as a major starting point for AI as a computer-science field. 
 
 Several important researchers are mentioned.
 
-### John McCarthy
+#### John McCarthy
 
 McCarthy coined the term **Artificial Intelligence**.
 
 He also developed **LISP**, a programming language that became important in early AI work, especially symbolic reasoning.
 
-### Marvin Minsky
+#### Marvin Minsky
 
 The lecture connects Minsky with work on:
 
@@ -532,25 +532,25 @@ The lecture connects Minsky with work on:
 * knowledge representation,
 * the idea of **frames** for representing knowledge.
 
-### Claude Shannon
+#### Claude Shannon
 
 Shannon is famous for information theory and also worked on game-playing AI.
 
 The lecture mentions his work on programs for games such as checkers and chess.
 
-### Allen Newell and Herbert Simon
+#### Allen Newell and Herbert Simon
 
 They developed the **General Problem Solver**, an early attempt to create a general-purpose system capable of solving different kinds of problems.
 
 The important historical idea is that researchers were trying to move beyond simple calculations toward machines that could perform activities associated with intelligence. 
 
-### In simple terms:
+#### In simple terms:
 
 The 1956 Dartmouth meeting represents an important moment when researchers began treating **machine intelligence as a distinct research field**.
 
 ---
 
-# 10. What Can AI Actually Do?
+## 10. What Can AI Actually Do?
 
 The lecture then asks us to think critically about AI's capabilities.
 
@@ -574,7 +574,7 @@ For example, the lecture specifically notes that AI can assist with mathematical
 
 It also highlights complex, chaotic driving environments as an area where AI driving systems can still struggle, particularly where behavior is unpredictable and informal rules matter. 
 
-### Important lesson
+#### Important lesson
 
 **Being very good at one task does not automatically mean having general intelligence.**
 
@@ -582,7 +582,7 @@ A system can be extraordinarily capable within a narrow domain without being abl
 
 ---
 
-# 11. Machine Learning — A Small but Important Introduction
+## 11. Machine Learning — A Small but Important Introduction
 
 Lecture 1 briefly introduces machine learning through an example comparing two explanations.
 
@@ -592,7 +592,7 @@ The more technical explanation describes machine learning as AI systems learning
 
 For this lecture, the key idea is simply:
 
-### Traditional programming
+#### Traditional programming
 
 You might explicitly tell the computer:
 
@@ -600,7 +600,7 @@ You might explicitly tell the computer:
 > If A happens, do B.
 > If C happens, do D.
 
-### Machine learning
+#### Machine learning
 
 Instead, you give the system:
 
@@ -612,17 +612,17 @@ The lecture also gives a baby-learning analogy.
 
 A baby hears speech repeatedly, notices patterns, and gradually learns to produce sounds. The lecture describes this as a form of natural, unsupervised learning. 
 
-### In simple terms:
+#### In simple terms:
 
 Machine learning is an important way of building AI systems where the system **learns patterns from experience/data rather than having every rule manually specified**.
 
 ---
 
-# 12. Narrow AI, General AI, and Superintelligence
+## 12. Narrow AI, General AI, and Superintelligence
 
 The lecture introduces three broad categories.
 
-## Artificial Narrow Intelligence — ANI
+### Artificial Narrow Intelligence — ANI
 
 Also called **weak AI**.
 
@@ -639,7 +639,7 @@ The important point is that its intelligence is **narrowly focused**.
 
 ---
 
-## Artificial General Intelligence — AGI
+### Artificial General Intelligence — AGI
 
 Also called **strong AI** in the lecture.
 
@@ -657,7 +657,7 @@ versus
 
 ---
 
-## Artificial Superintelligence — ASI
+### Artificial Superintelligence — ASI
 
 The lecture uses ASI for a hypothetical point where computer capabilities surpass human capabilities. 
 
@@ -669,7 +669,7 @@ A useful conceptual progression is:
 
 where the scope of capability becomes increasingly broad.
 
-### Important distinction
+#### Important distinction
 
 Don't confuse:
 
@@ -680,17 +680,17 @@ Don't confuse:
 
 The lecture is introducing these as concepts; it does not claim that all three currently exist as deployed technologies.
 
-### In simple terms:
+#### In simple terms:
 
 Most practical AI systems are **task-specific**. AGI and ASI describe much broader or hypothetical levels of machine intelligence.
 
 ---
 
-# 13. Agents — The Core Building Block
+## 13. Agents — The Core Building Block
 
 Near the end of the lecture, we get one of the most important concepts for the rest of the course:
 
-## What is an agent?
+### What is an agent?
 
 An **agent** is something that:
 
@@ -698,7 +698,7 @@ An **agent** is something that:
 
 Let's unpack that.
 
-### Sensor
+#### Sensor
 
 A **sensor** is how the agent receives information.
 
@@ -709,7 +709,7 @@ Examples:
 * microphone → sound
 * temperature sensor → temperature
 
-### Actuator
+#### Actuator
 
 An **actuator** is how the agent does something to the world.
 
@@ -727,7 +727,7 @@ The agent continuously interacts with its environment.
 
 ---
 
-## Percept
+### Percept
 
 A **percept** is the information the agent receives from the environment at a particular moment.
 
@@ -739,7 +739,7 @@ It then has to decide what to do.
 
 ---
 
-## Agent function
+### Agent function
 
 The lecture says the agent's behavior can be described by a function that maps a **percept to an action**. 
 
@@ -759,13 +759,13 @@ or:
 
 This idea is foundational because much of AI can be viewed as the problem of designing a good mapping from **what the agent observes** to **what it should do**.
 
-### In simple terms:
+#### In simple terms:
 
 An agent is a system that **looks at the world, decides what to do, and acts**.
 
 ---
 
-# 14. Rational Agents and Performance Measures
+## 14. Rational Agents and Performance Measures
 
 The lecture then combines the ideas of **agents** and **rationality**.
 
@@ -781,7 +781,7 @@ That is the **performance measure**.
 
 ---
 
-## Performance Measure
+### Performance Measure
 
 A performance measure defines:
 
@@ -801,7 +801,7 @@ For a self-driving car, we might care about things such as:
 
 The performance measure gives the agent something to optimize.
 
-### Important distinction
+#### Important distinction
 
 The **goal** and the **performance measure** are related but not identical.
 
@@ -815,7 +815,7 @@ This distinction becomes increasingly important when thinking about rational dec
 
 ---
 
-# 15. PEAS — Describing an AI Problem
+## 15. PEAS — Describing an AI Problem
 
 The lecture ends with the **PEAS framework**.
 
@@ -830,7 +830,7 @@ This gives us a systematic way to describe an AI task.
 
 ---
 
-## P — Performance Measure
+### P — Performance Measure
 
 **What counts as success?**
 
@@ -840,7 +840,7 @@ Example for a robot vacuum:
 
 ---
 
-## E — Environment
+### E — Environment
 
 **Where does the agent operate?**
 
@@ -850,7 +850,7 @@ For the vacuum:
 
 ---
 
-## A — Actuators
+### A — Actuators
 
 **How can the agent act?**
 
@@ -860,7 +860,7 @@ For the vacuum:
 
 ---
 
-## S — Sensors
+### S — Sensors
 
 **What information can the agent receive?**
 
@@ -870,7 +870,7 @@ For the vacuum:
 
 ---
 
-## Why PEAS matters
+### Why PEAS matters
 
 Suppose someone tells you:
 
@@ -887,7 +887,7 @@ PEAS forces you to ask:
 
 This turns a vague AI problem into something that can actually be modeled.
 
-### In simple terms:
+#### In simple terms:
 
 **PEAS is a checklist for defining an AI agent's problem.**
 
@@ -897,7 +897,7 @@ Before designing the intelligence, you need to know:
 
 ---
 
-# 16. How the Whole Lecture Fits Together
+## 16. How the Whole Lecture Fits Together
 
 Now we can connect the pieces.
 
@@ -945,11 +945,11 @@ This is the conceptual foundation for the rest of the course.
 
 ---
 
-# Connection to the Other Lectures
+## Connection to the Other Lectures
 
 I'm deliberately **not explaining the later lectures here**, but there are a few connections worth knowing.
 
-### Lecture 1 → Uninformed Search
+#### Lecture 1 → Uninformed Search
 
 The idea of an **agent with a goal that must choose actions** becomes the basis for search problems. The Uninformed Search deck starts from the same agent concept and describes agents as perceiving an environment and acting through actuators. 
 
@@ -959,15 +959,15 @@ So when you later see things like:
 
 you should recognize that this is a more formal version of the **rational-agent idea introduced here**.
 
-### Lecture 1 → Informed Search
+#### Lecture 1 → Informed Search
 
 The later Informed Search lecture introduces heuristics for guiding an agent toward a goal. It builds on the idea that an agent is trying to make good decisions rather than simply behaving randomly. 
 
-### Lecture 1 → Local Search
+#### Lecture 1 → Local Search
 
 Local search is another way of thinking about decision-making and optimization. The later lecture explicitly contrasts ordinary path-based search with problems where we care primarily about finding a good final state. 
 
-### Lecture 1 → Adversarial Search
+#### Lecture 1 → Adversarial Search
 
 The final uploaded deck extends the agent idea to environments where other agents affect the outcome. It introduces non-deterministic environments and contingency plans. 
 
@@ -983,7 +983,7 @@ That's the conceptual bridge connecting these lectures.
 
 ---
 
-# Key Ideas to Remember
+## Key Ideas to Remember
 
 If you come back to Lecture 1 later, these are the ideas I would prioritize.
 
@@ -1027,7 +1027,7 @@ If you come back to Lecture 1 later, these are the ideas I would prioritize.
 
 ---
 
-# Big Picture
+## Big Picture
 
 The deepest idea in Lecture 1 is not a particular definition of AI.
 
