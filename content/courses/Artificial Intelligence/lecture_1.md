@@ -1,7 +1,7 @@
-'''
+```
 title: Introduction to Artificial Intelligence
 tag: AI
-'''
+```
 
 # Lecture 1 — Introduction to Artificial Intelligence
 
