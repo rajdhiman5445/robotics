@@ -495,15 +495,15 @@ The **path cost** is the total cost accumulated along a path.
 
 It is commonly represented as:
 
-[
+$$
 g(n)
-]
+$$
 
 For example, if roads have different distances:
 
-[
+$$
 g(n)=\text{total distance traveled so far}
-]
+$$
 
 The lecture defines path cost as the cumulative cost of a path. 
 
@@ -589,9 +589,9 @@ Each move costs 1.
 
 Therefore:
 
-[
+$$
 \text{path cost} = \text{number of moves}
-]
+$$
 
 
 
@@ -657,9 +657,9 @@ A graph consists of:
 
 Formally:
 
-[
+$$
 G=(V,E)
-]
+$$
 
 where:
 
@@ -686,9 +686,9 @@ If two nodes are directly connected, they are neighbors or adjacent.
 
 If:
 
-[
+$$
 (1,2)\in E
-]
+$$
 
 then 1 and 2 are adjacent. 
 
@@ -718,15 +718,15 @@ The distance between two nodes is the minimum number of edges needed to get from
 
 For example:
 
-[
+$$
 distance(1,2)=1
-]
+$$
 
 and:
 
-[
+$$
 distance(1,3)=2
-]
+$$
 
 if the shortest route requires two edges. 
 
@@ -1039,15 +1039,15 @@ BFS prefers the first route because it has fewer edges.
 
 But its cost is:
 
-[
+$$
 100+1=101
-]
+$$
 
 while the second costs:
 
-[
+$$
 1+1+1=3
-]
+$$
 
 So BFS found the **shortest in number of steps**, but not the **cheapest in cost**. 
 
@@ -1077,15 +1077,15 @@ and so on.
 
 BFS may generate approximately:
 
-[
+$$
 1+b+b^2+\cdots+b^d
-]
+$$
 
 and, in the standard analysis used by the lecture:
 
-[
+$$
 O(b^{d+1})
-]
+$$
 
 for time and space. 
 
@@ -1164,13 +1164,13 @@ BFS:
 
 The lecture summarizes:
 
-[
+$$
 \text{Time} = O(b^{d+1})
-]
+$$
 
-[
+$$
 \text{Space} = O(b^{d+1})
-]
+$$
 
 under its stated assumptions. 
 
@@ -1313,15 +1313,15 @@ Let:
 
 The lecture gives:
 
-[
+$$
 \text{Time}=O(b^m)
-]
+$$
 
 and:
 
-[
+$$
 \text{Space}=O(bm)
-]
+$$
 
 in its analysis. 
 
@@ -1421,9 +1421,9 @@ DLS prevents the infinite-depth problem of DFS.
 
 What if the solution is at depth 15 and you set:
 
-[
+$$
 L=10
-]
+$$
 
 Then DLS won't find it.
 
@@ -1461,27 +1461,27 @@ That's the idea behind **Iterative Deepening Search**.
 
 Run DLS repeatedly:
 
-[
+$$
 DLS(0)
-]
+$$
 
 then:
 
-[
+$$
 DLS(1)
-]
+$$
 
 then:
 
-[
+$$
 DLS(2)
-]
+$$
 
 then:
 
-[
+$$
 DLS(3)
-]
+$$
 
 and continue until the goal is found. 
 
@@ -1533,15 +1533,15 @@ Therefore, the repeated work near the top is relatively small compared with the 
 
 The lecture gives:
 
-[
+$$
 \text{Time}=O(b^d)
-]
+$$
 
 and:
 
-[
+$$
 \text{Space}=O(bd)
-]
+$$
 
 for IDS. 
 
@@ -1587,9 +1587,9 @@ UCS always expands the node with the **lowest total path cost so far**.
 
 It uses a **priority queue** ordered by:
 
-[
+$$
 g(n)
-]
+$$
 
 where (g(n)) is the cost from the initial state to node (n). 
 
@@ -1611,35 +1611,35 @@ There are two routes:
 
 ### Route 1
 
-[
+$$
 S\rightarrow A\rightarrow G
-]
+$$
 
 Cost:
 
-[
+$$
 1+10=11
-]
+$$
 
 ### Route 2
 
-[
+$$
 S\rightarrow B\rightarrow G
-]
+$$
 
 Cost:
 
-[
+$$
 5+5=10
-]
+$$
 
 BFS might prefer the first if both have the same number of edges.
 
 UCS chooses the second because:
 
-[
+$$
 10<11
-]
+$$
 
 ---
 
@@ -1685,15 +1685,15 @@ There is a nice connection.
 
 Suppose every action has exactly the same cost:
 
-[
+$$
 cost(action)=1
-]
+$$
 
 Then:
 
-[
+$$
 g(n)=\text{number of actions taken}
-]
+$$
 
 which is exactly what BFS measures through depth.
 
@@ -1715,9 +1715,9 @@ The lecture gives the standard complexity form in terms of:
 
 The rough worst-case bound is:
 
-[
+$$
 O\left(b^{C^*/\epsilon}\right)
-]
+$$
 
 for both time and space under the lecture's assumptions. 
 
@@ -1760,25 +1760,25 @@ Suppose the solution has depth (d).
 
 A one-directional search may need to explore roughly:
 
-[
+$$
 O(b^d)
-]
+$$
 
 nodes.
 
 If we search from both ends, each search only needs to go roughly:
 
-[
+$$
 d/2
-]
+$$
 
 levels.
 
 So the lecture gives the improvement:
 
-[
+$$
 O(b^d)\rightarrow O(b^{d/2})
-]
+$$
 
 
 
@@ -1873,15 +1873,15 @@ This is probably the biggest one.
 
 If every action costs 1:
 
-[
+$$
 \text{depth}=\text{path cost}
-]
+$$
 
 But if actions have different costs:
 
-[
+$$
 \text{depth}\neq\text{path cost}
-]
+$$
 
 That's why:
 
@@ -1999,9 +1999,9 @@ An agent needs to find a sequence of actions that takes it from an **initial sta
 
 ### 2. A search problem needs four core components
 
-[
+$$
 \boxed{\text{Initial State + Operators + Goal Test + Path Cost}}
-]
+$$
 
 ---
 
@@ -2100,9 +2100,9 @@ Instead of searching all the way from start to goal:
 
 Potentially:
 
-[
+$$
 O(b^d)\rightarrow O(b^{d/2})
-]
+$$
 
 but only when backward search and goal representation are manageable. 
 
