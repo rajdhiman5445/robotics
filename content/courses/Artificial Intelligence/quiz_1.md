@@ -1,6 +1,7 @@
 ---
 title: Practice Quiz 1
 tag: AI
+order: 6
 ---
 
 ---

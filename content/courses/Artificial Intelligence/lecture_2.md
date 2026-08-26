@@ -1,6 +1,7 @@
 ---
 title: Uninformed Search
 tag: AI
+order: 2
 ---
 
 # Lecture 2 — Uninformed Search

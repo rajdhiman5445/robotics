@@ -1,6 +1,7 @@
 ---
 title: Adversarial Search
 tag: AI
+order: 5
 ---
 
 The lecture actually covers **two related ideas**:

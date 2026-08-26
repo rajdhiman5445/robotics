@@ -1,6 +1,7 @@
 ---
 title: Study Sheet 
 tag: AI
+order: 7
 ---
 
 ## Lecture 1 — Foundations of AI and Intelligent Agents

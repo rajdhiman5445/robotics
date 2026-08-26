@@ -1,6 +1,7 @@
 ---
 title: Introduction to Artificial Intelligence
 tag: AI
+order: 1
 ---
 
 ## Lecture 1 — Introduction to Artificial Intelligence

@@ -1,6 +1,7 @@
 ---
 title: Local Search and Evolutionary Search
 tag: AI
+order: 4
 ---
 
 Lecture 3 was about **informed search**: use a heuristic to decide which nodes look promising.
