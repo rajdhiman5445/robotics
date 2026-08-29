@@ -25,14 +25,11 @@ type PdfRecord = {
 };
 
 const publicPdfRoot = join(process.cwd(), 'public', 'pdfs');
+const contentPdfRoot = join(process.cwd(), 'content');
 const privatePdfRoot = join(process.cwd(), 'private-pdfs');
 const includePrivatePdfs = import.meta.env.DEV;
 const privatePdfAssetRoot = '/__private-pdf';
-
-// Keep the PDF's existing viewer URL while exposing it in its course folder.
-const pdfFolderOverrides = new Map<string, string[]>([
-  ['public/linear-algebra-reader.pdf', ['courses', 'math-for-robotics', 'Linear Algebra']],
-]);
+const contentPdfAssetRoot = '/content-pdf';
 
 function slugify(value: string) {
   return value
@@ -44,7 +41,7 @@ function slugify(value: string) {
 
 function toTitle(segment: string) {
   return segment
-    .split('-')
+    .split(/[-_]/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
@@ -70,14 +67,15 @@ function walk(dir: string): string[] {
   return files;
 }
 
-function buildPdfRecord(filePath: string, pdfRoot: string, isPrivate: boolean): PdfRecord {
+function buildPdfRecord(filePath: string, pdfRoot: string, kind: 'public' | 'private' | 'content'): PdfRecord {
+  const isPrivate = kind === 'private';
   const relativePath = relative(pdfRoot, filePath).replace(/\\/g, '/');
   const sourceSegments = relativePath.replace(/\.pdf$/i, '').split('/').filter(Boolean);
   const slug = sourceSegments.map((segment) => slugify(segment) || 'pdf');
   const title = toTitle(sourceSegments.at(-1) ?? 'PDF');
-  const folderSlug = pdfFolderOverrides.get(relativePath) ?? slug.slice(0, -1);
+  const folderSlug = kind === 'content' ? sourceSegments.slice(0, -1) : slug.slice(0, -1);
   const path = ['PDFs', ...(isPrivate ? ['Private'] : []), ...folderSlug.map(toTitle)].join(' › ');
-  const assetRoot = isPrivate ? privatePdfAssetRoot : '/pdfs';
+  const assetRoot = kind === 'content' ? contentPdfAssetRoot : isPrivate ? privatePdfAssetRoot : '/pdfs';
 
   return {
     title,
@@ -93,9 +91,10 @@ function buildPdfRecord(filePath: string, pdfRoot: string, isPrivate: boolean): 
 }
 
 const pdfRecords = [
-  ...walk(publicPdfRoot).map((filePath) => buildPdfRecord(filePath, publicPdfRoot, false)),
+  ...walk(publicPdfRoot).map((filePath) => buildPdfRecord(filePath, publicPdfRoot, 'public')),
+  ...walk(contentPdfRoot).map((filePath) => buildPdfRecord(filePath, contentPdfRoot, 'content')),
   ...(includePrivatePdfs
-    ? walk(privatePdfRoot).map((filePath) => buildPdfRecord(filePath, privatePdfRoot, true))
+    ? walk(privatePdfRoot).map((filePath) => buildPdfRecord(filePath, privatePdfRoot, 'private'))
     : []),
 ].sort((a, b) => {
   if (a.folderSlug.join('/') !== b.folderSlug.join('/')) {
