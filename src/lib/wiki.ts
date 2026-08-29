@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { getPdfEntries } from './pdfs';
 
 export type SectionKey =
   | 'concepts'
@@ -339,6 +340,16 @@ for (const doc of docs) {
   }
 }
 
+for (const pdf of getPdfEntries()) {
+  for (const prefix of folderPrefixes(pdf.folderSlug)) {
+    ensureFolderNode(prefix);
+    const parentSlug = prefix.slice(0, -1);
+    if (parentSlug.length > 0) {
+      ensureFolderNode(parentSlug).childFolderKeys.add(folderKey(prefix));
+    }
+  }
+}
+
 const folderOrderCache = new Map<string, number>();
 
 function getFolderOrder(slug: string[]) {
@@ -460,6 +471,17 @@ export function getNavigatorItemsForSlug(slug: string[]) {
       href: childDoc.href,
       kind: 'document',
       order: childDoc.order,
+    });
+  }
+
+  for (const pdf of getPdfEntries()
+    .filter((entry) => entry.folderSlug.join('/') === folderKey(slug))
+    .sort((a, b) => a.title.localeCompare(b.title))) {
+    items.push({
+      label: pdf.title,
+      href: pdf.href,
+      kind: 'document',
+      order: 999,
     });
   }
 
