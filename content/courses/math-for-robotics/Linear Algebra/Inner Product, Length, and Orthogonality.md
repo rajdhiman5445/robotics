@@ -106,7 +106,7 @@ $$
 $$
     \mathbf{w} = c_1 \mathbf{u} + c_2 \mathbf{v}
 $$
-    for some scalars $c_1, c_2 \in \mathbb{R}$.
+For some scalars $c_1, c_2 \in \mathbb{R}$.
 
 * **Step 3: Compute the inner product $\mathbf{y} \cdot \mathbf{w}$:**
   Using the linearity and distributive properties of the inner product:

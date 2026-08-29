@@ -135,7 +135,7 @@ $$
 $$
     A\mathbf{x} = \mathbf{0}
 $$
-    has **only the trivial solution** $\mathbf{x} = \mathbf{0}$.
+  It has **only the trivial solution** $\mathbf{x} = \mathbf{0}$.
 
 * **Step 2: Connect $A\mathbf{x} = \mathbf{0}$ to $A^T A$:**
   * Suppose $A\mathbf{x} = \mathbf{0}$ for some vector $\mathbf{x} \in \mathbb{R}^n$.

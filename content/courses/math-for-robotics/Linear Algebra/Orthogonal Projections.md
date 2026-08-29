@@ -135,7 +135,7 @@ $$
 $$
     \mathbf{u}_3 = \hat{\mathbf{u}}_3 + \mathbf{v}
 $$
-    where $\hat{\mathbf{u}}_3 = \text{proj}_W \mathbf{u}_3 \in W$, and $\mathbf{v} = \mathbf{u}_3 - \hat{\mathbf{u}}_3 \in W^\perp$.
+Here $\hat{\mathbf{u}}_3 = \text{proj}_W \mathbf{u}_3 \in W$, and $\mathbf{v} = \mathbf{u}_3 - \hat{\mathbf{u}}_3 \in W^\perp$.
   * Since $\mathbf{u}_3$ is not in $W$, $\mathbf{u}_3 \neq \hat{\mathbf{u}}_3$, which guarantees that $\mathbf{v} \neq \mathbf{0}$.
   * Since $\mathbf{v} \in W^\perp$, $\mathbf{v}$ is automatically orthogonal to both $\mathbf{u}_1$ and $\mathbf{u}_2$.
 

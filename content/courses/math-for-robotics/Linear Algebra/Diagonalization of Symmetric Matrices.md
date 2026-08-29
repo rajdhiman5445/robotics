@@ -157,7 +157,7 @@ $$
 $$
       \mathbf{v}_3 = \begin{bmatrix} -1 \\ 0 \\ 1 \end{bmatrix} - \frac{1}{2}\begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1/2 \\ -1/2 \\ 1 \end{bmatrix}
 $$
-    * Scaling $\mathbf{v}_3$ by $2$ gives: $\mathbf{v}_3' = \begin{bmatrix} -1 \\ -1 \\ 2 \end{bmatrix}$.
+Scaling $\mathbf{v}_3$ by $2$ gives $\mathbf{v}_3' = \begin{bmatrix} -1 \\ -1 \\ 2 \end{bmatrix}$.
 
 * **Step 4: Normalize the basis vectors for $\lambda = 6$:**
   * $\|\mathbf{v}_2\| = \sqrt{(-1)^2 + 1^2 + 0^2} = \sqrt{2} \implies \mathbf{u}_2 = \begin{bmatrix} -1/\sqrt{2} \\ 1/\sqrt{2} \\ 0 \end{bmatrix}$

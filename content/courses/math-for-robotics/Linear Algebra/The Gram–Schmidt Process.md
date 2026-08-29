@@ -28,10 +28,11 @@ $$
 $$
      A = QR
 $$
-     where:
-     * **$Q$** is an $m \times n$ matrix whose columns form an orthonormal basis for $\text{Col } A$.
-     * **$R$** is an $n \times n$ upper triangular invertible matrix with positive entries on its diagonal.
-   * Since the columns of $Q$ are orthonormal, $Q^T Q = I_n$. Left-multiplying $A = QR$ by $Q^T$ yields:
+where:
+
+- **$Q$** is an $m \times n$ matrix whose columns form an orthonormal basis for $\text{Col } A$.
+- **$R$** is an $n \times n$ upper triangular invertible matrix with positive entries on its diagonal.
+Since the columns of $Q$ are orthonormal, $Q^T Q = I_n$. Left-multiplying $A = QR$ by $Q^T$ yields:
 $$
      R = Q^T A
 $$
