@@ -459,15 +459,12 @@ Think:
 
 $$
 \boxed{
-\text{What I believe after seeing the evidence}
-=
-\frac{
-\text{How compatible the evidence is with the class}
-\times
-\text{How common the class was beforehand}
-}{
-\text{How plausible the evidence is overall}
-}
+\begin{gathered}
+\text{What I believe after seeing the evidence} \\
+=\frac{\text{How compatible the evidence is with the class}
+\times \text{How common the class was beforehand}}
+{\text{How plausible the evidence is overall}}
+\end{gathered}
 }
 $$
 

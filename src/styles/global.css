@@ -198,6 +198,7 @@
   }
 
   .doc-content .katex-display {
+    max-width: 100%;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
