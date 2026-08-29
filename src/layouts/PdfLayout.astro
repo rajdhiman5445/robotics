@@ -4,7 +4,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ScratchPad from '../components/ScratchPad.astro';
 import ReadingSettings from '../components/ReadingSettings.astro';
 import PdfViewer from '../components/PdfViewer.astro';
-import { allSections } from '../lib/wiki';
+import { allSections, getNavigatorData } from '../lib/wiki';
 
 const {
   title,
@@ -12,6 +12,7 @@ const {
   source,
   breadcrumbs = [],
   pageMeta,
+  parentFolderSlug = [],
 } = Astro.props as {
   title: string;
   pathname: string;
@@ -23,9 +24,12 @@ const {
     path?: string;
     kind?: 'document' | 'navigator' | 'utility';
   };
+  parentFolderSlug?: string[];
 };
 
 const scratchKey = pageMeta?.href ? `scratch:${pageMeta.href.replace(/\/$/, '') || '/'}` : '';
+const candidateNavigator = parentFolderSlug.length > 0 ? getNavigatorData(parentFolderSlug) : null;
+const parentNavigator = candidateNavigator?.items.length ? candidateNavigator : null;
 ---
 
 <BaseLayout
@@ -40,24 +44,38 @@ const scratchKey = pageMeta?.href ? `scratch:${pageMeta.href.replace(/\/$/, '') 
     data-reading-ui="doc-grid"
   >
     <aside data-reading-ui="sidebar-left" class="hidden min-h-[calc(100vh-3.5rem)] lg:block">
-      <div class="sticky top-14 flex max-h-[calc(100vh-3.5rem)] min-h-[calc(100vh-3.5rem)] flex-col overflow-auto px-5 py-10">
-        <nav class="mt-1 grid gap-1 text-[1rem] leading-7">
-          {allSections
-            .filter((entry) => entry.visible || pathname.startsWith(`/${entry.key}/`))
-            .map((entry) => (
-              <a
-                href={`/${entry.key}/`}
-                class:list={[
-                  'block py-1 pr-2',
-                  pathname.startsWith(`/${entry.key}/`)
-                    ? 'text-[color:var(--text)]'
-                    : 'quiet-link',
-                ]}
-              >
+      <div class="sticky top-14 flex h-[calc(100vh-3.5rem)] flex-col overflow-hidden px-5 py-10">
+        {parentNavigator ? (
+          <nav
+            aria-label="Parent folder documents"
+            class="pdf-sidebar-scrollbar mt-1 min-h-0 flex-1 overflow-y-auto pr-2 text-[1rem] leading-7"
+          >
+            <a href={`/${parentFolderSlug.join('/')}/`} class="mb-3 block font-medium text-[color:var(--text)]">
+              {parentNavigator.title}
+            </a>
+            <div class="grid gap-1 pb-4">
+              {parentNavigator.items.map((item) => (
+                <a
+                  href={item.href}
+                  class:list={[
+                    'block py-1 pr-2',
+                    pathname === item.href ? 'font-medium text-[color:var(--text)]' : 'quiet-link',
+                  ]}
+                >
+                  <span class="block">{item.label}</span>
+                </a>
+              ))}
+            </div>
+          </nav>
+        ) : (
+          <nav class="mt-1 grid gap-1 text-[1rem] leading-7">
+            {allSections.map((entry) => (
+              <a href={`/${entry.key}/`} class="block py-1 pr-2 quiet-link">
                 <span class="block">{entry.label}</span>
               </a>
             ))}
-        </nav>
+          </nav>
+        )}
 
         {scratchKey ? <ScratchPad storageKey={scratchKey} /> : null}
       </div>

@@ -137,8 +137,11 @@ export function getPdfTrail(pdf: PdfEntry) {
   ];
 
   for (let depth = 0; depth < pdf.folderSlug.length; depth += 1) {
+    const folderSlug = pdf.folderSlug.slice(0, depth + 1);
+    const isWikiFolder = ['concepts', 'courses', 'projects', 'papers', 'cheatsheets', 'templates'].includes(folderSlug[0] ?? '');
     trail.push({
       label: toTitle(pdf.folderSlug[depth] ?? ''),
+      ...(isWikiFolder ? { href: `/${folderSlug.join('/')}/` } : {}),
     });
   }
 
