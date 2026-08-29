@@ -1,5 +1,5 @@
 ---
-title: Decision Tree — Part 2: ID3, Tree Size, and Impurity
+title: "Decision Tree — Part 2: ID3, Tree Size, and Impurity"
 order: 6
 ---
 
