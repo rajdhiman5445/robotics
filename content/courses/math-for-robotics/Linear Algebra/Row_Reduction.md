@@ -39,7 +39,7 @@ $$
 4 & 5 & 6 & 7 \\
 6 & 7 & 8 & 9
 \end{bmatrix}
-&\xrightarrow{\substack{R_2 \leftarrow R_2 - 4R_1\\R_3 \leftarrow R_3 - 6R_1}}
+&\xrightarrow{\substack{R_2 \leftarrow R_2 - 4R_1\R_3 \leftarrow R_3 - 6R_1}}
 \begin{bmatrix}
 1 & 2 & 3 & 4 \\
 0 & -3 & -6 & -9 \\
@@ -85,7 +85,7 @@ $$
 $$
 \begin{aligned}
 A
-&\xrightarrow{\substack{R_2 \leftarrow R_2 - 3R_1\\R_3 \leftarrow R_3 - 5R_1}}
+&\xrightarrow{\substack{R_2 \leftarrow R_2 - 3R_1\R_3 \leftarrow R_3 - 5R_1}}
 \begin{bmatrix}
 1 & 3 & 5 & 7 \\
 0 & -4 & -8 & -12 \\
@@ -109,7 +109,7 @@ A
 0 & 1 & 2 & 3 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-\xrightarrow{\substack{R_1 \leftarrow R_1 - 7R_3\\R_2 \leftarrow R_2 - 3R_3\\R_1 \leftarrow R_1 - 3R_2}}
+\xrightarrow{\substack{R_1 \leftarrow R_1 - 7R_3\R_2 \leftarrow R_2 - 3R_3\R_1 \leftarrow R_1 - 3R_2}}
 \begin{bmatrix}
 1 & 0 & -1 & 0 \\
 0 & 1 & 2 & 0 \\
@@ -143,7 +143,7 @@ $$
 1 & 4 & 0 & 7 \\
 0 & -1 & 0 & -3
 \end{array}\right]
-\xrightarrow{\substack{R_2 \leftarrow -R_2\\R_1 \leftarrow R_1 - 4R_2}}
+\xrightarrow{\substack{R_2 \leftarrow -R_2\R_1 \leftarrow R_1 - 4R_2}}
 \left[\begin{array}{ccc|c}
 1 & 0 & 0 & -5 \\
 0 & 1 & 0 & 3
@@ -178,7 +178,7 @@ $$
 -9 & 12 & -6 & 0 \\
 -6 & 8 & -4 & 0
 \end{array}\right]
-\xrightarrow{\substack{R_2 \leftarrow R_2 + 3R_1\\R_3 \leftarrow R_3 + 2R_1\\R_1 \leftarrow \frac13R_1}}
+\xrightarrow{\substack{R_2 \leftarrow R_2 + 3R_1\R_3 \leftarrow R_3 + 2R_1\R_1 \leftarrow \frac13R_1}}
 \left[\begin{array}{ccc|c}
 1 & -\frac43 & \frac23 & 0 \\
 0 & 0 & 0 & 0 \\

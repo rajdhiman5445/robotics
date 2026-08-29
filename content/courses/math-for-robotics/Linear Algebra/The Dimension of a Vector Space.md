@@ -25,12 +25,12 @@ tag: Maths
 
 3. **The Rank Theorem (Rank-Nullity Theorem):**
    * For an $m \times n$ matrix $A$ (which has $n$ columns):
-     $$
+$$
      \text{rank } A + \text{nullity } A = n
-     $$
-     $$
+$$
+$$
      \dim(\text{Col } A) + \dim(\text{Nul } A) = n
-     $$
+$$
 
 ---
 
@@ -40,35 +40,35 @@ tag: Maths
 
 ### Exercise 3
 > **Problem:** For the following subspace of $\mathbb{R}^4$, (a) find a basis, and (b) state the dimension:
-> $$
+$$
 > H = \left\{ \begin{bmatrix} 2c \\ a - b \\ b - 3c \\ a + 2b \end{bmatrix} : a, b, c \in \mathbb{R} \right\}
-> $$
+$$
 
 * **Step 1: Decompose a general vector by separating the parameters $a, b, c$:**
-  $$
+$$
   \begin{bmatrix} 2c \\ a - b \\ b - 3c \\ a + 2b \end{bmatrix} = \begin{bmatrix} 0 \\ a \\ 0 \\ a \end{bmatrix} + \begin{bmatrix} 0 \\ -b \\ b \\ 2b \end{bmatrix} + \begin{bmatrix} 2c \\ 0 \\ -3c \\ 0 \end{bmatrix} = a \begin{bmatrix} 0 \\ 1 \\ 0 \\ 1 \end{bmatrix} + b \begin{bmatrix} 0 \\ -1 \\ 1 \\ 2 \end{bmatrix} + c \begin{bmatrix} 2 \\ 0 \\ -3 \\ 0 \end{bmatrix}
-  $$
+$$
 
 * **Step 2: Identify the spanning set:**
   The subspace $H$ is spanned by:
-  $$
+$$
   \mathbf{v}_1 = \begin{bmatrix} 0 \\ 1 \\ 0 \\ 1 \end{bmatrix}, \quad \mathbf{v}_2 = \begin{bmatrix} 0 \\ -1 \\ 1 \\ 2 \end{bmatrix}, \quad \mathbf{v}_3 = \begin{bmatrix} 2 \\ 0 \\ -3 \\ 0 \end{bmatrix}
-  $$
+$$
 
 * **Step 3: Test for linear independence:**
   Place the vectors into a matrix and check for pivot positions:
-  $$
+$$
   \begin{bmatrix} 0 & 0 & 2 \\ 1 & -1 & 0 \\ 0 & 1 & -3 \\ 1 & 2 & 0 \end{bmatrix}
-  $$
+$$
   * Notice $\mathbf{v}_3$ is the only vector with a nonzero first entry, so $\mathbf{v}_3$ cannot be a linear combination of $\mathbf{v}_1$ and $\mathbf{v}_2$.
   * $\mathbf{v}_1$ and $\mathbf{v}_2$ are clearly not multiples of each other (the 3rd entry of $\mathbf{v}_1$ is $0$, while for $\mathbf{v}_2$ it is $1$).
   * Since no vector can be written as a combination of the others, $\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}$ is **linearly independent**.
 
 * **Conclusion:**
   * **(a) A basis for $H$:**
-    $$
+$$
     \left\{ \begin{bmatrix} 0 \\ 1 \\ 0 \\ 1 \end{bmatrix}, \begin{bmatrix} 0 \\ -1 \\ 1 \\ 2 \end{bmatrix}, \begin{bmatrix} 2 \\ 0 \\ -3 \\ 0 \end{bmatrix} \right\} \quad \text{}
-    $$
+$$
   * **(b) Dimension:**
     Since the basis has $3$ vectors, **$\dim H = 3$**.
 
@@ -76,9 +76,9 @@ tag: Maths
 
 ### Exercise 11
 > **Problem:** Determine the dimensions of $\text{Nul } A$, $\text{Col } A$, and $\text{Row } A$ for the matrix:
-> $$
+$$
 > A = \begin{bmatrix} 1 & -6 & 9 & 0 & -2 \\ 0 & 1 & 2 & -4 & 5 \\ 0 & 0 & 0 & 5 & 1 \\ 0 & 0 & 0 & 0 & 0 \end{bmatrix}
-> $$
+$$
 
 * **Step 1: Identify the size and shape of $A$:**
   * Matrix $A$ is $4 \times 5$ ($m = 4$ rows, $n = 5$ columns).
@@ -112,12 +112,12 @@ tag: Maths
   * Given: $\text{nullity } A = \dim(\text{Nul } A) = 5$.
 
 * **Step 2: Apply the Rank Theorem:**
-  $$
+$$
   \text{rank } A + \text{nullity } A = n \quad \text{}
-  $$
-  $$
+$$
+$$
   \text{rank } A + 5 = 6 \implies \text{rank } A = 1
-  $$
+$$
 
 * **Step 3: State the dimensions:**
   * **$\dim \text{Col } A = \text{rank } A = 1$**.
