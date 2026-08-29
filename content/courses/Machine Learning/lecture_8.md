@@ -2278,19 +2278,15 @@ That gives us the conceptual chain:
 
 $$
 \boxed{
+\begin{gathered}
 \text{Bayes theorem}
-\rightarrow
-\text{many features}
-\rightarrow
-\text{parameter problem}
-\rightarrow
-\text{Naïve Bayes}
-\rightarrow
+\rightarrow \text{many features}
+\rightarrow \text{parameter problem}
+\rightarrow \text{Naïve Bayes} \\
 \text{Gaussian model}
-\rightarrow
-\text{discriminant function}
-\rightarrow
-\text{decision boundary}
+\rightarrow \text{discriminant function}
+\rightarrow \text{decision boundary}
+\end{gathered}
 }
 $$
 
