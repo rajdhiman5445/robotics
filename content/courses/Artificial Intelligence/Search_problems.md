@@ -1,5 +1,6 @@
 ---
 title: Search Strategies Problems
+order: 8
 ---
 
 ---
