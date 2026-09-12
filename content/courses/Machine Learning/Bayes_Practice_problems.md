@@ -1,5 +1,6 @@
 ---
-title: "Bayesian Decision Theory, Naïve Bayes, & Gaussian Models Practice Problems"
+title: "Bayesian Decision Theory Practice Problems"
+order: 10
 ---
 
 

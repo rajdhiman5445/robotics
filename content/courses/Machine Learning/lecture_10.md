@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 12
 title: "Ensemble Learning: Bagging, Random Forests, Voting, and Boosting"
 ---
 

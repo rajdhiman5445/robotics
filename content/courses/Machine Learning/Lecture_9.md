@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 11
 title: "Parameter Estimation: Maximum Likelihood, Bayesian Estimation, and Smoothing"
 ---
 

@@ -1,6 +1,6 @@
 ---
-order: 11
-title: "Review Sheet --- Parameter Estimation + Ensemble
+order: 13
+title: "Review Sheet: Parameter Estimation + Ensemble
   Learning"
 ---
 
