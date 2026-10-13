@@ -106,7 +106,7 @@
   }
 
   h3 {
-    @apply mt-10 text-[1.02rem] font-semibold tracking-[-0.01em];
+    @apply mt-10 text-[1.15rem] font-semibold tracking-[-0.01em];
     line-height: 1.38;
   }
 
