@@ -125,13 +125,14 @@ Suppose each model's prediction contains some sample-dependent noise. If
 models make sufficiently independent errors, averaging can cancel some
 of that noise.
 
-For independent random predictions (X_1,`\ldots`{=tex},X_n) with the
-same variance (`\sigma`{=tex}\^2), their mean is
+For independent random predictions $X_1,\ldots,X_n$ with the same variance $\sigma^2$, their mean is
 
-\[ `\bar `{=tex}X = `\frac{1}{n}`{=tex}`\sum`{=tex}\_{i=1}\^{n} X_i,
-`\qquad`{=tex}
-`\operatorname{Var}`{=tex}(`\bar `{=tex}X)=`\frac{\sigma^2}{n}`{=tex}.
-\]
+$$
+\bar X = \frac{1}{n}\sum_{i=1}^{n} X_i,
+\qquad
+\operatorname{Var}(\bar X)=\frac{\sigma^2}{n}.
+
+$$
 
 Thus, averaging independent predictions reduces variance. This motivates
 ensembles of unstable, high-variance learners such as deep decision
@@ -157,55 +158,63 @@ These are rules of thumb, not guarantees.
 
 Let the training set be
 
-\[ D={(x_i,y_i)}\_{i=1}\^{n}. \]
+$$
+D=\{(x_i,y_i)\}_{i=1}^{n}.
+$$
 
-A **bootstrap sample** is made by drawing examples from (D) **with
+A **bootstrap sample** is made by drawing examples from $D$ **with
 replacement**. In the lecture's common setting, each bootstrap sample
-contains (n) draws. Because draws are with replacement, an example can
+contains $n$ draws. Because draws are with replacement, an example can
 appear multiple times, while other examples may not appear at all.
 
 ### 4.2 Bagging algorithm
 
-Choose the number of models (B) (called (k) in some slides).
+Choose the number of models $B$ (called $k$ in some slides).
 
-1.  Repeat for (b=1,`\ldots`{=tex},B):
-    1.  Draw a bootstrap sample (D_b) of size (n) from the training set.
-    2.  Train a base learner (h_b) on (D_b).
-2.  For a new input (x):
+1.  Repeat for $b=1,\ldots,B$:
+    1.  Draw a bootstrap sample $D_b$ of size $n$ from the training set.
+    2.  Train a base learner $h_b$ on $D_b$.
+2.  For a new input $x$:
     -   **Classification:** predict by majority vote, or aggregate class
         scores/probabilities.
     -   **Regression:** average the models' numerical predictions.
 
 For classification, a simple majority-vote rule is
 
-\[ H(x)=`\operatorname{mode}`{=tex}{h_1(x),`\ldots`{=tex},h_B(x)}. \]
+$$
+H(x)=\operatorname{mode}\{h_1(x),\ldots,h_B(x)\}.
+$$
 
 For regression, the usual average is
 
-\[ H(x)=`\frac{1}{B}`{=tex}`\sum`{=tex}\_{b=1}\^{B}h_b(x). \]
+$$
+H(x)=\frac{1}{B}\sum_{b=1}^{B}h_b(x).
+$$
 
-The base learner can be a decision tree, (k)-nearest neighbours, a
+The base learner can be a decision tree, $k$-nearest neighbours, a
 perceptron, or another suitable model. In practice, bagging is
 particularly associated with decision trees because a tree's structure
 can change substantially when the training sample changes.
 
 ### 4.3 Why a bootstrap sample differs from the original data
 
-Even when we draw (n) examples from a data set of (n) examples, we do
+Even when we draw $n$ examples from a data set of $n$ examples, we do
 not usually recover the original data set exactly.
 
 For a particular training example, the probability that it is **not**
-selected on any of the (n) draws is
+selected on any of the $n$ draws is
 
-\[ `\left`{=tex}(1-`\frac{1}{n}`{=tex}`\right`{=tex})\^n
-`\longrightarrow `{=tex}e\^{-1}`\approx 0.368`{=tex}
-`\quad`{=tex}`\text{as }`{=tex}n`\to`{=tex}`\infty`{=tex}. \]
+$$
+\left(1-\frac{1}{n}\right)^n
+\longrightarrow e^{-1}\approx 0.368
+\quad\text{as }n\to\infty.
+$$
 
-So a bootstrap sample of size (n) leaves out about **36.8% (roughly
+So a bootstrap sample of size $n$ leaves out about **36.8% (roughly
 37%)** of the distinct training examples on average. The remaining
 examples may occur more than once.
 
-The probability that a bootstrap sample exactly reproduces all (n)
+The probability that a bootstrap sample exactly reproduces all $n$
 examples in the required sequence/set arrangement is extremely small;
 the important practical point is that resampling produces different
 training sets, which can yield different fitted models.
@@ -249,7 +258,7 @@ For each tree:
 1.  Draw a bootstrap sample of the training data.
 2.  Grow a decision tree.
 3.  At each split, consider only a randomly selected subset of the
-    available features, rather than all (p) features.
+    available features, rather than all $p$ features.
 4.  Combine predictions from the trees by voting (classification) or
     averaging (regression).
 
@@ -266,8 +275,8 @@ reducing ensemble variance further.
   ----------------------- ----------------------- -----------------------
   Data used for each tree Bootstrap sample        Bootstrap sample
 
-  Features considered at  All (p) features        Random subset, often (m
-  a split                                         `\ll `{=tex}p)
+  Features considered at  All $p$ features        Random subset, often (m
+  a split                                         \ll p)
 
   Correlation between     Often higher            Usually lower
   trees                                           
@@ -314,33 +323,35 @@ outperform every alternative on every data set.
 
 ### 6.1 Majority voting
 
-For two-class classifiers (h_1,`\ldots`{=tex},h_m) whose outputs are
-represented as (-1) and (+1), a majority vote can be written as
+For two-class classifiers $h_1,\ldots,h_m$ whose outputs are
+represented as $-1$ and $+1$, a majority vote can be written as
 
-\[
-H(x)=`\operatorname{sign}`{=tex}`\left`{=tex}(`\sum`{=tex}\_{j=1}\^{m}
-h_j(x)`\right`{=tex}). \]
+$$
+H(x)=\operatorname{sign}\left(\sum_{j=1}^{m} h_j(x)\right).
+$$
 
 A weighted vote instead uses
 
-\[
-H(x)=`\operatorname{sign}`{=tex}`\left`{=tex}(`\sum`{=tex}\_{j=1}\^{m}`\alpha`{=tex}\_j
-h_j(x)`\right`{=tex}), \]
+$$
+H(x)=\operatorname{sign}\left(\sum_{j=1}^{m}\alpha_j h_j(x)\right).
+$$
 
-where (`\alpha`{=tex}\_j) controls the influence of learner (j). The
+where $\alpha_j$ controls the influence of learner $j$. The
 lecture's voting discussion uses an odd number of voters to avoid ties
 in a two-choice, unweighted vote. With weighted voting, a tie is still
 possible depending on the weights.
 
 ### 6.2 Condorcet's jury theorem
 
-The slides consider a simplified setting with (m) voters/classifiers.
-Each independently gives the correct answer with probability (p). A
+The slides consider a simplified setting with $m$ voters/classifiers.
+Each independently gives the correct answer with probability $p$. A
 majority is correct if more than half of the voters are correct. For odd
-(m),
+$m$,
 
-\[ P(`\text{majority correct}`{=tex}) =`\sum`{=tex}\_{j=(m+1)/2}\^{m}
-`\binom{m}{j}`{=tex}p^j(1-p)^{m-j}. \]
+$$
+P(\text{majority correct}) =\sum_{j=(m+1)/2}^{m}
+\binom{m}{j}p^j(1-p)^{m-j}.
+$$
 
 This is the binomial probability of getting at least a majority of
 correct votes. It is the result referred to in the lecture as
@@ -348,10 +359,10 @@ correct votes. It is the result referred to in the lecture as
 
 Under the independence and equal-accuracy assumptions:
 
--   If (p\>0.5), adding voters improves the probability that the
-    majority is correct, and this probability approaches 1 as (m) grows.
+-   If (p>0.5), adding voters improves the probability that the
+    majority is correct, and this probability approaches 1 as $m$ grows.
 -   If (p=0.5), votes provide no advantage over chance.
--   If (p\<0.5), a larger majority tends to be wrong more often;
+-   If (p<0.5), a larger majority tends to be wrong more often;
     systematically better-than-chance voters are important.
 
 The curves on **slide 31** illustrate the different trends for (p=0.55),
@@ -413,7 +424,7 @@ Given labelled training examples:
 3.  Give more weight to examples that the learner misclassified and less
     weight to examples it classified correctly.
 4.  Train the next learner using the updated distribution.
-5.  Repeat for (T) rounds.
+5.  Repeat for $T$ rounds.
 6.  Combine the learners, assigning larger voting weight to learners
     with lower weighted training error.
 
@@ -432,76 +443,84 @@ This section connects those equations to the procedure above.
 
 Let the training set be
 
-\[ S={(x_1,y_1),`\ldots`{=tex},(x_n,y_n)},
-`\qquad `{=tex}y_i`\in`{=tex}{-1,+1}. \]
+$$
+S=\{(x_1,y_1),\ldots,(x_n,y_n)\},
+\qquad y_i\in\{-1,+1\}.
+$$
 
-At round (t), let (D_t(i)) be the non-negative weight of example (i),
+At round $t$, let $D_t(i)$ be the non-negative weight of example $i$,
 normalized so that
 
-\[ `\sum`{=tex}\_{i=1}\^{n}D_t(i)=1. \]
+$$
+\sum_{i=1}^{n}D_t(i)=1.
+$$
 
 The weights define a probability distribution over the training
 examples. Initially,
 
-\[ D_1(i)=`\frac{1}{n}`{=tex}. \]
+$$
+D_1(i)=\frac{1}{n}.
+$$
 
-For a classifier (h_t(x)`\in`{=tex}{-1,+1}), its weighted error is
+For a classifier $h_t(x)\in\{-1,+1\}$, its weighted error is
 
-\[ `\epsilon`{=tex}*t =`\operatorname{err}`{=tex}*{D_t}(h_t)
-=`\sum`{=tex}\_{i=1}\^{n}D_t(i),`\mathbf{1}`{=tex}\[h_t(x_i)`\ne `{=tex}y_i\],
-\]
+$$
+\epsilon_t=\operatorname{err}_{D_t}(h_t)=\sum_{i=1}^{n}D_t(i)\,\mathbf{1}[h_t(x_i)\ne y_i].
+$$
 
-where (`\mathbf{1}`{=tex}\[`\cdot`{=tex}\]) is 1 when the condition is
+where $\mathbf{1}[\cdot]$ is 1 when the condition is
 true and 0 otherwise.
 
 This definition means that a mistake on a high-weight example
 contributes more to the error than a mistake on a low-weight example.
 The weak learner should find a classifier with
-(`\epsilon`{=tex}\_t\<0.5) in the binary AdaBoost setting.
+$\epsilon_t<0.5$ in the binary AdaBoost setting.
 
 ### 8.2 Learner weight
 
-AdaBoost assigns learner (h_t) the coefficient
+AdaBoost assigns learner $h_t$ the coefficient
 
-\[
-`\alpha`{=tex}\_t=`\frac{1}{2}`{=tex}`\ln`{=tex}`\left`{=tex}(`\frac{1-\epsilon_t}{\epsilon_t}`{=tex}`\right`{=tex}).
-\]
+$$
+\alpha_t=\frac{1}{2}\ln\left(\frac{1-\epsilon_t}{\epsilon_t}\right).
+
+$$
 
 Interpretation:
 
--   If (`\epsilon`{=tex}\_t) is small, (`\alpha`{=tex}\_t) is large: the
+-   If $\epsilon_t$ is small, $\alpha_t$ is large: the
     learner is relatively reliable and receives more influence.
--   If (`\epsilon`{=tex}\_t=0.5), then (`\alpha`{=tex}\_t=0): it
+-   If $\epsilon_t=0.5$, then $\alpha_t=0$: it
     contributes no useful weighted vote.
--   If (`\epsilon`{=tex}\_t\<0.5), then (`\alpha`{=tex}\_t\>0).
--   If (`\epsilon`{=tex}\_t\>0.5), then (`\alpha`{=tex}\_t\<0); standard
+-   If $\epsilon_t<0.5$, then $\alpha_t>0$.
+-   If $\epsilon_t>0.5$, then $\alpha_t<0$; standard
     AdaBoost normally seeks a better-than-chance weak learner instead.
 
 For example, the lecture's geometric illustrations report approximately
-(`\epsilon`{=tex}\_1=0.30), (`\alpha`{=tex}\_1=0.42);
-(`\epsilon`{=tex}\_2=0.21), (`\alpha`{=tex}\_2=0.65); and
-(`\epsilon`{=tex}\_3=0.14), (`\alpha`{=tex}\_3=0.92). These coefficients
+$\epsilon_1=0.30$, $\alpha_1=0.42$;
+$\epsilon_2=0.21$, $\alpha_2=0.65$; and
+$\epsilon_3=0.14$, $\alpha_3=0.92$. These coefficients
 are consistent with the formula up to rounding. The increasingly
 accurate learners receive greater weight in the final classifier.
 
 ### 8.3 Example-weight update
 
-After training (h_t), update each example's weight using
+After training $h_t$, update each example's weight using
 
-\[ D\_{t+1}(i)
-=`\frac{D_t(i)\exp\!\left(-\alpha_t y_i h_t(x_i)\right)}{Z_t}`{=tex}, \]
+$$
+D_{t+1}(i)=\frac{D_t(i)\exp\!\left(-\alpha_t y_i h_t(x_i)\right)}{Z_t}.
+$$
 
-where (Z_t) is a normalization constant chosen so that the updated
+where $Z_t$ is a normalization constant chosen so that the updated
 weights sum to 1.
 
-Because (y_i,h_t(x_i)`\in`{=tex}{-1,+1}):
+Because $y_i,h_t(x_i)\in\{-1,+1\}$:
 
--   If the example is classified correctly, (y_i h_t(x_i)=+1), so its
-    unnormalized weight is multiplied by (e\^{-`\alpha`{=tex}\_t}),
-    which decreases it when (`\alpha`{=tex}\_t\>0).
--   If the example is misclassified, (y_i h_t(x_i)=-1), so its
-    unnormalized weight is multiplied by (e\^{+`\alpha`{=tex}\_t}),
-    which increases it when (`\alpha`{=tex}\_t\>0).
+-   If the example is classified correctly, $y_i h_t(x_i)=+1$, so its
+    unnormalized weight is multiplied by $e^{-\alpha_t}$,
+    which decreases it when $\alpha_t>0$.
+-   If the example is misclassified, $y_i h_t(x_i)=-1$, so its
+    unnormalized weight is multiplied by $e^{+\alpha_t}$,
+    which increases it when $\alpha_t>0$.
 
 Normalization then rescales all weights to sum to one. Thus, the next
 learner focuses more on the examples that are still difficult.
@@ -509,19 +528,21 @@ learner focuses more on the examples that are still difficult.
 For the standard AdaBoost update, the normalization constant can be
 expressed as
 
-\[ Z_t=2`\sqrt{\epsilon_t(1-\epsilon_t)}`{=tex} \]
+$$
+Z_t=2\sqrt{\epsilon_t(1-\epsilon_t)}.
+$$
 
-when the weighted error is (`\epsilon`{=tex}\_t) and the coefficient is
+when the weighted error is $\epsilon_t$ and the coefficient is
 chosen by the formula above (assuming the usual binary setup and a
 non-degenerate error).
 
 ### 8.4 Final classifier
 
-After (T) rounds, combine all learners in a weighted vote:
+After $T$ rounds, combine all learners in a weighted vote:
 
-\[
-H(x)=`\operatorname{sign}`{=tex}`\left`{=tex}(`\sum`{=tex}\_{t=1}\^{T}`\alpha`{=tex}\_t
-h_t(x)`\right`{=tex}). \]
+$$
+H(x)=\operatorname{sign}\left(\sum_{t=1}^{T}\alpha_t h_t(x)\right).
+$$
 
 The sign of the weighted sum determines the predicted class. Learners
 with lower weighted error have larger positive coefficients and
@@ -530,20 +551,25 @@ therefore exert more influence.
 ### 8.5 Small numerical illustration of the weight update
 
 Suppose, purely for illustration, that a round has weighted error
-(`\epsilon`{=tex}\_t=0.30). Then
+$\epsilon_t=0.30$. Then
 
-\[
-`\alpha`{=tex}\_t=`\frac12`{=tex}`\ln`{=tex}`\left`{=tex}(`\frac{0.70}{0.30}`{=tex}`\right`{=tex})`\approx 0.424`{=tex}.
-\]
+$$
+\alpha_t=\frac12\ln\left(\frac{0.70}{0.30}\right)\approx 0.424.
+
+$$
 
 Before normalization, a correctly classified example's weight is
 multiplied by
 
-\[ e\^{-`\alpha`{=tex}\_t}`\approx 0.654`{=tex}, \]
+$$
+e^{-\alpha_t}\approx 0.654.
+$$
 
 while a misclassified example's weight is multiplied by
 
-\[ e\^{+`\alpha`{=tex}\_t}`\approx 1.528`{=tex}. \]
+$$
+e^{+\alpha_t}\approx 1.528.
+$$
 
 The normalization step makes the total weight 1 again. The relative
 weight of a mistake therefore increases compared with a correctly
@@ -627,7 +653,7 @@ retained here because they motivate the methods:
 -   Averaging can reduce variance, but if there is only one training
     set, where can multiple models come from? **Bagging's answer:**
     bootstrap samples create varied training sets.
--   Why is a bootstrap sample of size (n) still different from the
+-   Why is a bootstrap sample of size $n$ still different from the
     original training set? **Answer:** sampling is with replacement, so
     some examples repeat and about 37% of distinct examples are omitted
     on average.
@@ -647,18 +673,20 @@ retained here because they motivate the methods:
 The extracted text for the lecture's definition of classifier error on
 **slide 49** appears to show
 
-\[
-`\operatorname{err}`{=tex}*{D}(h)=`\Pr`{=tex}*{(X,Y)`\sim `{=tex}D}(h(X)=Y).
-\]
+$$
+\operatorname{err}_{D}(h)=\Pr_{(X,Y)\sim D}(h(X)=Y).
+
+$$
 
 That equality condition counts correct predictions, not errors. The
-worked example on the slide reports an error of (0.25), and the later
+worked example on the slide reports an error of $0.25$, and the later
 weighted-error formula uses an indicator for misclassification. The
 standard error definition consistent with those examples is
 
-\[
-`\operatorname{err}`{=tex}*{D}(h)=`\Pr`{=tex}*{(X,Y)`\sim `{=tex}D}(h(X)`\ne `{=tex}Y).
-\]
+$$
+\operatorname{err}_{D}(h)=\Pr_{(X,Y)\sim D}(h(X)\ne Y).
+
+$$
 
 These notes use the latter definition and flag the discrepancy rather
 than silently treating the extracted equality sign as correct.
@@ -671,7 +699,7 @@ than silently treating the extracted equality sign as correct.
     generalization requires balancing the two.
 3.  Averaging helps when models' errors are not too correlated.
 4.  **Bagging** creates bootstrap training sets and reduces variance; a
-    size-(n) bootstrap sample leaves out about 37% of distinct examples
+    size-$n$ bootstrap sample leaves out about 37% of distinct examples
     on average.
 5.  **Random forests** add random feature subsets at splits to reduce
     correlation between trees.
