@@ -81,29 +81,11 @@ intermediate level of complexity.
 The target is not the most complex model or the simplest model. It is a
 model whose complexity gives good generalization.
 
-  -------------------------------------------------------------------------
-  Situation                       Bias             Variance Typical symptom
-  --------------- -------------------- -------------------- ---------------
-  Underfitting                    High            Often low Model misses
-                                                            systematic
-                                                            structure; both
-                                                            training and
-                                                            test
-                                                            performance may
-                                                            be poor
-
-  Good fit           Appropriately low    Appropriately low Learns useful
-                                                            structure and
-                                                            generalizes
-
-  Overfitting                Often low                 High Fits training
-                                                            details but
-                                                            changes
-                                                            substantially
-                                                            across samples
-                                                            and generalizes
-                                                            poorly
-  -------------------------------------------------------------------------
+| Situation | Bias | Variance | Typical symptom |
+| --- | --- | --- | --- |
+| Underfitting | High | Often low | Model misses systematic structure; both training and test performance may be poor. |
+| Good fit | Appropriately low | Appropriately low | Learns useful structure and generalizes. |
+| Overfitting | Often low | High | Fits training details but changes substantially across samples and generalizes poorly. |
 
 The target diagrams on **slide 10** illustrate these combinations: low
 bias and low variance gives predictions concentrated near the ground
@@ -270,25 +252,13 @@ reducing ensemble variance further.
 
 ### 5.2 Bagged trees versus random forests
 
-  -----------------------------------------------------------------------
-  Property                Bagged trees            Random forest
-  ----------------------- ----------------------- -----------------------
-  Data used for each tree Bootstrap sample        Bootstrap sample
-
-  Features considered at  All $p$ features        Random subset, often (m
-  a split                                         \ll p)
-
-  Correlation between     Often higher            Usually lower
-  trees                                           
-
-  Variance reduction from Helps, but limited by   Often stronger because
-  the ensemble            correlated errors       trees are less
-                                                  correlated
-
-  Bias                    Similar to the base     May be slightly higher
-                          tree in the lecture's   due to restricting
-                          qualitative comparison  split candidates
-  -----------------------------------------------------------------------
+| Property | Bagged trees | Random forest |
+| --- | --- | --- |
+| Data used for each tree | Bootstrap sample | Bootstrap sample |
+| Features considered at a split | All $p$ features | Random subset, often ($m \ll p$) |
+| Correlation between trees | Often higher | Usually lower |
+| Variance reduction from the ensemble | Helps, but limited by correlated errors | Often stronger because trees are less correlated |
+| Bias | Similar to the base tree in the lecture's qualitative comparison | May be slightly higher due to restricting split candidates |
 
 The lecture's comparison on **slide 22** emphasizes that random forests
 trade a possible small increase in bias for a further reduction in
@@ -359,14 +329,14 @@ correct votes. It is the result referred to in the lecture as
 
 Under the independence and equal-accuracy assumptions:
 
--   If (p>0.5), adding voters improves the probability that the
+-   If $p>0.5$, adding voters improves the probability that the
     majority is correct, and this probability approaches 1 as $m$ grows.
--   If (p=0.5), votes provide no advantage over chance.
--   If (p<0.5), a larger majority tends to be wrong more often;
+-   If $p=0.5$, votes provide no advantage over chance.
+-   If $p<0.5$, a larger majority tends to be wrong more often;
     systematically better-than-chance voters are important.
 
-The curves on **slide 31** illustrate the different trends for (p=0.55),
-(p=0.45), and (p=0.85).
+The curves on **slide 31** illustrate the different trends for
+$p=0.55$, $p=0.45$, and $p=0.85$.
 
 **Why the assumptions matter:** real classifiers are often correlated,
 and their accuracies differ across examples. Therefore, the theorem
@@ -380,11 +350,11 @@ The lecture calls a classifier a **weak learner** when it performs
 better than random guessing in the relevant binary setting. A **strong
 learner** is a substantially more accurate classifier.
 
-For a balanced two-class problem, random guessing has error (0.5). A
-learner with error below (0.5) does better than chance under the
+For a balanced two-class problem, random guessing has error $0.5$. A
+learner with error below $0.5$ does better than chance under the
 lecture's definition. More generally, the baseline error of random
 guessing depends on the class distribution and the guessing strategy, so
-the (0.5) threshold should be read in the lecture's
+the $0.5$ threshold should be read in the lecture's
 binary-classification setting.
 
 A single weak learner may have high bias and fail to represent a
@@ -595,34 +565,12 @@ reserved for final evaluation.
 The comparison table on **slides 24 and 57** summarizes the lecture's
 qualitative view.
 
-  -------------------------------------------------------------------------------
-  Method         Typical base    Main mechanism Bias effect    Variance effect
-                 learners                                      
-  -------------- --------------- -------------- -------------- ------------------
-  Bagging        High-variance   Train on       Roughly        Reduced by
-                 learners,       bootstrap      unchanged      averaging
-                 especially deep samples; vote                 
-                 trees           or average                    
-
-  Random forest  Deep trees with Bagging plus   May be         Often reduced
-                 random feature  feature        slightly       further by
-                 subsets         randomness     higher than    decorrelating
-                                                bagged trees   trees
-
-  Boosting       Often weak,     Sequential     Often reduced  Can increase;
-                 high-bias       reweighting                   controlled in
-                 learners such   and weighted                  practice through
-                 as stumps or    combination                   validation-based
-                 shallow trees                                 stopping and other
-                                                               regularization
-                                                               choices
-
-  Stacking       Diverse base    Train a        Can reduce     May improve,
-                 learners        meta-learner   systematic     depending on data
-                                 to combine     errors         and design
-                                 base                          
-                                 predictions                   
-  -------------------------------------------------------------------------------
+| Method | Typical base learners | Main mechanism | Bias effect | Variance effect |
+| --- | --- | --- | --- | --- |
+| Bagging | High-variance learners, especially deep trees | Train on bootstrap samples; vote or average | Roughly unchanged | Reduced by averaging |
+| Random forest | Deep trees with random feature subsets | Bagging plus feature randomness | May be slightly higher than bagged trees | Often reduced further by decorrelating trees |
+| Boosting | Often weak, high-bias learners such as stumps or shallow trees | Sequential reweighting and weighted combination | Often reduced | Can increase; controlled in practice through validation-based stopping and other regularization choices |
+| Stacking | Diverse base learners | Train a meta-learner to combine base predictions | Can reduce systematic errors | May improve, depending on data and design |
 
 **Stacking** is included in the lecture's comparison table but is not
 developed in detail in the main sequence of slides. Its key distinction
