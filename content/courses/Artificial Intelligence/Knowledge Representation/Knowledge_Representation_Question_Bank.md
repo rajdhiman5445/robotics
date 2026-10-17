@@ -1,5 +1,5 @@
 ---
-title: Knowledge Representation — Question Bank
+title: Question Bank
 order: 2
 tags:
   - artificial-intelligence

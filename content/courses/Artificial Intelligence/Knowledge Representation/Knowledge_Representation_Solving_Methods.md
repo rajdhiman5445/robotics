@@ -1,5 +1,5 @@
 ---
-title: Knowledge Representation — Problem-Solving Methods
+title: Problem-Solving Methods
 order: 3
 tags:
   - artificial-intelligence

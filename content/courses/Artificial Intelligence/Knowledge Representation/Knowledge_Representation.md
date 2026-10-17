@@ -1,5 +1,6 @@
 ---
 title: Knowledge Representation
+order: 1
 tags:
   - artificial-intelligence
   - knowledge-representation
