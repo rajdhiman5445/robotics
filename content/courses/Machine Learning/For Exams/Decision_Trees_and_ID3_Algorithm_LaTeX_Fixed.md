@@ -53,7 +53,7 @@ The tree diagram in the first decision-tree lecture labels the root, parent, chi
 
 ### 2.2 Features and Predictions
 
-Each internal node tests a feature, or a set of features. Each outgoing branch selects a value or outcome of that test. Each leaf represents the prediction for the target variable \(Y\).
+Each internal node tests a feature, or a set of features. Each outgoing branch selects a value or outcome of that test. Each leaf represents the prediction for the target variable $Y$.
 
 The slides state that features can be:
 
@@ -65,11 +65,12 @@ For a classification tree, the leaf predicts a class label. For a regression tre
 
 A tree can be represented as a function:
 
-\[
+$$
 f(X_1,X_2,\ldots,X_p)\in\mathcal{F}
-\]
 
-where \(X_1,\ldots,X_p\) are explanatory variables and \(\mathcal{F}\) is the family of decision-tree functions.
+$$
+
+where $X_1,\ldots,X_p$ are explanatory variables and $\mathcal{F}$ is the family of decision-tree functions.
 
 ### 2.3 Decision Nodes and Leaf Nodes
 
@@ -97,10 +98,11 @@ Each path can be written in the form:
 
 For example, the weekend decision tree in the lecture contains the rule:
 
-\[
+$$
 \text{no\_parents}\land\text{sunny\_day}
 \Rightarrow \text{play\_tennis}
-\]
+
+$$
 
 This means: if the parents are not visiting and the weather is sunny, the prediction is to play tennis.
 
@@ -161,34 +163,38 @@ The ID3 algorithm answers this question using **information gain**.
 
 Let:
 
-- \(p_+\) be the proportion of positive examples.
-- \(p_-\) be the proportion of negative examples.
+- $p_+$ be the proportion of positive examples.
+- $p_-$ be the proportion of negative examples.
 
 Then:
 
-\[
+$$
 Entropy(S)=-p_+\log_2(p_+)-p_-\log_2(p_-)
-\]
+
+$$
 
 The proportions satisfy:
 
-\[
+$$
 p_+ + p_- = 1
-\]
+
+$$
 
 ### 5.2 Entropy for Multiple Classes
 
-For a dataset with classes \(c_1,c_2,\ldots,c_m\), let \(p_i\) be the proportion of examples belonging to class \(c_i\).
+For a dataset with classes $c_1,c_2,\ldots,c_m$, let $p_i$ be the proportion of examples belonging to class $c_i$.
 
-\[
+$$
 Entropy(S)=-\sum_{i=1}^{m}p_i\log_2(p_i)
-\]
+
+$$
 
 A term with probability zero is treated as zero:
 
-\[
+$$
 0\log_2(0)=0
-\]
+
+$$
 
 This convention avoids an undefined numerical term when a class is absent from a subset.
 
@@ -224,20 +230,21 @@ The procedure is:
 4. Weight each subset's entropy by its size relative to the original dataset.
 5. Subtract the weighted entropy after the split from the entropy before the split.
 
-For dataset \(S\) and attribute \(A\):
+For dataset $S$ and attribute $A$:
 
-\[
+$$
 Gain(S,A)=Entropy(S)-
 \sum_{v\in Values(A)}
 \frac{|S_v|}{|S|}Entropy(S_v)
-\]
+
+$$
 
 where:
 
-- \(Values(A)\) is the set of possible values of attribute \(A\).
-- \(S_v\) is the subset of examples for which attribute \(A\) has value \(v\).
-- \(|S_v|\) is the number of examples in that subset.
-- \(|S|\) is the number of examples in the original dataset.
+- $Values(A)$ is the set of possible values of attribute $A$.
+- $S_v$ is the subset of examples for which attribute $A$ has value $v$.
+- $|S_v|$ is the number of examples in that subset.
+- $|S|$ is the number of examples in the original dataset.
 
 The weighted sum is the entropy remaining after the split. A larger information gain means a greater reduction in entropy.
 
@@ -263,17 +270,17 @@ ID3:
 
 ### 7.1 ID3 Step by Step
 
-Given a set of labelled examples \(S\) and a set of available attributes:
+Given a set of labelled examples $S$ and a set of available attributes:
 
 1. Calculate the information gain for each available attribute.
-2. Choose the attribute \(A\) with the highest gain.
-3. Make \(A\) the current decision node.
-4. For every value \(v\) that \(A\) can take, create a branch labelled \(v\).
-5. Let \(S_v\) be the examples in \(S\) whose attribute \(A\) has value \(v\).
+2. Choose the attribute $A$ with the highest gain.
+3. Make $A$ the current decision node.
+4. For every value $v$ that $A$ can take, create a branch labelled $v$.
+5. Let $S_v$ be the examples in $S$ whose attribute $A$ has value $v$.
 6. For each branch:
-   - If \(S_v\) contains examples from only one category, make that category a leaf.
-   - If \(S_v\) is empty, use the default category: the category with the most examples in the current parent set \(S\).
-   - Otherwise, remove \(A\) from the available attributes, replace \(S\) with \(S_v\), and repeat the selection process.
+   - If $S_v$ contains examples from only one category, make that category a leaf.
+   - If $S_v$ is empty, use the default category: the category with the most examples in the current parent set $S$.
+   - Otherwise, remove $A$ from the available attributes, replace $S$ with $S_v$, and repeat the selection process.
 7. Continue until the branches are classified or a stopping condition is reached.
 
 **Important:** At every recursive step, replace the current dataset with the subset belonging to that branch. The second lecture explicitly emphasizes this point: when working on a branch, calculate the next information gains using that branch's subset, not the original full dataset.
@@ -282,7 +289,7 @@ Given a set of labelled examples \(S\) and a set of available attributes:
 
 ### 7.2 Empty Branches and Default Categories
 
-A branch can be empty if an attribute value does not occur in the current subset. The lecture's ID3 description says to use the **default category**, defined as the category containing the most examples in the current set \(S\), as the leaf label for that empty branch.
+A branch can be empty if an attribute value does not occur in the current subset. The lecture's ID3 description says to use the **default category**, defined as the category containing the most examples in the current set $S$, as the leaf label for that empty branch.
 
 This is distinct from the pure-branch case:
 
@@ -321,17 +328,19 @@ The class counts are:
 
 Therefore:
 
-\[
+$$
 Entropy(S)=
 -\frac{6}{10}\log_2\frac{6}{10}
 -\frac{2}{10}\log_2\frac{2}{10}
 -\frac{1}{10}\log_2\frac{1}{10}
 -\frac{1}{10}\log_2\frac{1}{10}
-\]
 
-\[
+$$
+
+$$
 Entropy(S)\approx1.571
-\]
+
+$$
 
 This is the starting impurity before any attribute is selected.
 
@@ -347,9 +356,10 @@ The lecture gives the following information-gain values for the full dataset:
 
 Weather has the largest information gain, so it is selected as the root node.
 
-\[
+$$
 A_{\text{root}}=\text{Weather}
-\]
+
+$$
 
 The reason is that splitting on Weather produces the greatest reduction in entropy among the attributes compared.
 
@@ -357,9 +367,10 @@ The reason is that splitting on Weather produces the greatest reduction in entro
 
 The Sunny subset is:
 
-\[
+$$
 S_{\text{sunny}}=\{W1,W2,W10\}
-\]
+
+$$
 
 | Weekend | Weather | Parents | Money | Decision |
 | --- | --- | --- | --- | --- |
@@ -378,7 +389,7 @@ Weather cannot be selected again because it has already been used along this pat
 
 The lecture gives:
 
-| Attribute | Gain on \(S_{\text{sunny}}\) |
+| Attribute | Gain on $S_{\text{sunny}}$ |
 | --- | ---: |
 | Parents | 0.918 |
 | Money | 0 |
@@ -413,106 +424,118 @@ The first decision-tree lecture gives a smaller example to demonstrate the infor
 
 There are four examples:
 
-\[
+$$
 S=\{s_1,s_2,s_3,s_4\}
-\]
+
+$$
 
 The binary class distribution contains:
 
-- One positive example: \(s_1\).
-- Three negative examples: \(s_2,s_3,s_4\).
+- One positive example: $s_1$.
+- Three negative examples: $s_2,s_3,s_4$.
 
-Attribute \(A\) has three possible values:
+Attribute $A$ has three possible values:
 
-- \(s_1\) and \(s_2\) have value \(v_2\).
-- \(s_3\) has value \(v_3\).
-- \(s_4\) has value \(v_1\).
+- $s_1$ and $s_2$ have value $v_2$.
+- $s_3$ has value $v_3$.
+- $s_4$ has value $v_1$.
 
 Thus:
 
-\[
+$$
 S_{v_1}=\{s_4\},\quad
 S_{v_2}=\{s_1,s_2\},\quad
 S_{v_3}=\{s_3\}
-\]
+
+$$
 
 ### 9.1 Calculate the Original Entropy
 
 The class proportions are:
 
-\[
+$$
 p_+=\frac14,\qquad p_-=\frac34
-\]
+
+$$
 
 Therefore:
 
-\[
+$$
 \begin{aligned}
 Entropy(S)
 &=-\frac14\log_2\frac14-\frac34\log_2\frac34\\
 &\approx0.811
 \end{aligned}
-\]
+
+$$
 
 ### 9.2 Calculate the Weighted Entropy of the Subsets
 
-For \(v_1\), the subset contains only \(s_4\), a negative example. It is pure, so:
+For $v_1$, the subset contains only $s_4$, a negative example. It is pure, so:
 
-\[
+$$
 Entropy(S_{v_1})=0
-\]
+
+$$
 
 Its weighted contribution is:
 
-\[
+$$
 \frac{|S_{v_1}|}{|S|}Entropy(S_{v_1})
 =\frac14(0)=0
-\]
 
-For \(v_2\), the subset contains one positive and one negative example:
+$$
 
-\[
+For $v_2$, the subset contains one positive and one negative example:
+
+$$
 Entropy(S_{v_2})=1
-\]
+
+$$
 
 Its weighted contribution is:
 
-\[
+$$
 \frac{|S_{v_2}|}{|S|}Entropy(S_{v_2})
 =\frac24(1)=0.5
-\]
 
-For \(v_3\), the subset contains only \(s_3\), a negative example. It is pure:
+$$
 
-\[
+For $v_3$, the subset contains only $s_3$, a negative example. It is pure:
+
+$$
 Entropy(S_{v_3})=0
-\]
+
+$$
 
 Its weighted contribution is:
 
-\[
+$$
 \frac{|S_{v_3}|}{|S|}Entropy(S_{v_3})
 =\frac14(0)=0
-\]
+
+$$
 
 ### 9.3 Calculate Information Gain
 
 The total weighted entropy after the split is:
 
-\[
+$$
 0+0.5+0=0.5
-\]
+
+$$
 
 Therefore:
 
-\[
+$$
 \begin{aligned}
 Gain(S,A)
 &=Entropy(S)-0.5\\
 &=0.811-0.5\\
 &=0.311
 \end{aligned}
-\]
+
+$$
 
 The information gain for this attribute is approximately **0.311 bits**.
 
@@ -598,16 +621,16 @@ ID3 is an example of a greedy approach: it chooses the currently best attribute 
 
 The second lecture considers a feature space with:
 
-- \(p\) explanatory variables \(X_1,\ldots,X_p\).
-- \(n\) observations.
+- $p$ explanatory variables $X_1,\ldots,X_p$.
+- $n$ observations.
 
 It gives the following counts for possible splits:
 
 | Feature type | Number of possible splits shown in the lecture |
 | --- | ---: |
-| Numeric variable | \(n-1\) |
-| Ordered factor with \(k\) levels | \(k-1\) |
-| Unordered factor with \(k\) levels | \(2^{k-1}-1\) |
+| Numeric variable | $n-1$ |
+| Ordered factor with $k$ levels | $k-1$ |
+| Unordered factor with $k$ levels | $2^{k-1}-1$ |
 
 These counts illustrate that the number of candidate splits depends on the type of feature.
 
@@ -624,24 +647,26 @@ The second lecture introduces several impurity or loss measures used at tree nod
 - Gini index
 - Residual sum of squares
 
-At node \(i\), let \(p_{ik}\) be the probability or proportion of examples in class \(k\). The slide estimates this proportion using:
+At node $i$, let $p_{ik}$ be the probability or proportion of examples in class $k$. The slide estimates this proportion using:
 
-\[
+$$
 \hat p_{ik}=\frac{n_{ik}}{n_i}
-\]
+
+$$
 
 where:
 
-- \(n_{ik}\) is the number of examples in class \(k\) at node \(i\).
-- \(n_i\) is the total number of examples at node \(i\).
+- $n_{ik}$ is the number of examples in class $k$ at node $i$.
+- $n_i$ is the total number of examples at node $i$.
 
 ### 14.1 Entropy
 
-For a node with class proportions \(p_{ik}\), the usual non-negative entropy expression is:
+For a node with class proportions $p_{ik}$, the usual non-negative entropy expression is:
 
-\[
+$$
 H_i=-\sum_k p_{ik}\log(p_{ik})
-\]
+
+$$
 
 The ID3 slides use base-2 logarithms for information gain. The impurity slide writes the entropy expression without displaying the leading minus sign; the non-negative form above is consistent with the earlier entropy formula in the lecture.
 
@@ -649,10 +674,11 @@ The ID3 slides use base-2 logarithms for information gain. The impurity slide wr
 
 The lecture gives the Gini index as:
 
-\[
+$$
 G_i=\sum_{j\ne k}p_{ij}p_{ik}
 =1-\sum_k p_{ik}^{2}
-\]
+
+$$
 
 A pure node has Gini index 0 because one class has probability 1 and all other classes have probability 0.
 
@@ -660,27 +686,30 @@ A pure node has Gini index 0 because one class has probability 1 and all other c
 
 The slide gives total deviance as:
 
-\[
+$$
 D=\sum_i D_i
-\]
+
+$$
 
 where:
 
-\[
+$$
 D_i=-2\sum_k n_{ik}\log(p_{ik})
-\]
 
-Here, \(n_{ik}\) is the number of examples of class \(k\) in node \(i\), and \(p_{ik}\) is the class proportion at that node.
+$$
+
+Here, $n_{ik}$ is the number of examples of class $k$ in node $i$, and $p_{ik}$ is the class proportion at that node.
 
 ### 14.4 Residual Sum of Squares
 
 For regression trees, the slide gives the residual sum of squares:
 
-\[
+$$
 D=\sum_{\text{cases }j}(y_j-\mu_{[j]})^2
-\]
 
-where \(\mu_{[j]}\) is the mean of the values in the node to which case \(j\) belongs.
+$$
+
+where $\mu_{[j]}$ is the mean of the values in the node to which case $j$ belongs.
 
 This measures the squared deviation of each observed response from the mean response of its assigned leaf.
 
@@ -688,10 +717,10 @@ This measures the squared deviation of each observed response from the mean resp
 
 | Measure | Formula shown or used | Role in the lecture |
 | --- | --- | --- |
-| Entropy | \(-\sum_k p_k\log(p_k)\) | Measures class uncertainty |
-| Gini index | \(1-\sum_k p_k^2\) | Measures class impurity |
-| Deviance | \(-2\sum_k n_k\log(p_k)\), summed over nodes | Measures lack of fit using class proportions |
-| Residual sum of squares | \(\sum_j(y_j-\mu_{[j]})^2\) | Measures within-leaf numerical variation |
+| Entropy | $-\sum_k p_k\log(p_k)$ | Measures class uncertainty |
+| Gini index | $1-\sum_k p_k^2$ | Measures class impurity |
+| Deviance | $-2\sum_k n_k\log(p_k)$, summed over nodes | Measures lack of fit using class proportions |
+| Residual sum of squares | $\sum_j(y_j-\mu_{[j]})^2$ | Measures within-leaf numerical variation |
 
 The lectures develop entropy and information gain most fully in connection with ID3. They list the other impurity measures but do not provide a worked comparison showing how a tree would differ under each one.
 
@@ -741,7 +770,7 @@ Information gain helps choose a locally useful split. Tree-depth limits and prun
 
 A dataset contains 12 positive and 4 negative examples.
 
-1. Calculate \(p_+\) and \(p_-\).
+1. Calculate $p_+$ and $p_-$.
 2. Calculate the entropy of the dataset.
 3. Explain whether the dataset is pure or mixed.
 
@@ -794,9 +823,10 @@ Explain the difference between a tree that is too shallow, a tree with appropria
 
 A categorical feature has 4 unordered levels. Using the expression in the lecture, calculate the number of possible splits:
 
-\[
+$$
 2^{k-1}-1
-\]
+
+$$
 
 ### 16.3 Questions Directly Based on the Slides
 
@@ -829,15 +859,17 @@ A categorical feature has 4 unordered levels. Using the expression in the lectur
 - Information gain is the decrease in entropy after a split.
 - ID3 selects the attribute with the highest information gain.
 
-\[
+$$
 Entropy(S)=-\sum_i p_i\log_2(p_i)
-\]
 
-\[
+$$
+
+$$
 Gain(S,A)=Entropy(S)-
 \sum_{v\in Values(A)}
 \frac{|S_v|}{|S|}Entropy(S_v)
-\]
+
+$$
 
 ### ID3 algorithm
 
@@ -859,7 +891,7 @@ Gain(S,A)=Entropy(S)-
 ### Impurity measures
 
 - Entropy: class uncertainty.
-- Gini: \(1-\sum_k p_k^2\).
+- Gini: $1-\sum_k p_k^2$.
 - Deviance: based on class counts and log proportions.
 - Residual sum of squares: used for numerical response variation within leaves.
 
