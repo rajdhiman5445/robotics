@@ -1,6 +1,6 @@
-# Bayes Classification
+# Bayes Classification — Consolidated Study Notes
 
-
+> **Sources:** *Bayes Classification–1, –2, and –3* (lecture slides). Related and repeated material is merged. Mathematical notation uses `$...$` for inline expressions and `$$...$$` for display equations.
 
 ## 1. Probability foundations
 
