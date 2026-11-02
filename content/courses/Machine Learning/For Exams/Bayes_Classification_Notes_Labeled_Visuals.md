@@ -1,7 +1,6 @@
 ---
-title: Bayes Classification
+title: Bayes Classification 
 ---
-
 
 ## 1. Probability foundations
 
@@ -45,9 +44,6 @@ $$
 
 The denominator combines symptom probabilities for disease and no-disease cases.
 
-![Bayes' theorem: probability basics and theorem components](Bayes_Classification_Visuals/01-bayes-probability-chain-rule.png)
-
-![Bayes' theorem: prior, likelihood, evidence, and posterior](Bayes_Classification_Visuals/02-bayes-theorem-components.png)
 
 ## 2. Fish classification: motivating example
 
@@ -62,9 +58,10 @@ The **state of nature** is the actual species, e.g. $\omega_1$ or $\omega_2$. Pr
 
 The fish-length histograms overlap: **no single length threshold separates every sample correctly**. The slide marks a threshold $l^*$ giving the fewest average mistakes for that illustrated length distribution. Class-conditional curves $p(x\mid\omega_1)$ and $p(x\mid\omega_2)$ likewise overlap; each continuous density has total area one.
 
-![Fish classification pipeline and feature extraction](Bayes_Classification_Visuals/08-fish-classification-pipeline.png)
+![Two overlapping class-conditional distributions](Bayes_Classification_Concept_Images_Labeled/02-overlapping-class-conditional-densities.png)
 
-![Overlapping class-conditional probability densities](Bayes_Classification_Visuals/09-class-conditional-density-curves.png)
+![Conceptual fish-sorting workflow: sensing, separating, extracting features, and sorting](Bayes_Classification_Concept_Images_Labeled/01-fish-classification-workflow.png)
+
 
 ## 3. Bayes classifier and minimum error
 
@@ -94,9 +91,8 @@ $$
 
 For two classes, it equals the smaller of the two posteriors.
 
-![Two-class Bayes classification and posterior decision rule](Bayes_Classification_Visuals/03-bayes-classification-two-classes.png)
+![Posterior probabilities and the decision threshold between two classes](Bayes_Classification_Concept_Images_Labeled/03-posterior-curves-and-decision-threshold.png)
 
-![Posterior probability and probability of error](Bayes_Classification_Visuals/13-posterior-probability-error.png)
 
 ## 4. Multiple features and the parameter problem
 
@@ -134,7 +130,8 @@ For binary pixels and two classes, the slide compares the full model's $2(2^n-1)
 
 **Important distinction:** conditional independence is an assumption of the model, not a claim that image pixels are actually unrelated.
 
-![Naïve Bayes conditional-independence model](Bayes_Classification_Visuals/10-naive-bayes-conditional-independence.png)
+![Naïve Bayes models each feature as conditionally independent given the class](Bayes_Classification_Concept_Images_Labeled/04-naive-bayes-feature-independence.png)
+
 
 ## 5. Normal (Gaussian) densities
 
@@ -161,7 +158,8 @@ $$
 
 $\Sigma_i$ describes variances and cross-feature covariances; $|\Sigma_i|$ is its determinant, and $\Sigma_i^{-1}$ its inverse. Two-dimensional equal-density contours are ellipses in general.
 
-![Univariate and multivariate Gaussian density models](Bayes_Classification_Visuals/11-univariate-multivariate-gaussian.png)
+![A one-dimensional Gaussian curve compared with a two-dimensional Gaussian contour](Bayes_Classification_Concept_Images_Labeled/05-univariate-and-multivariate-gaussian-shapes.png)
+
 
 ## 6. Gaussian discriminant functions
 
@@ -211,6 +209,8 @@ $$
 
 The decision boundary remains **linear**, but is generally **not orthogonal** to the line joining the means. With equal priors, classification can be expressed by comparing **Mahalanobis distances** to the class means.
 
+![Linear and curved decision boundaries separating class clusters](Bayes_Classification_Concept_Images_Labeled/08-linear-versus-curved-decision-boundaries.png)
+
 ### Case C — class-specific covariance, $\Sigma_i$ differs by class
 
 The quadratic terms cannot generally be canceled between classes. Boundaries are therefore **quadratic** and may create curved or even disconnected decision regions, as illustrated in the final slides.
@@ -221,7 +221,8 @@ The quadratic terms cannot generally be canceled between classes. Boundaries are
 | $\Sigma_i=\Sigma$ | Linear | Same elliptical shape/orientation for every class |
 | $\Sigma_i$ arbitrary by class | Generally quadratic | Different class shapes and orientations |
 
-![Gaussian discriminant functions and covariance special cases](Bayes_Classification_Visuals/12-gaussian-discriminant-functions.png)
+![How covariance assumptions change the shapes and orientations of class clusters](Bayes_Classification_Concept_Images_Labeled/06-covariance-shapes-and-class-clusters.png)
+
 
 ## 7. Euclidean versus Mahalanobis distance
 
@@ -239,8 +240,9 @@ $$
 
 In the lecture's scatterplot, points that look equally far away in ordinary coordinates can be at very different covariance-adjusted distances. This explains why the shared-arbitrary-covariance boundary may tilt relative to the means.
 
-The slides also give a three-point exercise with $A=(0.5,0.5)$, $B=(0,1)$, and $C=(1.5,1.5)$. The slide's reported distances appear to use **squared** distance values (for example, it lists Euclidean $A$–$B$ as $0.5$ and $A$–$C$ as $2$). Preserve that convention when comparing the slide's results; the corresponding unsquared Euclidean distances are $\sqrt{0.5}$ and $\sqrt2$. The covariance matrix in the extracted slide is not legible enough to independently verify its reported Mahalanobis numbers ($5$ and $4$).
+![Euclidean straight-line distance compared with covariance-aware Mahalanobis distance](Bayes_Classification_Concept_Images_Labeled/07-euclidean-versus-mahalanobis-distance.png)
 
+The slides also give a three-point exercise with $A=(0.5,0.5)$, $B=(0,1)$, and $C=(1.5,1.5)$. The slide's reported distances appear to use **squared** distance values (for example, it lists Euclidean $A$–$B$ as $0.5$ and $A$–$C$ as $2$). Preserve that convention when comparing the slide's results; the corresponding unsquared Euclidean distances are $\sqrt{0.5}$ and $\sqrt2$. The covariance matrix in the extracted slide is not legible enough to independently verify its reported Mahalanobis numbers ($5$ and $4$).
 
 
 ## 8. Bayesian decision theory with a loss function
@@ -294,13 +296,10 @@ $$
 
 The threshold is independent of the observed $x$; it depends on **priors and losses**.
 
+![Cost-sensitive decision-making: comparing expected losses before choosing an action](Bayes_Classification_Concept_Images_Labeled/09-cost-sensitive-bayesian-decision.png)
+
 The slides show both a zero–one loss matrix and asymmetric loss examples (including a fish-pricing illustration). A larger penalty for one type of mistake shifts the optimal decision threshold.
 
-![Bayesian decision theory: loss matrix and conditional risk](Bayes_Classification_Visuals/04-bayesian-decision-loss-matrix.png)
-
-![Bayesian risk minimization and optimal action](Bayes_Classification_Visuals/05-bayesian-risk-decision-rule.png)
-
-![Likelihood-ratio decision test](Bayes_Classification_Visuals/06-likelihood-ratio-test.png)
 
 ## 9. Worked example — should a student take a course?
 
@@ -373,7 +372,6 @@ $$
 
 **Decision: do not take the course.** This boring-lecture calculation is worked out from the slide data, rather than explicitly completed in the slides.
 
-![Worked course-selection example with priors and loss matrix](Bayes_Classification_Visuals/07-course-decision-bayes-risk.png)
 
 ## 10. Exam-style questions
 
