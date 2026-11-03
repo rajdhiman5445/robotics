@@ -287,7 +287,7 @@ $$
 This is a **quadratic programming problem with linear constraints**:
 
 - The objective $\frac12\|w\|^2$ is quadratic.
-- Each classification constraint is linear in $w$ and $b.
+- Each classification constraint is linear in $w$ and $b$.
 - The constraints require every training observation to lie on or outside the margin boundaries.
 
 The optimization selects the separating hyperplane with maximum margin among all hyperplanes that classify the training data correctly.
