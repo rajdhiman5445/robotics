@@ -1,5 +1,6 @@
 ---
 title: Bayes Classification 
+order: 4
 ---
 
 ## 1. Probability foundations
