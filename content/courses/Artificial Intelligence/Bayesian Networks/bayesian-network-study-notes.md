@@ -37,118 +37,118 @@ The key shift is from asking only “Is this state possible?” to asking “How
 
 An **experiment** is a process with an outcome. A deterministic experiment has a known outcome under the stated conditions; a random experiment has an outcome that is not known in advance. Rolling a die is a standard random experiment.
 
-The **sample space** \(S\) is the set of all possible outcomes. For one roll of a six-sided die,
+The **sample space** $S$ is the set of all possible outcomes. For one roll of a six-sided die,
 
-\[
+$$
 S=\{1,2,3,4,5,6\}.
-\]
+$$
 
 An individual outcome is a **sample point**. A sample space may be finite or infinite.
 
 An **event** is any subset of the sample space. For example, the event “the die shows a number less than 3” is
 
-\[
+$$
 A=\{1,2\}.
-\]
+$$
 
-For a fair die, the event “the result is odd” is \(\{1,3,5\}\), so
+For a fair die, the event “the result is odd” is $\{1,3,5\}$, so
 
-\[
+$$
 P(A)=\frac{3}{6}=0.5.
-\]
+$$
 
 For repeated experiments, the relative frequency of an event can be used to estimate its probability:
 
-\[
+$$
 P(A)\approx \frac{n(A)}{n},
-\]
+$$
 
-where \(n\) is the number of trials and \(n(A)\) is the number of trials in which \(A\) occurred. This is an empirical estimate; it generally becomes more stable as the number of trials grows.
+where $n$ is the number of trials and $n(A)$ is the number of trials in which $A$ occurred. This is an empirical estimate; it generally becomes more stable as the number of trials grows.
 
 ### 2.2 Probability axioms and basic rules
 
-A probability measure \(P\) assigns a number to each event and satisfies:
+A probability measure $P$ assigns a number to each event and satisfies:
 
-\[
+$$
 0\leq P(A)\leq 1,
 \qquad
 P(\varnothing)=0,
 \qquad
 P(S)=1.
-\]
+$$
 
-For mutually exclusive (disjoint) events \(A_1,\ldots,A_n\),
+For mutually exclusive (disjoint) events $A_1,\ldots,A_n$,
 
-\[
+$$
 P\left(\bigcup_{i=1}^{n}A_i\right)
 =\sum_{i=1}^{n}P(A_i).
-\]
+$$
 
 Two events are **mutually exclusive** when they cannot occur at the same time. A single die roll cannot be both 2 and 5, for example.
 
-For an event \(A\), its complement \(A^c\) means that \(A\) does not occur. Since \(A\) and \(A^c\) partition the sample space,
+For an event $A$, its complement $A^c$ means that $A$ does not occur. Since $A$ and $A^c$ partition the sample space,
 
-\[
+$$
 P(A)+P(A^c)=1,
 \qquad
 P(A)=1-P(A^c).
-\]
+$$
 
-For arbitrary events \(A\) and \(B\), the addition rule is
+For arbitrary events $A$ and $B$, the addition rule is
 
-\[
+$$
 P(A\cup B)=P(A)+P(B)-P(A\cap B).
-\]
+$$
 
-The intersection is subtracted because outcomes in \(A\cap B\) would otherwise be counted twice.
+The intersection is subtracted because outcomes in $A\cap B$ would otherwise be counted twice.
 
 ### 2.3 Random variables and domains
 
 A **random variable (RV)** represents an uncertain aspect of the world. It is usually written with a capital letter. Examples include:
 
-- \(R\): whether it is raining;
-- \(T\): whether the weather is hot or cold;
-- \(D\): the time required to drive to work;
-- \(L\): the location of the ghost.
+- $R$: whether it is raining;
+- $T$: whether the weather is hot or cold;
+- $D$: the time required to drive to work;
+- $L$: the location of the ghost.
 
 Every random variable has a **domain** of possible values. For example,
 
-\[
+$$
 R\in\{\text{true},\text{false}\},\qquad
 T\in\{\text{hot},\text{cold}\}.
-\]
+$$
 
-A random variable may be discrete (a finite or countable set of values) or continuous (for example, a duration in \([0,\infty)\)).
+A random variable may be discrete (a finite or countable set of values) or continuous (for example, a duration in $[0,\infty)$).
 
-For a discrete variable \(X\) with possible values \(x_1,\ldots,x_k\), its probability distribution specifies
+For a discrete variable $X$ with possible values $x_1,\ldots,x_k$, its probability distribution specifies
 
-\[
+$$
 P(X=x_i)=p_i,
 \qquad
 p_i\geq 0,
 \qquad
 \sum_{i=1}^{k}p_i=1.
-\]
+$$
 
 A distribution must assign a probability to every possible value, and those probabilities must sum to one.
 
 ### 2.4 Joint distributions
 
-A **joint probability distribution** over \(X_1,\ldots,X_n\) assigns a probability to every complete assignment:
+A **joint probability distribution** over $X_1,\ldots,X_n$ assigns a probability to every complete assignment:
 
-\[
+$$
 P(X_1=x_1,\ldots,X_n=x_n).
-\]
+$$
 
 A valid joint distribution has nonnegative entries and sums to one over all assignments:
 
-\[
+$$
 P(x_1,\ldots,x_n)\geq 0,
 \qquad
 \sum_{x_1,\ldots,x_n}P(x_1,\ldots,x_n)=1.
-\]
+$$
 
-If each of \(n\) variables has \(d\) possible values, a full joint table contains \(d^n\) entries. For binary variables this is \(2^n\). This exponential growth is a central reason to seek compact representations such as Bayesian networks.
+If each of $n$ variables has $d$ possible values, a full joint table contains $d^n$ entries. For binary variables this is $2^n$. This exponential growth is a central reason to seek compact representations such as Bayesian networks.
 
 A probabilistic model consists of random variables and their domains, possible assignments, and a normalized joint distribution. A useful model also captures the fact that many variables interact directly with only a small subset of all other variables.
 
@@ -156,15 +156,15 @@ A probabilistic model consists of random variables and their domains, possible a
 
 A **marginal distribution** describes one or more variables after the remaining variables have been summed out. This operation is called **marginalization** or **summing out**.
 
-For two variables \(T\) and \(W\),
+For two variables $T$ and $W$,
 
-\[
+$$
 P(T=t)=\sum_w P(T=t,W=w).
-\]
+$$
 
 For example, suppose the joint distribution is:
 
-| Temperature \(T\) | Weather \(W\) | \(P(T,W)\) |
+| Temperature $T$ | Weather $W$ | $P(T,W)$ |
 | --- | --- | ---: |
 | hot | sun | 0.4 |
 | hot | rain | 0.1 |
@@ -173,21 +173,21 @@ For example, suppose the joint distribution is:
 
 Then
 
-\[
+$$
 P(T=\text{hot})=0.4+0.1=0.5,
-\]
+$$
 
-\[
+$$
 P(T=\text{cold})=0.2+0.3=0.5.
-\]
+$$
 
 Similarly,
 
-\[
+$$
 P(W=\text{sun})=0.4+0.2=0.6,
 \qquad
 P(W=\text{rain})=0.1+0.3=0.4.
-\]
+$$
 
 Marginalization removes variables that are not part of the quantity being requested while preserving the total probability mass.
 
@@ -195,93 +195,93 @@ Marginalization removes variables that are not part of the quantity being reques
 
 A **conditional probability** measures the probability of an event given that another event is known to have occurred:
 
-\[
+$$
 P(A\mid B)=\frac{P(A\cap B)}{P(B)},
 \qquad P(B)>0.
-\]
+$$
 
 Equivalently, the joint and conditional probabilities are related by
 
-\[
+$$
 P(A,B)=P(B)P(A\mid B).
-\]
+$$
 
-The conditioning event changes the reference set. Rather than considering every possible outcome, we consider only outcomes consistent with \(B\).
+The conditioning event changes the reference set. Rather than considering every possible outcome, we consider only outcomes consistent with $B$.
 
 Using the temperature-weather table above,
 
-\[
+$$
 P(W=\text{sun}\mid T=\text{cold})
 =\frac{P(W=\text{sun},T=\text{cold})}{P(T=\text{cold})}
 =\frac{0.2}{0.5}=0.4.
-\]
+$$
 
 Thus, among cold cases, the probability of sun is 0.4.
 
-A **conditional distribution** is a distribution over one variable for each fixed value of another variable. For example, \(P(W\mid T=\text{hot})\) and \(P(W\mid T=\text{cold})\) are two different distributions. Each one sums to one over the values of \(W\).
+A **conditional distribution** is a distribution over one variable for each fixed value of another variable. For example, $P(W\mid T=\text{hot})$ and $P(W\mid T=\text{cold})$ are two different distributions. Each one sums to one over the values of $W$.
 
 ### 2.7 Normalization
 
 Sometimes we can compute numbers proportional to the desired conditional probabilities without first computing the denominator explicitly. We can then normalize them.
 
-Suppose the unnormalized values for two possible outcomes are \(q_1\) and \(q_2\). Their normalized probabilities are
+Suppose the unnormalized values for two possible outcomes are $q_1$ and $q_2$. Their normalized probabilities are
 
-\[
+$$
 P_1=\frac{q_1}{q_1+q_2},
 \qquad
 P_2=\frac{q_2}{q_1+q_2}.
-\]
+$$
 
-More generally, for a query variable \(Q\) and evidence \(e\),
+More generally, for a query variable $Q$ and evidence $e$,
 
-\[
+$$
 P(Q=q\mid e)
 =
 \frac{P(Q=q,e)}
 {\sum_{q'}P(Q=q',e)}.
-\]
+$$
 
 The denominator is a normalization constant. Dividing by it ensures that the posterior distribution over the query values sums to one.
 
 ### 2.8 Independence and conditional independence
 
-Two variables \(X\) and \(Y\) are **independent** if knowing one does not change the distribution of the other:
+Two variables $X$ and $Y$ are **independent** if knowing one does not change the distribution of the other:
 
-\[
+$$
 P(X,Y)=P(X)P(Y).
-\]
+$$
 
 Equivalently, when the relevant probabilities are defined,
 
-\[
+$$
 P(X\mid Y)=P(X).
-\]
+$$
 
-They are **conditionally independent given \(Z\)** if, once \(Z\) is known, learning \(Y\) gives no additional information about \(X\):
+They are **conditionally independent given $Z$** if, once $Z$ is known, learning $Y$ gives no additional information about $X$:
 
-\[
+$$
 X\perp Y\mid Z
-\]
+$$
 
 and
 
-\[
+$$
 P(X,Y\mid Z)=P(X\mid Z)P(Y\mid Z).
-\]
+$$
 
 Conditional independence is not the same as ordinary independence. Two variables may be dependent before conditioning and independent after conditioning.
 
-For example, traffic \(T\) and umbrella use \(U\) may be associated because both are related to rain \(R\). Once rain is known, the model may assume
+For example, traffic $T$ and umbrella use $U$ may be associated because both are related to rain $R$. Once rain is known, the model may assume
 
-\[
+$$
 T\perp U\mid R.
-\]
+$$
 
-The lecture also uses a toothache example: if toothache \(T\) and another symptom \(Pr\) are conditionally independent given cavity \(C\), then
+The lecture also uses a toothache example: if toothache $T$ and another symptom $Pr$ are conditionally independent given cavity $C$, then
 
-\[
+$$
 P(T,Pr,C)=P(C)P(T\mid C)P(Pr\mid C).
-\]
+$$
 
 This is simpler than representing every possible interaction between the symptoms.
 
@@ -289,23 +289,23 @@ This is simpler than representing every possible interaction between the symptom
 
 The probability chain rule is an exact identity:
 
-\[
+$$
 P(X,Y,Z)=P(X)P(Y\mid X)P(Z\mid X,Y).
-\]
+$$
 
 For four variables,
 
-\[
+$$
 P(X,Y,Z,W)
 =P(X)P(Y\mid X)P(Z\mid X,Y)P(W\mid X,Y,Z).
-\]
+$$
 
-The chain rule itself does not assume independence. Conditional-independence assumptions can simplify its terms. For example, if \(Z\perp X\mid Y\) and \(W\perp \{X,Y\}\mid Z\), then
+The chain rule itself does not assume independence. Conditional-independence assumptions can simplify its terms. For example, if $Z\perp X\mid Y$ and $W\perp \{X,Y\}\mid Z$, then
 
-\[
+$$
 P(X,Y,Z,W)
 =P(X)P(Y\mid X)P(Z\mid Y)P(W\mid Z).
-\]
+$$
 
 This distinction is important: the chain rule always holds, while a Bayesian network's graph asserts a particular set of conditional-independence relationships that makes the factorization compact.
 
@@ -313,25 +313,25 @@ This distinction is important: the chain rule always holds, while a Bayesian net
 
 Bayes' theorem reverses a conditional probability:
 
-\[
+$$
 P(H\mid E)=\frac{P(E\mid H)P(H)}{P(E)}.
-\]
+$$
 
 Here:
 
-- \(H\) is a hypothesis;
-- \(E\) is observed evidence;
-- \(P(H)\) is the **prior** probability;
-- \(P(E\mid H)\) is the **likelihood**;
-- \(P(H\mid E)\) is the **posterior** probability.
+- $H$ is a hypothesis;
+- $E$ is observed evidence;
+- $P(H)$ is the **prior** probability;
+- $P(E\mid H)$ is the **likelihood**;
+- $P(H\mid E)$ is the **posterior** probability.
 
 The prior represents belief before the evidence. The posterior represents the updated belief after the evidence.
 
-For a binary hypothesis \(H\),
+For a binary hypothesis $H$,
 
-\[
+$$
 P(E)=P(E\mid H)P(H)+P(E\mid \neg H)P(\neg H).
-\]
+$$
 
 This is the law of total probability and supplies the denominator.
 
@@ -339,40 +339,40 @@ This is the law of total probability and supplies the denominator.
 
 The lecture poses a virus-testing comparison:
 
-- Test A: sensitivity \(0.95\), false-positive rate \(0.10\);
-- Test B: sensitivity \(0.90\), false-positive rate \(0.05\);
-- prevalence: \(0.01\).
+- Test A: sensitivity $0.95$, false-positive rate $0.10$;
+- Test B: sensitivity $0.90$, false-positive rate $0.05$;
+- prevalence: $0.01$.
 
 For Test A,
 
-\[
+$$
 P(V\mid A^+)
 =\frac{0.95(0.01)}
 {0.95(0.01)+0.10(0.99)}
 =\frac{0.0095}{0.1085}
 \approx 0.0876.
-\]
+$$
 
 For Test B,
 
-\[
+$$
 P(V\mid B^+)
 =\frac{0.90(0.01)}
 {0.90(0.01)+0.05(0.99)}
 =\frac{0.009}{0.0585}
 \approx 0.1538.
-\]
+$$
 
 Despite its slightly lower sensitivity, Test B's positive result is more indicative of infection because its false-positive rate is lower. This illustrates why diagnostic reasoning must use both the test characteristics and the base rate.
 
-The lecture also asks about a disease with prevalence \(1/10{,}000=0.0001\) and a test with 99% sensitivity and 99% specificity. The posterior after a positive result is
+The lecture also asks about a disease with prevalence $1/10{,}000=0.0001$ and a test with 99% sensitivity and 99% specificity. The posterior after a positive result is
 
-\[
+$$
 P(D\mid +)
 =\frac{0.99(0.0001)}
 {0.99(0.0001)+0.01(0.9999)}
 \approx 0.0098.
-\]
+$$
 
 That is about 0.98%, not 99%. The example demonstrates the base-rate effect.
 
@@ -390,32 +390,32 @@ A **Bayesian network (BN)** is a graphical probabilistic model that represents a
 
 A Bayesian network is a **directed acyclic graph (DAG)**. Directed means edges have an orientation; acyclic means following directed edges can never return to the starting node.
 
-For variables \(X_1,\ldots,X_n\), the joint distribution factorizes as
+For variables $X_1,\ldots,X_n$, the joint distribution factorizes as
 
-\[
+$$
 P(X_1,\ldots,X_n)
 =\prod_{i=1}^{n}P(X_i\mid Parents(X_i)).
-\]
+$$
 
 The probability associated with each node depends only on its direct parents in the graph. This is the local structure that makes a BN efficient.
 
-![A Bayesian network DAG showing parent nodes, child nodes, and local conditional probability tables](./images/bayesian-network-dag-and-cpts.png)
+![A Bayesian network DAG showing parent nodes, child nodes, and local conditional probability tables](./bayesian_networks_study_pack/images/bayesian-network-dag-and-cpts.png)
 
 *Figure: A node's CPT specifies its distribution for each assignment of its parent variables.*
 
 ### 3.2 Parents, children, roots, and node ordering
 
-If an edge points from \(X\) to \(Y\), then \(X\) is a **parent** of \(Y\), and \(Y\) is a **child** of \(X\). A node with no parents is a **root node**. Its local distribution is simply its prior or marginal distribution, such as \(P(X)\).
+If an edge points from $X$ to $Y$, then $X$ is a **parent** of $Y$, and $Y$ is a **child** of $X$. A node with no parents is a **root node**. Its local distribution is simply its prior or marginal distribution, such as $P(X)$.
 
 A valid topological ordering places every parent before its children. Such an ordering exists for every DAG and is useful for constructing the network, evaluating its factorization, and generating samples. The lecture's node-ordering guidance is to place causes before effects; for example, burglary before alarm before John calling. A poor ordering can make the graph less intuitive and may require more edges and larger CPTs.
 
 The direction of an edge expresses the dependency structure assumed by the model. It should not be selected merely because one conditional probability can be calculated from another.
 
-The lecture's traffic example illustrates a small network with low pressure \(L\), rain \(R\), traffic \(T\), roof drips \(D\), football match \(F\), and cavity \(C\). Its displayed relationships include \(L\rightarrow R\rightarrow T\), \(R\rightarrow D\), and \(F\rightarrow T\), while \(C\) is shown as a separate variable. The corresponding factorization is
+The lecture's traffic example illustrates a small network with low pressure $L$, rain $R$, traffic $T$, roof drips $D$, football match $F$, and cavity $C$. Its displayed relationships include $L\rightarrow R\rightarrow T$, $R\rightarrow D$, and $F\rightarrow T$, while $C$ is shown as a separate variable. The corresponding factorization is
 
-\[
+$$
 P(L,R,F,T,D,C)=P(L)P(F)P(C)P(R\mid L)P(T\mid R,F)P(D\mid R).
-\]
+$$
 
 This example shows how the graph determines the parent set for each CPT and how a variable such as traffic can have more than one direct parent.
 
@@ -423,13 +423,13 @@ This example shows how the graph determines the parent set for each CPT and how 
 
 The lecture often describes arrows using cause-and-effect language. For example,
 
-\[
+$$
 \text{Rain}\rightarrow\text{Traffic}
-\]
+$$
 
 means traffic depends on rain in the proposed model.
 
-The lecture contrasts this with the reverse arrow, \(\text{Traffic}\rightarrow\text{Rain}\). Observational data may show that rain and traffic are associated, and it is possible to calculate \(P(\text{Rain}\mid\text{Traffic})\). But that conditional probability does not establish that traffic causes rain.
+The lecture contrasts this with the reverse arrow, $\text{Traffic}\rightarrow\text{Rain}$. Observational data may show that rain and traffic are associated, and it is possible to calculate $P(\text{Rain}\mid\text{Traffic})$. But that conditional probability does not establish that traffic causes rain.
 
 **Correlation is not causation.** Two variables may move together because one influences the other, because of a common cause, or because of another structure. The direction of a causal relationship requires assumptions or evidence beyond simply observing an association.
 
@@ -439,36 +439,36 @@ The material introduces this caution but does not develop a full intervention ca
 
 A central lecture example contains five Boolean variables:
 
-- \(B\): burglary occurs;
-- \(E\): earthquake occurs;
-- \(A\): alarm goes off;
-- \(J\): John calls;
-- \(M\): Mary calls.
+- $B$: burglary occurs;
+- $E$: earthquake occurs;
+- $A$: alarm goes off;
+- $J$: John calls;
+- $M$: Mary calls.
 
 The graph is
 
-\[
+$$
 B\rightarrow A\leftarrow E,
 \qquad
 A\rightarrow J,
 \qquad
 A\rightarrow M.
-\]
+$$
 
 Burglary and earthquake are root causes in the model. The alarm depends on both. John and Mary each depend on the alarm.
 
 The factorization is
 
-\[
+$$
 P(B,E,A,J,M)
 =P(B)P(E)P(A\mid B,E)P(J\mid A)P(M\mid A).
-\]
+$$
 
 To calculate a complete assignment, select the relevant prior or CPT entry for each node and multiply them.
 
-For the assignment \(B=+b,E=-e,A=+a,J=-j,M=+m\), the lecture gives:
+For the assignment $B=+b,E=-e,A=+a,J=-j,M=+m$, the lecture gives:
 
-\[
+$$
 \begin{aligned}
 P(+b,-e,+a,-j,+m)
 ={}&P(+b)P(-e)P(+a\mid +b,-e)\\
@@ -477,50 +477,50 @@ P(+b,-e,+a,-j,+m)
 &\times0.10\times0.70\\
 ={}&0.0000656684.
 \end{aligned}
-\]
+$$
 
 The complement is used for John not calling:
 
-\[
+$$
 P(-j\mid +a)=1-P(+j\mid +a)=1-0.90=0.10.
-\]
+$$
 
 This result is the probability of that one complete assignment, not the probability of burglary given calls. To compute the latter, inference is required.
 
-![Alarm Bayesian network with burglary and earthquake feeding an alarm, which feeds John and Mary calling](./images/alarm-network.png)
+![Alarm Bayesian network with burglary and earthquake feeding an alarm, which feeds John and Mary calling](./bayesian_networks_study_pack/images/alarm-network.png)
 
 *Figure: The alarm network and its five random variables.*
 
 ### 3.5 How compact is a Bayesian network?
 
-A full joint table for \(n\) binary variables contains \(2^n\) entries, although one entry is determined by normalization, leaving \(2^n-1\) independent numbers.
+A full joint table for $n$ binary variables contains $2^n$ entries, although one entry is determined by normalization, leaving $2^n-1$ independent numbers.
 
-A BN stores local CPTs instead. For a binary node with \(k\) binary parents, there are \(2^k\) parent configurations and one independent probability per configuration (the other outcome is its complement). Thus, the number of independent CPT parameters for that node is \(2^k\).
+A BN stores local CPTs instead. For a binary node with $k$ binary parents, there are $2^k$ parent configurations and one independent probability per configuration (the other outcome is its complement). Thus, the number of independent CPT parameters for that node is $2^k$.
 
 In the alarm network:
 
 | Node | Parents | Number of parent configurations | Independent probabilities |
 | --- | --- | ---: | ---: |
-| \(B\) | none | 1 | 1 |
-| \(E\) | none | 1 | 1 |
-| \(A\) | \(B,E\) | 4 | 4 |
-| \(J\) | \(A\) | 2 | 2 |
-| \(M\) | \(A\) | 2 | 2 |
+| $B$ | none | 1 | 1 |
+| $E$ | none | 1 | 1 |
+| $A$ | $B,E$ | 4 | 4 |
+| $J$ | $A$ | 2 | 2 |
+| $M$ | $A$ | 2 | 2 |
 | **Total** |  |  | **10** |
 
 A full joint distribution over five binary variables has 32 entries, or 31 independent parameters. The network uses 10 independent local parameters.
 
-For \(N\) binary nodes with at most \(k\) parents each, a rough upper bound on the number of independent CPT parameters is \(N2^k\). The important point is that storage grows linearly with the number of nodes when the number of parents per node is bounded, while the full joint grows exponentially in \(N\).
+For $N$ binary nodes with at most $k$ parents each, a rough upper bound on the number of independent CPT parameters is $N2^k$. The important point is that storage grows linearly with the number of nodes when the number of parents per node is bounded, while the full joint grows exponentially in $N$.
 
-For example, with \(N=10\) binary nodes and at most \(k=3\) parents per node:
+For example, with $N=10$ binary nodes and at most $k=3$ parents per node:
 
-\[
+$$
 \text{Full joint entries}=2^{10}=1024,
-\]
+$$
 
-\[
+$$
 \text{BN CPT parameters}\leq 10\times2^3=80.
-\]
+$$
 
 The savings depend on the network being sparse. A node with many parents still requires a large CPT.
 
@@ -530,21 +530,21 @@ The key local assumption is that each node is conditionally independent of its *
 
 For example, if the graph contains
 
-\[
+$$
 X\rightarrow Y\rightarrow Z,
-\]
+$$
 
 then the model asserts
 
-\[
+$$
 Z\perp X\mid Y.
-\]
+$$
 
 The corresponding factorization is
 
-\[
+$$
 P(X,Y,Z)=P(X)P(Y\mid X)P(Z\mid Y).
-\]
+$$
 
 The graph therefore encodes more than a list of arrows: it also encodes conditional-independence assumptions. Those assumptions are what permit the joint distribution to be factored into smaller local terms.
 
@@ -554,11 +554,11 @@ The graph therefore encodes more than a list of arrows: it also encodes conditio
 
 A BN can contain many paths between variables. Calculating a full joint distribution merely to answer whether two variables are independent would be wasteful. **D-separation** is a graphical criterion for determining whether a set of observed variables blocks every path between two other variables.
 
-If \(X\) and \(Y\) are d-separated by evidence set \(Z\), then the network entails
+If $X$ and $Y$ are d-separated by evidence set $Z$, then the network entails
 
-\[
+$$
 X\perp Y\mid Z.
-\]
+$$
 
 If they are not d-separated, the graph does not guarantee that conditional independence. Dependence may still disappear for special numerical parameter choices, but it cannot be concluded from the graph alone.
 
@@ -566,46 +566,46 @@ If they are not d-separated, the graph does not guarantee that conditional indep
 
 All path reasoning can be understood through three connected-node patterns.
 
-#### A. Chain: \(X\rightarrow Y\rightarrow Z\)
+#### A. Chain: $X\rightarrow Y\rightarrow Z$
 
-![Chain structure X to Y to Z, with the middle node Y observed and the path blocked](./images/d-separation-chain.png)
+![Chain structure X to Y to Z, with the middle node Y observed and the path blocked](./bayesian_networks_study_pack/images/d-separation-chain.png)
 
-Without observing \(Y\), information can flow along the chain from \(X\) to \(Z\). Once \(Y\) is observed, the path is blocked:
+Without observing $Y$, information can flow along the chain from $X$ to $Z$. Once $Y$ is observed, the path is blocked:
 
-\[
+$$
 X\perp Z\mid Y.
-\]
+$$
 
-Example: rainy clouds \(\rightarrow\) rain \(\rightarrow\) traffic jam. If we already know whether it is raining, knowing about the clouds does not provide additional information about traffic under this model.
+Example: rainy clouds $\rightarrow$ rain $\rightarrow$ traffic jam. If we already know whether it is raining, knowing about the clouds does not provide additional information about traffic under this model.
 
-#### B. Fork or common cause: \(X\leftarrow Y\rightarrow Z\)
+#### B. Fork or common cause: $X\leftarrow Y\rightarrow Z$
 
-![Fork structure with common cause Y pointing to X and Z, with Y observed and the path blocked](./images/d-separation-fork.png)
+![Fork structure with common cause Y pointing to X and Z, with Y observed and the path blocked](./bayesian_networks_study_pack/images/d-separation-fork.png)
 
-The middle node \(Y\) is a common cause of \(X\) and \(Z\). Without observing \(Y\), \(X\) and \(Z\) may be dependent because they share a cause. Conditioning on \(Y\) blocks the path:
+The middle node $Y$ is a common cause of $X$ and $Z$. Without observing $Y$, $X$ and $Z$ may be dependent because they share a cause. Conditioning on $Y$ blocks the path:
 
-\[
+$$
 X\perp Z\mid Y.
-\]
+$$
 
 Example: weather affects both ice-cream sales and park visits. Once the weather is known, the sales figure gives no additional information about park visits under the assumed model.
 
-#### C. Collider or common effect: \(X\rightarrow Y\leftarrow Z\)
+#### C. Collider or common effect: $X\rightarrow Y\leftarrow Z$
 
-![Collider structure with X and Z pointing into common effect Y, with Y observed and the path activated](./images/d-separation-collider.png)
+![Collider structure with X and Z pointing into common effect Y, with Y observed and the path activated](./bayesian_networks_study_pack/images/d-separation-collider.png)
 
-The middle node \(Y\) is a common effect of \(X\) and \(Z\). When \(Y\) and its descendants are not observed, the path is blocked. Observing \(Y\), or one of its descendants, activates the path and can make \(X\) and \(Z\) dependent.
+The middle node $Y$ is a common effect of $X$ and $Z$. When $Y$ and its descendants are not observed, the path is blocked. Observing $Y$, or one of its descendants, activates the path and can make $X$ and $Z$ dependent.
 
-\[
+$$
 X\perp Z
 \quad\text{(along this path when the collider is unobserved),}
-\]
+$$
 
 but generally
 
-\[
+$$
 X\not\!\perp Z\mid Y.
-\]
+$$
 
 Example: having a good job and being highly skilled may both contribute to being hired by a top company. If we know that someone was hired, evidence about one factor changes how plausible the other factor is. This is sometimes called explaining away.
 
@@ -613,36 +613,36 @@ Example: having a good job and being highly skilled may both contribute to being
 
 ### 4.3 Active paths and the general d-separation procedure
 
-A path between \(X\) and \(Y\) is active given evidence \(Z\) if every triple along that path is active under the chain/fork/collider rules. A path is blocked if at least one triple is blocked.
+A path between $X$ and $Y$ is active given evidence $Z$ if every triple along that path is active under the chain/fork/collider rules. A path is blocked if at least one triple is blocked.
 
 To test d-separation:
 
-1. List all undirected paths between \(X\) and \(Y\).
+1. List all undirected paths between $X$ and $Y$.
 2. Examine each triple on every path.
 3. For a chain or fork, the triple is blocked when its middle node is observed.
 4. For a collider, the triple is active when the collider or one of its descendants is observed; otherwise it is blocked.
 5. A path is active only if every triple on it is active.
-6. \(X\) and \(Y\) are d-separated if every path is blocked.
+6. $X$ and $Y$ are d-separated if every path is blocked.
 
 One active path is enough for the graph not to guarantee conditional independence. Every path must be blocked to establish d-separation.
 
-![D-separation flow diagram showing how to inspect paths, classify triples, and decide whether all paths are blocked](./images/d-separation-decision-process.png)
+![D-separation flow diagram showing how to inspect paths, classify triples, and decide whether all paths are blocked](./bayesian_networks_study_pack/images/d-separation-decision-process.png)
 
 ### 4.4 Worked path example
 
-The lecture considers two paths between \(T\) and \(D\):
+The lecture considers two paths between $T$ and $D$:
 
-\[
+$$
 T\leftarrow R\rightarrow D
 \qquad\text{and}\qquad
 T\rightarrow S\leftarrow D.
-\]
+$$
 
-The first path is a fork with common cause \(R\). If \(R\) is not observed, that path is active. The second path is a collider at \(S\), and is blocked when neither \(S\) nor a descendant of \(S\) is observed.
+The first path is a fork with common cause $R$. If $R$ is not observed, that path is active. The second path is a collider at $S$, and is blocked when neither $S$ nor a descendant of $S$ is observed.
 
-Because the fork path remains active, \(T\) and \(D\) are not d-separated by the empty evidence set. If we condition on both \(R\) and \(S\), the fork is blocked by observing \(R\), but the collider path is activated by observing \(S\). Therefore the paths must be evaluated together; it is not valid to conclude independence merely because one path is blocked.
+Because the fork path remains active, $T$ and $D$ are not d-separated by the empty evidence set. If we condition on both $R$ and $S$, the fork is blocked by observing $R$, but the collider path is activated by observing $S$. Therefore the paths must be evaluated together; it is not valid to conclude independence merely because one path is blocked.
 
-The lecture's exercise text also contains the intermediate claim \(T\perp D\mid R,S\), which conflicts with the path analysis just described if \(S\) is indeed the collider. Under the standard d-separation rule, conditioning on collider \(S\) opens the second path. The graph image/text extraction for that exercise does not fully preserve all labels, so the exact intended evidence set or diagram may be ambiguous. The general chain/fork/collider rules above are the reliable method to apply.
+The lecture's exercise text also contains the intermediate claim $T\perp D\mid R,S$, which conflicts with the path analysis just described if $S$ is indeed the collider. Under the standard d-separation rule, conditioning on collider $S$ opens the second path. The graph image/text extraction for that exercise does not fully preserve all labels, so the exact intended evidence set or diagram may be ambiguous. The general chain/fork/collider rules above are the reliable method to apply.
 
 ### 4.5 Common mistakes in d-separation
 
@@ -663,9 +663,9 @@ The lecture's exercise text also contains the intermediate claim \(T\perp D\mid 
 
 For example, in the alarm network, we may ask
 
-\[
+$$
 P(B\mid J=+j,M=+m).
-\]
+$$
 
 This asks how likely a burglary is after observing that both John and Mary called.
 
@@ -675,14 +675,14 @@ The evidence is not the same as the query. Variables that are neither query vari
 
 Inference by enumeration uses the factorization of the joint distribution, enumerates the possible assignments of hidden variables, sums the appropriate joint probabilities, and normalizes the result.
 
-For a query \(Q\), evidence \(e\), and hidden variables \(H\),
+For a query $Q$, evidence $e$, and hidden variables $H$,
 
-\[
+$$
 P(Q\mid e)
 =\alpha\sum_h P(Q,e,h),
-\]
+$$
 
-where \(\alpha\) is a normalization constant chosen so that the probabilities over \(Q\) sum to one.
+where $\alpha$ is a normalization constant chosen so that the probabilities over $Q$ sum to one.
 
 The basic steps are:
 
@@ -691,37 +691,37 @@ The basic steps are:
 3. Sum over all hidden-variable assignments.
 4. Normalize the resulting values over the query variable.
 
-In the alarm network, to compute \(P(B\mid +j,+m)\), the evidence is John and Mary calling. The hidden variables include the alarm \(A\) and earthquake \(E\). We compute unnormalized values for \(B=+b\) and \(B=-b\), summing over the four combinations of \(A\) and \(E\) in each case:
+In the alarm network, to compute $P(B\mid +j,+m)$, the evidence is John and Mary calling. The hidden variables include the alarm $A$ and earthquake $E$. We compute unnormalized values for $B=+b$ and $B=-b$, summing over the four combinations of $A$ and $E$ in each case:
 
-\[
+$$
 P(B,+j,+m)
 =\sum_{a,e}P(B,e,a,+j,+m).
-\]
+$$
 
 Using the factorization,
 
-\[
+$$
 P(B,+j,+m)
 =\sum_{a,e}P(B)P(e)P(a\mid B,e)P(+j\mid a)P(+m\mid a).
-\]
+$$
 
 Then normalize:
 
-\[
+$$
 P(B\mid +j,+m)
 =\frac{P(B,+j,+m)}
 {\sum_{b\in\{+b,-b\}}P(b,+j,+m)}.
-\]
+$$
 
 The lecture's extracted slides provide the setup and intermediate factor tables for this example, but not every numerical entry of the alarm CPT is preserved consistently in the text extraction. The method and the fully readable local factors are shown; a final numeric posterior should not be reconstructed from missing or uncertain entries.
 
 ### 5.3 Why enumeration becomes expensive
 
-If there are \(h\) hidden binary variables, enumeration may require considering \(2^h\) assignments for each query assignment. For example, ten hidden binary variables create
+If there are $h$ hidden binary variables, enumeration may require considering $2^h$ assignments for each query assignment. For example, ten hidden binary variables create
 
-\[
+$$
 2^{10}=1024
-\]
+$$
 
 possible hidden assignments. With many variables, enumeration can become expensive even when the BN itself is compact.
 
@@ -735,12 +735,12 @@ A **factor** is a function that maps an assignment of a set of variables to a nu
 
 Examples include:
 
-- \(P(X,Y)\): a joint factor over \(X,Y\);
-- \(P(X)\): a one-variable marginal factor;
-- \(P(A\mid B,E)\): a factor over \(A,B,E\);
-- \(P(y\mid x)\): a distribution over \(Y\) for one fixed value of \(X\).
+- $P(X,Y)$: a joint factor over $X,Y$;
+- $P(X)$: a one-variable marginal factor;
+- $P(A\mid B,E)$: a factor over $A,B,E$;
+- $P(y\mid x)$: a distribution over $Y$ for one fixed value of $X$.
 
-The **scope** of a factor is the set of variables on which it depends. The number of variables in its scope determines the dimensionality of its table. A factor over five binary variables has \(2^5=32\) entries.
+The **scope** of a factor is the set of variables on which it depends. The number of variables in its scope determines the dimensionality of its table. A factor over five binary variables has $2^5=32$ entries.
 
 When evidence is observed, we can restrict a factor to the observed value. Fixing a variable removes that variable's dimension from the factor. Summing over a variable also removes its dimension, but by adding the entries corresponding to its possible values.
 
@@ -750,23 +750,23 @@ Variable elimination uses two main operations.
 
 **Join (multiply) factors.** Combine factors that share variables. For every compatible assignment, multiply their values. The resulting factor has the union of their scopes.
 
-For example, if \(f_1(R,X)\) and \(f_2(R,Y)\) share \(R\), their join is
+For example, if $f_1(R,X)$ and $f_2(R,Y)$ share $R$, their join is
 
-\[
+$$
 g(R,X,Y)=f_1(R,X)f_2(R,Y).
-\]
+$$
 
-**Eliminate (sum out) a variable.** To eliminate \(R\) from \(g(R,X,Y)\), sum over all values of \(R\):
+**Eliminate (sum out) a variable.** To eliminate $R$ from $g(R,X,Y)$, sum over all values of $R$:
 
-\[
+$$
 h(X,Y)=\sum_r g(r,X,Y).
-\]
+$$
 
-The resulting factor no longer depends on \(R\).
+The resulting factor no longer depends on $R$.
 
 ### 6.3 Variable elimination algorithm
 
-To compute \(P(Q\mid e)\):
+To compute $P(Q\mid e)$:
 
 1. **Initialize factors:** start with the local CPTs of the network.
 2. **Apply evidence:** restrict each factor containing an evidence variable to the observed value.
@@ -777,7 +777,7 @@ To compute \(P(Q\mid e)\):
 7. **Join remaining factors:** combine the factors that remain over query and evidence variables.
 8. **Normalize:** normalize over the query values to obtain the posterior.
 
-![Variable elimination workflow showing factor initialization, evidence restriction, joining, summing out hidden variables, and normalization](./images/variable-elimination-workflow.png)
+![Variable elimination workflow showing factor initialization, evidence restriction, joining, summing out hidden variables, and normalization](./bayesian_networks_study_pack/images/variable-elimination-workflow.png)
 
 ### 6.4 Enumeration versus variable elimination
 
@@ -796,43 +796,43 @@ The essential idea is: **do not compute the whole joint distribution if only a s
 
 For the alarm network,
 
-\[
+$$
 P(B,E,A,J,M)=P(B)P(E)P(A\mid B,E)P(J\mid A)P(M\mid A).
-\]
+$$
 
-Suppose the query is \(P(B\mid j,m)\). First restrict the John and Mary factors to the observed values:
+Suppose the query is $P(B\mid j,m)$. First restrict the John and Mary factors to the observed values:
 
-\[
+$$
 f_J(A)=P(j\mid A),
 \qquad
 f_M(A)=P(m\mid A).
-\]
+$$
 
 The initial factors are
 
-\[
+$$
 P(B),\quad P(E),\quad P(A\mid B,E),\quad f_J(A),\quad f_M(A).
-\]
+$$
 
 One possible elimination order is:
 
-1. Join \(P(A\mid B,E)\), \(f_J(A)\), and \(f_M(A)\) on \(A\).
-2. Sum out \(A\), producing a factor over \(B,E\).
-3. Join that result with \(P(E)\).
-4. Sum out \(E\), producing a factor over \(B\).
-5. Join with \(P(B)\).
-6. Normalize over \(B\).
+1. Join $P(A\mid B,E)$, $f_J(A)$, and $f_M(A)$ on $A$.
+2. Sum out $A$, producing a factor over $B,E$.
+3. Join that result with $P(E)$.
+4. Sum out $E$, producing a factor over $B$.
+5. Join with $P(B)$.
+6. Normalize over $B$.
 
-The lecture shows an intermediate table in which a factor over \(E,B\) is multiplied by \(P(E)\), followed by a factor over \(B\). The final normalization turns the unnormalized values into the posterior distribution over burglary.
+The lecture shows an intermediate table in which a factor over $E,B$ is multiplied by $P(E)$, followed by a factor over $B$. The final normalization turns the unnormalized values into the posterior distribution over burglary.
 
 ### 6.6 Why elimination order matters
 
-Different elimination orders can create very different intermediate factors. Consider a hub variable \(Z\) connected to many binary variables \(X_1,\ldots,X_{n-1}\), with factors involving \(Z\) and each \(X_i\).
+Different elimination orders can create very different intermediate factors. Consider a hub variable $Z$ connected to many binary variables $X_1,\ldots,X_{n-1}$, with factors involving $Z$ and each $X_i$.
 
-- If \(Z\) is eliminated first, all neighboring variables may be combined into one large factor over \(X_1,\ldots,X_{n-1}\).
-- If the \(X_i\) variables are eliminated first, each can be summed out locally, leaving smaller factors involving \(Z\).
+- If $Z$ is eliminated first, all neighboring variables may be combined into one large factor over $X_1,\ldots,X_{n-1}$.
+- If the $X_i$ variables are eliminated first, each can be summed out locally, leaving smaller factors involving $Z$.
 
-In the lecture's six-variable binary illustration, eliminating the hub first can create a factor with \(2^6=64\) entries, while eliminating the neighbors first can keep the largest factor at two entries.
+In the lecture's six-variable binary illustration, eliminating the hub first can create a factor with $2^6=64$ entries, while eliminating the neighbors first can keep the largest factor at two entries.
 
 The computational and memory cost of variable elimination is governed by the largest intermediate factor, not merely by the number of variables in the original network.
 
@@ -849,12 +849,12 @@ These heuristics aim to avoid creating large intermediate factors. They do not g
 
 Exact inference can be computationally expensive in large or densely connected networks. Sampling provides an alternative: generate representative assignments from the model and estimate probabilities using their frequencies or weights.
 
-If \(N\) samples are generated, an ordinary frequency estimate is
+If $N$ samples are generated, an ordinary frequency estimate is
 
-\[
+$$
 \widehat{P}(X=x)
 =\frac{\#\{\text{samples with }X=x\}}{N}.
-\]
+$$
 
 Larger sample sets generally produce more stable estimates, although sampling error remains and convergence depends on the method and model.
 
@@ -862,27 +862,27 @@ Larger sample sets generally produce more stable estimates, although sampling er
 
 To sample a discrete variable, first draw a uniform random number
 
-\[
+$$
 u\sim Uniform[0,1).
-\]
+$$
 
-Then partition the interval \([0,1)\) into intervals whose lengths equal the outcome probabilities.
+Then partition the interval $[0,1)$ into intervals whose lengths equal the outcome probabilities.
 
-For \(C\in\{\text{Red},\text{Green},\text{Blue}\}\), suppose
+For $C\in\{\text{Red},\text{Green},\text{Blue}\}$, suppose
 
-\[
+$$
 P(C)=\{0.6,0.1,0.3\}.
-\]
+$$
 
 Use the intervals:
 
 | Outcome | Probability | Interval |
 | --- | ---: | --- |
-| Red | 0.6 | \(0\leq u<0.6\) |
-| Green | 0.1 | \(0.6\leq u<0.7\) |
-| Blue | 0.3 | \(0.7\leq u<1\) |
+| Red | 0.6 | $0\leq u<0.6$ |
+| Green | 0.1 | $0.6\leq u<0.7$ |
+| Blue | 0.3 | $0.7\leq u<1$ |
 
-If \(u=0.83\), the selected outcome is Blue. Repeating this process yields samples whose frequencies approximate the specified distribution.
+If $u=0.83$, the selected outcome is Blue. Repeating this process yields samples whose frequencies approximate the specified distribution.
 
 ### 7.3 Prior sampling
 
@@ -897,58 +897,58 @@ The algorithm follows a topological order:
 
 For the lecture's wet-grass network,
 
-\[
+$$
 C\rightarrow S,\qquad C\rightarrow R,\qquad (S,R)\rightarrow W,
-\]
+$$
 
 where:
 
-- \(C\): Cloudy;
-- \(S\): Sprinkler;
-- \(R\): Rain;
-- \(W\): Wet Grass.
+- $C$: Cloudy;
+- $S$: Sprinkler;
+- $R$: Rain;
+- $W$: Wet Grass.
 
 The joint distribution factorizes as
 
-\[
+$$
 P(C,S,R,W)=P(C)P(S\mid C)P(R\mid C)P(W\mid S,R).
-\]
+$$
 
-A sample is generated in the order \(C,S,R,W\). For example, the assignment \(+c,-s,+r,+w\) has probability
+A sample is generated in the order $C,S,R,W$. For example, the assignment $+c,-s,+r,+w$ has probability
 
-\[
+$$
 P(+c)P(-s\mid +c)P(+r\mid +c)P(+w\mid -s,+r).
-\]
+$$
 
-Each generated sample represents one complete possible state of the world. After generating many samples, count the values of \(W\) to estimate \(P(W)\), or filter/count the assignments relevant to another probability.
+Each generated sample represents one complete possible state of the world. After generating many samples, count the values of $W$ to estimate $P(W)$, or filter/count the assignments relevant to another probability.
 
-For instance, if five samples contain four \(+w\) and one \(-w\), the empirical estimate is
+For instance, if five samples contain four $+w$ and one $-w$, the empirical estimate is
 
-\[
+$$
 \widehat{P}(W)=\langle 0.8,0.2\rangle.
-\]
+$$
 
 The estimate becomes more reliable as more representative samples are generated.
 
-![Prior sampling in a wet-grass Bayesian network, proceeding from Cloudy to Sprinkler and Rain to Wet Grass](./images/prior-sampling-wet-grass.png)
+![Prior sampling in a wet-grass Bayesian network, proceeding from Cloudy to Sprinkler and Rain to Wet Grass](./bayesian_networks_study_pack/images/prior-sampling-wet-grass.png)
 
 ### 7.4 Rejection sampling
 
 Prior samples do not directly account for evidence. **Rejection sampling** estimates a conditional probability by generating prior samples and retaining only those that match the observed evidence.
 
-To estimate \(P(C\mid S=+s)\):
+To estimate $P(C\mid S=+s)$:
 
 1. Generate a sample from the prior BN.
-2. Check whether the sampled value of \(S\) is \(+s\).
+2. Check whether the sampled value of $S$ is $+s$.
 3. Reject the sample if it does not match the evidence.
-4. Among the retained samples, count the values of \(C\).
+4. Among the retained samples, count the values of $C$.
 5. Normalize those counts to estimate the conditional distribution.
 
-In the lecture's five-sample illustration, only samples 2 and 3 satisfy \(S=+s\). One retained sample has \(+C\), and the other has \(-C\), giving the rough estimate
+In the lecture's five-sample illustration, only samples 2 and 3 satisfy $S=+s$. One retained sample has $+C$, and the other has $-C$, giving the rough estimate
 
-\[
+$$
 \widehat{P}(C\mid +s)=\langle 0.5,0.5\rangle.
-\]
+$$
 
 This is only an estimate from two accepted samples, not an exact answer.
 
@@ -962,11 +962,11 @@ For each weighted sample:
 
 1. Fix every evidence variable to its observed value.
 2. Sample each non-evidence variable in topological order, using its CPT and sampled parent values.
-3. For each evidence variable \(E_i=e_i\), multiply the sample's weight by the likelihood of that evidence value given its parents:
+3. For each evidence variable $E_i=e_i$, multiply the sample's weight by the likelihood of that evidence value given its parents:
 
-\[
+$$
 w=\prod_{i}P(E_i=e_i\mid Parents(E_i)).
-\]
+$$
 
 4. Use weighted counts to estimate the query distribution.
 
@@ -983,23 +983,23 @@ For a network with Shape and Color, suppose Color is observed to be Blue. The le
 
 The weighted totals are:
 
-- Pyramid: \(0.6\);
-- Sphere: \(0.8+0.5=1.3\);
-- Cube: \(0.9\).
+- Pyramid: $0.6$;
+- Sphere: $0.8+0.5=1.3$;
+- Cube: $0.9$.
 
 Their normalized estimates are
 
-\[
+$$
 P(\text{Pyramid}\mid Blue)\approx\frac{0.6}{2.8},
-\]
+$$
 
-\[
+$$
 P(\text{Sphere}\mid Blue)\approx\frac{1.3}{2.8},
 \qquad
 P(\text{Cube}\mid Blue)\approx\frac{0.9}{2.8}.
-\]
+$$
 
-Thus, the approximate distribution is approximately \((0.214,0.464,0.321)\).
+Thus, the approximate distribution is approximately $(0.214,0.464,0.321)$.
 
 **Strength:** evidence is incorporated during sampling, so samples are not thrown away simply because they disagree with the evidence.
 
@@ -1014,38 +1014,38 @@ The algorithm is:
 1. Fix all observed variables to their evidence values.
 2. Initialize the non-evidence variables, often randomly.
 3. Repeat for many iterations:
-   - Select a non-evidence variable \(X_i\).
+   - Select a non-evidence variable $X_i$.
    - Compute its conditional distribution given the current values of the other variables.
-   - Sample a new value for \(X_i\) from that conditional distribution.
+   - Sample a new value for $X_i$ from that conditional distribution.
 4. After an initial burn-in period, record samples.
 5. Estimate posterior probabilities from the recorded sample frequencies.
 
 For a binary variable,
 
-\[
+$$
 X_i\sim P(X_i\mid \text{all other current variables}).
-\]
+$$
 
 The Markov chain is designed so that, under the required conditions, its stationary distribution is the desired posterior distribution conditioned on the evidence. The lecture describes convergence as the point at which sample frequencies stop changing substantially. In practice, apparent stability is a diagnostic, not a mathematical proof that a finite run has converged.
 
 ### 7.7 Markov blanket
 
-Computing \(P(X_i\mid\text{all other variables})\) by using the entire network would be expensive. The **Markov blanket** of a node \(X\) is the set consisting of:
+Computing $P(X_i\mid\text{all other variables})$ by using the entire network would be expensive. The **Markov blanket** of a node $X$ is the set consisting of:
 
-1. The parents of \(X\);
-2. The children of \(X\);
-3. The other parents of \(X\)'s children (co-parents).
+1. The parents of $X$;
+2. The children of $X$;
+3. The other parents of $X$'s children (co-parents).
 
 A node is conditionally independent of all other nodes given its Markov blanket. Therefore,
 
-\[
+$$
 P(X\mid \text{all other variables})
 =P(X\mid MarkovBlanket(X)).
-\]
+$$
 
 For Gibbs sampling, this means that a variable can be resampled using only its local neighborhood in the network rather than recomputing the entire joint distribution.
 
-![Markov blanket diagram highlighting a node, its parents, its children, and the co-parents of its children](./images/markov-blanket.png)
+![Markov blanket diagram highlighting a node, its parents, its children, and the co-parents of its children](./bayesian_networks_study_pack/images/markov-blanket.png)
 
 ### 7.8 Comparing the sampling methods
 
